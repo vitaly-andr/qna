@@ -66,10 +66,9 @@ RSpec.describe QuestionsController, type: :controller do
       end
 
       it 're-renders new view' do
-        post :create, params: { question: attributes_for(:question, :invalid)}
+        post :create, params: { question: attributes_for(:question, :invalid) }
         expect(response).to render_template :new
       end
-
     end
   end
   describe 'PATCH #update' do
@@ -89,7 +88,6 @@ RSpec.describe QuestionsController, type: :controller do
         patch :update, params: { id: question, question: attributes_for(:question) }
         expect(response).to redirect_to(question_path(question))
       end
-
     end
     context 'with invalid attributes' do
       before do
@@ -111,7 +109,7 @@ RSpec.describe QuestionsController, type: :controller do
     let!(:question) { create(:question) }
 
     it 'deletes the question' do
-      expect { delete :destroy, params: { id: question} }.to change(Question, :count).by(-1)
+      expect { delete :destroy, params: { id: question } }.to change(Question, :count).by(-1)
     end
 
     it 'redirects to index' do

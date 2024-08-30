@@ -1,6 +1,6 @@
 class AnswersController < ApplicationController
   before_action :set_question
-  before_action :set_answer, only: [:edit, :update]
+  before_action :set_answer, only: [ :edit, :update ]
 
   def new
     @answer = @question.answers.build
@@ -9,7 +9,7 @@ class AnswersController < ApplicationController
   def create
     @answer = @question.answers.build(answer_params)
     if @answer.save
-      redirect_to @question, notice: 'Answer was successfully created.'
+      redirect_to @question, notice: "Answer was successfully created."
     else
       render :new
     end
@@ -20,7 +20,7 @@ class AnswersController < ApplicationController
 
   def update
     if @answer.update(answer_params)
-      redirect_to @question, notice: 'Answer was successfully updated.'
+      redirect_to @question, notice: "Answer was successfully updated."
     else
       render :edit
     end
