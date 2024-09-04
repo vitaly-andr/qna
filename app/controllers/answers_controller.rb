@@ -8,10 +8,12 @@ class AnswersController < ApplicationController
 
   def create
     @answer = @question.answers.build(answer_params)
+
     if @answer.save
       redirect_to @question, notice: "Answer was successfully created."
     else
-      render :new
+      @answers = @question.answers
+      render "questions/show"
     end
   end
 

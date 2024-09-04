@@ -18,13 +18,12 @@ feature 'User can write an answer to a question', %q(
       fill_in 'Your Answer', with: 'This is my answer'
       click_on 'Submit Answer'
 
-      expect(page).to have_content 'Your answer was successfully submitted.'
+      expect(page).to have_content 'Answer was successfully created.'
       expect(page).to have_content 'This is my answer'
     end
 
     scenario 'tries to submit an empty answer' do
       click_on 'Submit Answer'
-
       expect(page).to have_content "Body can't be blank"
     end
   end
@@ -33,6 +32,6 @@ feature 'User can write an answer to a question', %q(
     visit question_path(question)
 
     expect(page).to_not have_selector 'textarea'
-    expect(page).to have_content 'You need to sign in or sign up before continuing.'
+    expect(page).to have_content 'You need to sign in or sign up before creating answers.'
   end
 end
