@@ -18,7 +18,8 @@ feature 'Author can delete their question', %q{
     click_on 'Delete Question'
 
     expect(page).to have_content 'Your question was successfully deleted.'
-    expect(page).to_not have_content question.title
+    expect(current_path).to eq questions_path
+    expect(page).to_not have_content question.title_was
   end
 
   scenario 'Non-author tries to delete someone else’s question' do

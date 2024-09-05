@@ -1,2 +1,4 @@
-li
+li id="answer-#{answer.id}"
   p = answer.body
+  - if user_signed_in? && current_user.author_of?(answer) && answer.persisted?
+    = link_to 'Delete Answer', question_answer_path(answer.question, answer), method: :delete, data: { confirm: 'Are you sure?' }

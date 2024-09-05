@@ -23,9 +23,13 @@ feature 'Author can delete their answer', %q{
   end
 
   scenario 'Non-author tries to delete someone else’s answer' do
-    sign_in(user)
+    sign_in(other_user)
     visit question_path(question)
 
-    expect(page).to_not have_link 'Delete Answer'
+
+    within "#answer-#{answer.id}" do
+      expect(page).to_not have_link 'Delete Answer'
+    end
+
   end
 end

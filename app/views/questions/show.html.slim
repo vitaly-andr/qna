@@ -1,6 +1,9 @@
 h1 = @question.title
 p = @question.body
 
+- if user_signed_in? && current_user.author_of?(@question)
+  = link_to 'Delete Question', question_path(@question), method: :delete, data: { confirm: 'Are you sure?' }
+
 h2 Answers
 
 ul
