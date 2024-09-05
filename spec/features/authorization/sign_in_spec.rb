@@ -10,8 +10,6 @@ I want to sign in
     click_on 'Sign in'
   end
   scenario 'Registered user attempts to sign in' do
-    save_and_open_page
-
     sign_in(user)
     expect(page).to have_content 'Signed in successfully.'
   end
