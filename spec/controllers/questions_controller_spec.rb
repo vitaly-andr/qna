@@ -3,13 +3,15 @@ require 'rails_helper'
 RSpec.describe QuestionsController, type: :controller do
   let!(:user) { create(:user) }
   let!(:other_user) { create(:user) }
-  let!(:question) { create(:question, author: user) }
+  let(:question) { create(:question, author: user) }
 
 
   describe 'GET #index' do
-    let(:questions) { create_list(:question, 5) }
+    let!(:questions) { create_list(:question, 5, author: user) }
     before do
       get :index
+      puts "Created questions: #{Question.count}"  # Добавляем вывод количества вопросов для проверки
+
     end
     it 'populates an array of all questions' do
       expect(assigns(:questions)).to match_array(questions)
@@ -120,7 +122,7 @@ RSpec.describe QuestionsController, type: :controller do
   describe 'DELETE #destroy' do
     context 'Author tries to delete their question' do
       before { login(user) }
-
+      let!(:question) { create(:question, author: user) }
       it 'deletes the question' do
         expect { delete :destroy, params: { id: question } }.to change(Question, :count).by(-1)
       end
@@ -133,6 +135,7 @@ RSpec.describe QuestionsController, type: :controller do
 
     context 'Non-author tries to delete the question' do
       before { login(other_user) }
+      let!(:question) { create(:question, author: user) }
 
       it 'does not delete the question' do
         expect { delete :destroy, params: { id: question } }.to_not change(Question, :count)
