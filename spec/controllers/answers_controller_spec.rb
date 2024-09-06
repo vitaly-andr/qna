@@ -33,7 +33,7 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'GET #edit' do
-    context 'Author tries to edit their answer' do
+    context 'When author tries to edit their answer' do
       before do
         get :edit, params: { id: answer.id, question_id: question.id }
       end
@@ -47,7 +47,7 @@ RSpec.describe AnswersController, type: :controller do
       end
     end
 
-    context 'Non-author tries to edit the answer' do
+    context 'When non-author tries to edit the answer' do
       before { login(other_user) }
 
       it 'redirects to the question show view with alert' do
@@ -59,7 +59,7 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'PATCH #update' do
-    context 'Author tries to update their answer with valid attributes' do
+    context 'When author tries to update their answer with valid attributes' do
       it 'updates the answer' do
         patch :update, params: { id: answer.id, question_id: question.id, answer: { body: 'Updated body' } }
         answer.reload
@@ -72,7 +72,7 @@ RSpec.describe AnswersController, type: :controller do
       end
     end
 
-    context 'Non-author tries to update the answer' do
+    context 'When non-author tries to update the answer' do
       before { login(other_user) }
 
       it 'does not update the answer' do
@@ -105,7 +105,7 @@ RSpec.describe AnswersController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
-    context 'Author tries to delete their answer' do
+    context 'When author tries to delete their answer' do
       let!(:question) { create(:question, author: user) }
 
       let!(:answer) { create(:answer, question: question, author: user) }
@@ -120,7 +120,7 @@ RSpec.describe AnswersController, type: :controller do
       end
     end
 
-    context 'Non-author tries to delete the answer' do
+    context 'When non-author tries to delete the answer' do
       before { login(other_user) }
       let!(:question) { create(:question, author: user) }
 
