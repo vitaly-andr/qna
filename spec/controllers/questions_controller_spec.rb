@@ -11,7 +11,6 @@ RSpec.describe QuestionsController, type: :controller do
     before do
       get :index
       puts "Created questions: #{Question.count}"  # Добавляем вывод количества вопросов для проверки
-
     end
     it 'populates an array of all questions' do
       expect(assigns(:questions)).to match_array(questions)

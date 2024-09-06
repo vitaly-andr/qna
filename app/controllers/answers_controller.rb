@@ -6,7 +6,6 @@ class AnswersController < ApplicationController
   def new
     @answer = @question.answers.build
     @answer.author = current_user
-
   end
 
   def create
@@ -23,27 +22,27 @@ class AnswersController < ApplicationController
   end
 
   def edit
-    redirect_to @question, alert: 'You can edit only your own answers.' unless current_user.author_of?(@answer)
+    redirect_to @question, alert: "You can edit only your own answers." unless current_user.author_of?(@answer)
   end
 
   def update
     if current_user.author_of?(@answer)
       if @answer.update(answer_params)
-        redirect_to @question, notice: 'Your answer was successfully updated.'
+        redirect_to @question, notice: "Your answer was successfully updated."
       else
         render :edit
       end
     else
-      redirect_to @question, alert: 'You can update only your own answers.'
+      redirect_to @question, alert: "You can update only your own answers."
     end
   end
 
   def destroy
     if current_user.author_of?(@answer)
       @answer.destroy
-      redirect_to @question, notice: 'Your answer was successfully deleted.'
+      redirect_to @question, notice: "Your answer was successfully deleted."
     else
-      redirect_to @question, alert: 'You can delete only your own answers.'
+      redirect_to @question, alert: "You can delete only your own answers."
     end
   end
 

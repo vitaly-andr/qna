@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-feature 'Author can delete their question', %q{
+feature 'Author can delete their question', %q(
   In order to remove unnecessary question
   As an authenticated user
   I want to be able to delete my question
-} do
+) do
   given(:user) { create(:user) }
   given(:other_user) { create(:user) }
   given!(:question) { create(:question, author: user) }

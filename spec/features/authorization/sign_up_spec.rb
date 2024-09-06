@@ -1,11 +1,10 @@
 require 'rails_helper'
 
-feature 'User can register', %q{
+feature 'User can register', %q(
   In order to ask questions and provide answers
   As an unauthenticated user
   I want to be able to register from the login page
-} do
-
+) do
   background do
     visit new_user_session_path
     click_on 'Sign up'

@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-feature 'Author can delete their answer', %q{
+feature 'Author can delete their answer', %q(
   In order to remove incorrect answer
   As an authenticated user
   I want to be able to delete my answer
-} do
+) do
   given(:user) { create(:user) }
   given(:other_user) { create(:user) }
   given(:question) { create(:question) }
@@ -30,6 +30,5 @@ feature 'Author can delete their answer', %q{
     within "#answer-#{answer.id}" do
       expect(page).to_not have_link 'Delete Answer'
     end
-
   end
 end

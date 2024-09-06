@@ -19,5 +19,4 @@ RSpec.describe User, type: :model do
       expect(other_user.author_of?(answer)).to be false
     end
   end
-
 end
