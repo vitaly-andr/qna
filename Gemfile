@@ -17,6 +17,8 @@ gem "stimulus-rails"
 
 gem "slim-rails"
 
+gem "devise"
+
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
 # Use Redis adapter to run Action Cable in production
@@ -62,4 +64,5 @@ group :test do
   gem "selenium-webdriver"
   gem 'shoulda-matchers', '~> 6.0'
   gem 'rails-controller-testing'
+  gem 'launchy'
 end
