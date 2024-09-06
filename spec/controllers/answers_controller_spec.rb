@@ -76,10 +76,10 @@ RSpec.describe AnswersController, type: :controller do
       before { login(other_user) }
 
       it 'does not update the answer' do
-        original_body = answer.body
-        patch :update, params: { id: answer.id, question_id: question.id, answer: { body: 'Updated body' } }
-        answer.reload
-        expect(answer.body).to eq original_body
+        expect do
+          patch :update, params: { id: answer.id, question_id: question.id, answer: { body: 'Updated body' } }
+          answer.reload
+        end.not_to change { answer.body }
       end
 
       it 'redirects to the question show view with alert' do
@@ -91,10 +91,10 @@ RSpec.describe AnswersController, type: :controller do
 
     context 'with invalid attributes' do
       it 'does not update the answer' do
-        original_body = answer.body
-        patch :update, params: { id: answer.id, question_id: question.id, answer: attributes_for(:answer, :invalid) }
-        answer.reload
-        expect(answer.body).to eq original_body
+        expect do
+          patch :update, params: { id: answer.id, question_id: question.id, answer: attributes_for(:answer, :invalid) }
+          answer.reload
+        end.not_to change { answer.body }
       end
 
       it 're-renders the edit view' do
