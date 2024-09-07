@@ -1,7 +1,7 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_question
-  before_action :set_answer, only: [ :edit, :update, :destroy ]
+  before_action :set_question, only: [:new, :create]
+  before_action :set_answer, only: [:edit, :update, :destroy]
 
   def new
     @answer = @question.answers.build
@@ -28,10 +28,12 @@ class AnswersController < ApplicationController
   end
 
   def edit
+    @question = @answer.question
     redirect_to @question, alert: "You can edit only your own answers." unless current_user.author_of?(@answer)
   end
 
   def update
+    @question = @answer.question
     if current_user.author_of?(@answer)
       if @answer.update(answer_params)
         redirect_to @question, notice: "Your answer was successfully updated."
@@ -44,11 +46,25 @@ class AnswersController < ApplicationController
   end
 
   def destroy
-    if current_user.author_of?(@answer)
-      @answer.destroy
-      redirect_to @question, notice: "Your answer was successfully deleted."
-    else
-      redirect_to @question, alert: "You can delete only your own answers."
+    @question = @answer.question
+    respond_to do |format|
+      if current_user.author_of?(@answer)
+        @answer.destroy
+        format.html { redirect_to @question, notice: "Your answer was successfully deleted." }
+        format.turbo_stream do
+          if turbo_frame_request?
+            render turbo_stream: [
+              turbo_stream.remove(@answer),
+              turbo_stream.replace("flash-messages", partial: "shared/flash", locals: { flash: { notice: "Your answer was successfully deleted." } })
+            ]
+          end
+        end
+      else
+        format.html { redirect_to @question, alert: "You can delete only your own answers." }
+        format.turbo_stream do
+          turbo_stream.replace("flash-messages", partial: "shared/flash", locals: { flash: { alert: "You can delete only your own answers." } })
+        end
+      end
     end
   end
 

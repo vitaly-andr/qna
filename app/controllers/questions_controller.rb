@@ -32,7 +32,6 @@ class QuestionsController < ApplicationController
     respond_to do |format|
       if current_user.author_of?(@question)
         @question.destroy
-        # flash.now[:notice] = "Your question was successfully deleted."
 
         format.html { redirect_to questions_path, notice: "Your question was successfully deleted." }
 
