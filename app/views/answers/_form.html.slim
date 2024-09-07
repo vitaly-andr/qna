@@ -1,7 +1,5 @@
 = form_with model: [question, answer], url: question_answers_path(@question), id: 'answer_form', local: false do |f|
   = render 'shared/errors', object: @answer
-  p "Текущий объект ответа: #{@answer.inspect}"
-
   div
     = f.label :body, 'Your Answer'
     = f.text_area :body, id: 'answer_body', rows: 3, placeholder: "Type your answer here..."

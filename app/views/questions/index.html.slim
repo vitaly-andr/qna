@@ -4,7 +4,7 @@ ul
   - @questions.each do |question|
     = turbo_frame_tag dom_id(question) do
       li
-        h3 = link_to question.title, question_path(question)
+        h3 = link_to question.title, question_path(question), data: { turbo: false }
         p = truncate(question.body, length: 100)
         p "Asked by: #{question.author.email}"
         - if user_signed_in? && current_user.author_of?(question)

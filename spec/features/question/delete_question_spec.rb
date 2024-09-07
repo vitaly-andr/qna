@@ -45,7 +45,6 @@ feature 'Author can delete their question', %q(
   scenario 'Non-author tries to delete someone else’s question from the index page' do
     sign_in(other_user)
     visit questions_path
-    save_and_open_page
     within "#question_#{question.id}" do
       expect(page).to_not have_link 'Delete Question'
     end
