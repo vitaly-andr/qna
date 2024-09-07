@@ -10,25 +10,61 @@ RSpec.describe AnswersController, type: :controller do
 
   describe 'POST #create' do
     context 'with valid attributes' do
-      it 'saves a new answer in the database' do
-        expect { post :create, params: { question_id: question.id, answer: attributes_for(:answer) } }.to change(Answer, :count).by(1)
+      context 'Turbo request' do
+        it 'saves a new answer in the database and renders Turbo Stream' do
+          expect {
+            post :create, params: { question_id: question.id, answer: attributes_for(:answer) }, format: :turbo_stream
+          }.to change(Answer, :count).by(1)
+
+          expect(response.media_type).to eq 'text/vnd.turbo-stream.html'
+          expect(response).to render_template :create
+        end
       end
 
-      it 'redirects to the question show view' do
-        post :create, params: { question_id: question.id, answer: attributes_for(:answer) }
-        expect(response).to redirect_to question
+      context 'HTML request' do
+        it 'saves a new answer in the database and redirects to question page' do
+          expect {
+            post :create, params: { question_id: question.id, answer: attributes_for(:answer) }, format: :html
+          }.to change(Answer, :count).by(1)
+
+          expect(response).to redirect_to question_path(question)
+        end
       end
     end
 
     context 'with invalid attributes' do
-      it 'does not save the answer' do
-        expect { post :create, params: { question_id: question.id, answer: attributes_for(:answer, :invalid) } }.to_not change(Answer, :count)
+      context 'Turbo request' do
+        it 'does not save the answer and re-renders the form with Turbo Stream' do
+          expect {
+            post :create, params: { question_id: question.id, answer: attributes_for(:answer, :invalid) }, format: :turbo_stream
+          }.to_not change(Answer, :count)
+
+          expect(response.media_type).to eq 'text/vnd.turbo-stream.html'
+          expect(response).to render_template :create
+        end
       end
 
-      it 're-renders the new view' do
-        post :create, params: { question_id: question.id, answer: attributes_for(:answer, :invalid) }
-        expect(response).to render_template 'questions/show'
+      context 'HTML request' do
+        it 'does not save the answer and re-renders the question page' do
+          expect {
+            post :create, params: { question_id: question.id, answer: attributes_for(:answer, :invalid) }, format: :html
+          }.to_not change(Answer, :count)
+
+          expect(response).to render_template 'questions/show'
+        end
       end
+    end
+  end
+
+  describe 'POST #create as unauthenticated user' do
+    before { sign_out(user) }
+
+    it 'does not save the answer and redirects to login page' do
+      expect {
+        post :create, params: { question_id: question.id, answer: attributes_for(:answer) }
+      }.to_not change(Answer, :count)
+
+      expect(response).to redirect_to new_user_session_path
     end
   end
 
