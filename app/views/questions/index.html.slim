@@ -2,8 +2,10 @@ h1 List of Questions
 
 ul
   - @questions.each do |question|
-    li
-      h3 = link_to question.title, question_path(question)
-      p = truncate(question.body, length: 100)
+    = turbo_frame_tag dom_id(question) do
+      li
+        h3 = link_to question.title, question_path(question)
+        p = truncate(question.body, length: 100)
+        = link_to 'Delete Question', question_path(question), data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }
 
 = link_to 'Ask question', new_question_path

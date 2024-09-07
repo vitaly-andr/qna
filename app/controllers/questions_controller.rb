@@ -29,13 +29,34 @@ class QuestionsController < ApplicationController
     end
   end
   def destroy
-    if current_user.author_of?(@question)
-      @question.destroy
-      redirect_to questions_path, notice: "Your question was successfully deleted."
-    else
-      redirect_to questions_path, alert: "You can delete only your own questions."
+    respond_to do |format|
+      if current_user.author_of?(@question)
+        @question.destroy
+        # flash.now[:notice] = "Your question was successfully deleted."
+
+        format.html { redirect_to questions_path, notice: "Your question was successfully deleted." }
+
+        format.turbo_stream do
+          if turbo_frame_request?
+            render turbo_stream: [
+              turbo_stream.remove(@question),
+              turbo_stream.replace("flash-messages", partial: "shared/flash", locals: { flash: { notice: "Your question was successfully deleted." } })
+            ]
+          else
+            redirect_to questions_path, notice: "Your question was successfully deleted."
+          end
+        end
+
+      else
+        format.html { redirect_to questions_path, alert: "You can delete only your own questions." }
+
+        format.turbo_stream do
+          turbo_stream.replace("flash-messages", partial: "shared/flash", locals: { flash: { alert: "You can delete only your own questions." } })
+        end
+      end
     end
   end
+
 
   private
   def set_question
