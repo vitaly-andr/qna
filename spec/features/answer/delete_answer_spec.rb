@@ -4,7 +4,7 @@ feature 'Author can delete their answer', %q(
   In order to remove incorrect answer
   As an authenticated user
   I want to be able to delete my answer
-) do
+), js: true do
   given(:user) { create(:user) }
   given(:other_user) { create(:user) }
   given(:question) { create(:question) }

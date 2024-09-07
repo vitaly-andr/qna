@@ -15,40 +15,48 @@ feature 'User can write an answer to a question', %q(
       visit question_path(question)
     end
 
-    scenario 'writes an answer using Turbo Frame or full page reload' do
-      within "#answers" do
-        expect(page).to have_content 'Existing answer'
+    context 'with full page reload' do
+      scenario 'writes an answer' do
+        within "#answers" do
+          expect(page).to have_content 'Existing answer'
+        end
+
+        fill_in 'Your Answer', with: 'This is my new answer'
+        click_on 'Submit Answer'
+
+        within "#answers" do
+          expect(page).to have_content 'This is my new answer'
+        end
       end
 
-      fill_in 'Your Answer', with: 'This is my new answer'
-      click_on 'Submit Answer'
+      scenario 'tries to submit an empty answer' do
+        click_on 'Submit Answer'
 
-      if page.has_selector?("turbo-frame#answer_form")
-        # Если это Turbo Frame, проверяем только обновление контента
-        within "#answers" do
-          expect(page).to have_content 'This is my new answer'
-        end
-
-        expect(page).to have_selector 'textarea'
-      else
-        expect(page).to have_content 'Answer was successfully created.'
-
-        within "#answers" do
-          expect(page).to have_content 'This is my new answer'
-        end
+        expect(page).to have_content "Body can't be blank"
       end
     end
 
+    context 'with Turbo Frame' do
+      scenario 'writes an answer' do
+        within "#answers" do
+          expect(page).to have_content 'Existing answer'
+        end
 
-    scenario 'tries to submit an empty answer using Turbo Frame or full page reload' do
-      click_on 'Submit Answer'
+        fill_in 'Your Answer', with: 'This is my new answer'
+        click_on 'Submit Answer'
 
-      if page.has_selector?("turbo-frame#answer_form")
+        within "#answers" do
+          expect(page).to have_content 'This is my new answer'
+        end
+        # expect(page).to have_selector 'textarea'
+        expect(find_field('Your Answer').value).to be_empty
+      end
+
+      scenario 'tries to submit an empty answer' do
+        click_on 'Submit Answer'
         within '.answer-errors' do
           expect(page).to have_content "Body can't be blank"
         end
-      else
-        expect(page).to have_content "Body can't be blank"
       end
     end
   end

@@ -14,13 +14,15 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+
   </head>
 
   <body>
   <nav>
     <ul>
       <% if user_signed_in? %>
-        <li><%= link_to 'Sign out', destroy_user_session_path, method: :delete %></li>
+        <li><%= link_to 'Sign out', destroy_user_session_path, data: { turbo_method: :delete } %></li>
       <% else %>
         <li><%= link_to 'Sign in', new_user_session_path %></li>
       <% end %>

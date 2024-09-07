@@ -17,7 +17,7 @@ RSpec.describe AnswersController, type: :controller do
           }.to change(Answer, :count).by(1)
 
           expect(response.media_type).to eq 'text/vnd.turbo-stream.html'
-          expect(response).to render_template :create
+          expect(response).to render_template('answers/create')
         end
       end
 
@@ -40,7 +40,7 @@ RSpec.describe AnswersController, type: :controller do
           }.to_not change(Answer, :count)
 
           expect(response.media_type).to eq 'text/vnd.turbo-stream.html'
-          expect(response).to render_template :create
+          expect(response).to render_template('answers/create_error')
         end
       end
 

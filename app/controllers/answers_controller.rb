@@ -12,12 +12,18 @@ class AnswersController < ApplicationController
     @answer = @question.answers.build(answer_params)
     @answer.author = current_user
 
-
-    if @answer.save
-      redirect_to @question, notice: "Answer was successfully created."
-    else
-      @answers = @question.answers
-      render "questions/show"
+    respond_to do |format|
+      if @answer.save
+        @new_answer = @question.answers.build
+        format.html { redirect_to @question, notice: "Answer was successfully created." }
+        format.turbo_stream { render 'answers/create' }
+      else
+        format.html do
+          @answers = @question.answers
+          render "questions/show"
+        end
+        format.turbo_stream { render 'answers/create_error' }
+      end
     end
   end
 
