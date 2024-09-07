@@ -40,3 +40,4 @@
 /.idea/misc.xml
 /config/database.yml
 
+/vendor/javascript/.keep
