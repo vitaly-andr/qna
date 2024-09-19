@@ -22,38 +22,15 @@ class QuestionsController < ApplicationController
     end
   end
   def update
-    if @question.update(question_params)
-      redirect_to @question
-    else
-      render :edit
-    end
+    return handle_unauthorized_update unless current_user.author_of?(@question)
+
+    @question.update(question_params) ? handle_successful_update : handle_failed_update
   end
   def destroy
-    respond_to do |format|
-      if current_user.author_of?(@question)
-        @question.destroy
+    return handle_unauthorized_destroy unless current_user.author_of?(@question)
 
-        format.html { redirect_to questions_path, notice: "Your question was successfully deleted." }
-
-        format.turbo_stream do
-          if turbo_frame_request?
-            render turbo_stream: [
-              turbo_stream.remove(@question),
-              turbo_stream.replace("flash-messages", partial: "shared/flash", locals: { flash: { notice: "Your question was successfully deleted." } })
-            ]
-          else
-            redirect_to questions_path, notice: "Your question was successfully deleted."
-          end
-        end
-
-      else
-        format.html { redirect_to questions_path, alert: "You can delete only your own questions." }
-
-        format.turbo_stream do
-          turbo_stream.replace("flash-messages", partial: "shared/flash", locals: { flash: { alert: "You can delete only your own questions." } })
-        end
-      end
-    end
+    @question.destroy
+    handle_successful_destroy
   end
 
 
@@ -64,4 +41,60 @@ class QuestionsController < ApplicationController
   def question_params
     params.require(:question).permit(:title, :body)
   end
+  def handle_unauthorized_update
+    respond_to do |format|
+      format.html { redirect_to @question, alert: 'Only the author can edit this question.' }
+      format.turbo_stream { render_flash_alert('Only the author can edit this question.') }
+    end
+  end
+
+  def handle_unauthorized_destroy
+    respond_to do |format|
+      format.html { redirect_to questions_path, alert: 'You can delete only your own questions.' }
+      format.turbo_stream { render_flash_alert('You can delete only your own questions.') }
+    end
+  end
+
+  def handle_successful_update
+    respond_to do |format|
+      format.html { redirect_to @question, notice: 'Question successfully updated.' }
+      format.turbo_stream do
+        render turbo_stream: render_flash_notice('Question successfully updated.')
+      end
+    end
+  end
+
+  def handle_failed_update
+    respond_to do |format|
+      format.html { render :edit }
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace('question_form', partial: 'questions/form', locals: { question: @question })
+      end
+    end
+  end
+
+  def handle_successful_destroy
+    respond_to do |format|
+      if turbo_frame_request?
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.remove(@question),
+            render_flash_notice('Your question was successfully deleted.')
+          ]
+        end
+      else
+        format.html { redirect_to questions_path, notice: "Your question was successfully deleted." }
+      end
+    end
+  end
+
+  # Reusable flash rendering
+  def render_flash_notice(message)
+    turbo_stream.replace('flash-messages', partial: 'shared/flash', locals: { flash: { notice: message } })
+  end
+
+  def render_flash_alert(message)
+    turbo_stream.replace('flash-messages', partial: 'shared/flash', locals: { flash: { alert: message } })
+  end
 end
+

@@ -35,7 +35,9 @@ feature 'Author can delete their question', %q(
 
     within "#question_#{question.id}" do
       expect(page).to have_link 'Delete Question'
-      click_on 'Delete Question'
+      accept_confirm do
+        click_on 'Delete Question'
+      end
     end
 
     expect(page).to have_content 'Your question was successfully deleted.'

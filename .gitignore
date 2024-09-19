@@ -41,3 +41,4 @@
 /config/database.yml
 
 /vendor/javascript/.keep
+/.idea/codeStyles/codeStyleConfig.xml
