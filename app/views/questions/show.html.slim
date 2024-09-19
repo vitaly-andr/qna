@@ -1,7 +1,9 @@
+= link_to 'Index', questions_path
 h1 = @question.title
 p = @question.body
 
 - if user_signed_in? && current_user.author_of?(@question)
+  = link_to 'Edit Question', edit_question_path(@question)
   = link_to 'Delete Question', question_path(@question), data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }
 
 h2 Answers

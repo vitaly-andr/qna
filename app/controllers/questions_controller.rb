@@ -12,6 +12,12 @@ class QuestionsController < ApplicationController
     @question = Question.new
   end
   def edit
+    respond_to do |format|
+      format.html
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(dom_id(@question), partial: 'questions/form', locals: { question: @question })
+      end
+    end
   end
   def create
     @question = current_user.questions.build(question_params)
@@ -59,8 +65,12 @@ class QuestionsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to @question, notice: 'Question successfully updated.' }
       format.turbo_stream do
-        render turbo_stream: render_flash_notice('Question successfully updated.')
+        render turbo_stream: [
+          turbo_stream.replace(helpers.dom_id(@question), partial: 'questions/question', locals: { question: @question }),
+          render_flash_notice('Question successfully updated.')
+        ]
       end
+
     end
   end
 

@@ -20,7 +20,7 @@ feature 'Author can edit their question', %q(
       fill_in 'Body', with: 'Edited Question Body'
       click_on 'Save'
 
-      expect(page).to_not have_selector 'textarea'
+      expect(page).to have_no_selector 'textarea'
       expect(page).to have_content 'Edited Question Title'
       expect(page).to have_content 'Edited Question Body'
     end
