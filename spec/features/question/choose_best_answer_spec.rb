@@ -24,7 +24,7 @@ RSpec.feature "Choose Best Answer", type: :feature do
   end
 
   scenario 'Other users cannot choose the best answer' do
-    click_link 'Log out'
+    click_link 'Sign out'
     sign_in other_user
     visit question_path(question)
 

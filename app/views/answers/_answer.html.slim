@@ -5,3 +5,5 @@
             - if user_signed_in? && current_user.author_of?(answer) && answer.persisted?
                 = link_to 'Edit', edit_answer_path(answer), data: { turbo_frame: dom_id(answer) }
                 = link_to 'Delete Answer', answer_path(answer), data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }
+            - if user_signed_in? && current_user.author_of?(answer.question) && answer.persisted?
+                = button_to 'Mark as Best', answer_path(answer.question, answer, best: true), data: { turbo_method: :patch, turbo_stream: true }
