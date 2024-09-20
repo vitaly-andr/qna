@@ -1,19 +1,25 @@
 class QuestionsController < ApplicationController
   before_action :authenticate_user!, except: [ :index, :show ]
   before_action :set_question, only: [ :show, :edit, :update, :destroy, :mark_best_answer, :unmark_best_answer ]
+
   def index
     @questions = Question.all
   end
 
   def show
+    @best_answer = @question.best_answer
+    @answers = @question.answers.where.not(id: @question.best_answer_id)
     @answer = @question.answers.build
   end
+
   def new
     @question = Question.new
   end
+
   def edit
 
   end
+
   def create
     @question = current_user.questions.build(question_params)
     if @question.save
@@ -22,11 +28,13 @@ class QuestionsController < ApplicationController
       render :new
     end
   end
+
   def update
     return handle_unauthorized_update unless current_user.author_of?(@question)
 
     @question.update(question_params) ? handle_successful_update : handle_failed_update
   end
+
   def destroy
     return handle_unauthorized_destroy unless current_user.author_of?(@question)
 
@@ -36,18 +44,24 @@ class QuestionsController < ApplicationController
 
   def mark_best_answer
     @answer = @question.answers.find(params[:answer_id])
+    @previous_best_answer = @question.best_answer
 
     if current_user == @question.author
       if @question.update(best_answer: @answer)
-        flash[:notice] = 'Best answer selected.'
+
+        respond_to do |format|
+          format.turbo_stream
+          format.html { redirect_to @question, notice: 'Best answer selected.' }
+        end
+
       else
-        flash[:alert] = 'Failed to select the best answer.'
+        respond_to do |format|
+          format.html { redirect_to @question, alert: 'Failed to select the best answer.' }
+        end
       end
     else
-      flash[:alert] = 'You are not authorized to select the best answer.'
+      redirect_to @question, alert: 'You are not authorized to select the best answer.'
     end
-
-    redirect_to @question
   end
 
   def unmark_best_answer
@@ -59,14 +73,16 @@ class QuestionsController < ApplicationController
     end
   end
 
-
   private
+
   def set_question
     @question = Question.find(params[:id])
   end
+
   def question_params
     params.require(:question).permit(:title, :body, :best_answer_id)
   end
+
   def handle_unauthorized_update
     respond_to do |format|
       format.html { redirect_to @question, alert: 'Only the author can edit this question.' }

@@ -13,3 +13,8 @@
  *= require_tree .
  *= require_self
  */
+
+.best-answer {
+    font-weight: bold;
+    color: green;
+}
