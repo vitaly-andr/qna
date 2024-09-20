@@ -1,0 +1,8 @@
+= turbo_frame_tag dom_id(@answer) do
+  = form_with model: @answer, url: answer_path(@answer), id: 'answer_form', remote: true do |f|
+    = render 'shared/errors', object: @answer
+    div
+      = f.label :body, 'Your Answer'
+      = f.text_area :body
+    div
+      = f.submit 'Update Answer'

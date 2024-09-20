@@ -18,7 +18,7 @@ feature 'Author can edit their answer', %q(
       click_on 'Edit'
 
       fill_in 'Your Answer', with: 'Edited answer'
-      click_on 'Save'
+      click_on 'Update Answer'
 
       expect(page).to_not have_selector 'textarea'
       expect(page).to have_content 'Edited answer'

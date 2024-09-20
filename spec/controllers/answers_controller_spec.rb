@@ -92,6 +92,7 @@ RSpec.describe AnswersController, type: :controller do
         expect(flash[:alert]).to eq 'You can edit only your own answers.'
       end
     end
+
   end
 
   describe 'PATCH #update' do

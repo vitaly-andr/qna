@@ -28,20 +28,30 @@ class AnswersController < ApplicationController
   end
 
   def edit
-    @question = @answer.question
-    redirect_to @question, alert: "You can edit only your own answers." unless current_user.author_of?(@answer)
+    unless current_user.author_of?(@answer)
+      flash[:alert] = 'You can edit only your own answers.'
+      redirect_to @answer.question
+    end
   end
 
   def update
     @question = @answer.question
-    if current_user.author_of?(@answer)
-      if @answer.update(answer_params)
-        redirect_to @question, notice: "Your answer was successfully updated."
-      else
-        render :edit
+    unless current_user.author_of?(@answer)
+      return handle_unauthorized_update
+    end
+
+    if @answer.update(answer_params)
+      respond_to do |format|
+        format.html { redirect_to @answer.question, notice: 'Your answer was successfully updated.' }
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.replace(helpers.dom_id(@answer), partial: 'answers/answer', locals: { answer: @answer }),
+            render_flash_notice('Your answer was successfully updated.')
+          ]
+        end
       end
     else
-      redirect_to @question, alert: "You can update only your own answers."
+      handle_failed_update
     end
   end
 
@@ -69,6 +79,22 @@ class AnswersController < ApplicationController
   end
 
   private
+
+  def handle_unauthorized_update
+    respond_to do |format|
+      format.html { redirect_to @question, alert: 'You can update only your own answers.' }
+      format.turbo_stream { render_flash_alert('You can update only your own answers.') }
+    end
+  end
+
+  def handle_failed_update
+    respond_to do |format|
+      format.html { render :edit }
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(dom_id(@answer), partial: 'answers/form', locals: { answer: @answer })
+      end
+    end
+  end
 
   def set_question
     @question = Question.find(params[:question_id])

@@ -12,12 +12,7 @@ class QuestionsController < ApplicationController
     @question = Question.new
   end
   def edit
-    respond_to do |format|
-      format.html
-      format.turbo_stream do
-        render turbo_stream: turbo_stream.replace(dom_id(@question), partial: 'questions/form', locals: { question: @question })
-      end
-    end
+
   end
   def create
     @question = current_user.questions.build(question_params)
@@ -98,13 +93,5 @@ class QuestionsController < ApplicationController
     end
   end
 
-  # Reusable flash rendering
-  def render_flash_notice(message)
-    turbo_stream.replace('flash-messages', partial: 'shared/flash', locals: { flash: { notice: message } })
-  end
-
-  def render_flash_alert(message)
-    turbo_stream.replace('flash-messages', partial: 'shared/flash', locals: { flash: { alert: message } })
-  end
 end
 
