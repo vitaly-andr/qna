@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.feature "Choose Best Answer", type: :feature do
   let!(:question_author) { create(:user) }
   let!(:other_user) { create(:user) }
-  let!(:question) { create(:question, user: question_author) }
+  let!(:question) { create(:question, author: question_author) }
   let!(:answers) { create_list(:answer, 3, question: question) }
 
   before do
