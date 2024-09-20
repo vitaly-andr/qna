@@ -21,6 +21,13 @@ RSpec.feature "Choose Best Answer", type: :feature do
     expect(page).to have_css('.best-answer', text: second_answer.body)
     expect(page).to have_button('Unmark Best')
     expect(page).to_not have_button('Mark as Best', count: 1)
+
+    within("#answer_#{second_answer.id}") do
+      click_button 'Unmark Best'
+    end
+
+    expect(page).to_not have_css('.best-answer', text: second_answer.body)
+    expect(page).to have_button('Mark as Best')
   end
 
   scenario 'Other users cannot choose the best answer' do

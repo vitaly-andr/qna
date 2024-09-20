@@ -1,6 +1,6 @@
 class QuestionsController < ApplicationController
   before_action :authenticate_user!, except: [ :index, :show ]
-  before_action :set_question, only: [ :show, :edit, :update, :destroy ]
+  before_action :set_question, only: [ :show, :edit, :update, :destroy, :mark_best_answer, :unmark_best_answer ]
   def index
     @questions = Question.all
   end
@@ -34,13 +34,38 @@ class QuestionsController < ApplicationController
     handle_successful_destroy
   end
 
+  def mark_best_answer
+    @answer = @question.answers.find(params[:answer_id])
+
+    if current_user == @question.author
+      if @question.update(best_answer: @answer)
+        flash[:notice] = 'Best answer selected.'
+      else
+        flash[:alert] = 'Failed to select the best answer.'
+      end
+    else
+      flash[:alert] = 'You are not authorized to select the best answer.'
+    end
+
+    redirect_to @question
+  end
+
+  def unmark_best_answer
+    if current_user == @question.author
+      @question.update(best_answer: nil)
+      redirect_to @question, notice: 'Best answer unmarked.'
+    else
+      redirect_to @question, alert: 'You are not authorized to unmark the best answer.'
+    end
+  end
+
 
   private
   def set_question
     @question = Question.find(params[:id])
   end
   def question_params
-    params.require(:question).permit(:title, :body)
+    params.require(:question).permit(:title, :body, :best_answer_id)
   end
   def handle_unauthorized_update
     respond_to do |format|

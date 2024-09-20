@@ -13,6 +13,8 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "questions#index"
   resources :questions do
+    patch :mark_best_answer, on: :member
+    patch :unmark_best_answer, on: :member
     resources :answers, shallow: true, except: [ :index, :show ]
   end
 end
