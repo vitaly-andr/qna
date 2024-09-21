@@ -2,6 +2,9 @@ section data-controller="reload-on-best-answer" data-reload-on-best-answer-targe
   = link_to 'Index', questions_path
   h1 = @question.title
   p = @question.body
+  - if @question.files.attached?
+    - @question.files.each do |file|
+      p= link_to file.filename.to_s, url_for(file)
 
   - if user_signed_in? && current_user.author_of?(@question)
     = link_to 'Edit Question', edit_question_path(@question)

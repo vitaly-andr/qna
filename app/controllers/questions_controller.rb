@@ -76,11 +76,11 @@ class QuestionsController < ApplicationController
   private
 
   def set_question
-    @question = Question.find(params[:id])
+    @question = Question.with_attached_files.find(params[:id])
   end
 
   def question_params
-    params.require(:question).permit(:title, :body, :best_answer_id)
+    params.require(:question).permit(:title, :body, :best_answer_id, files: [])
   end
 
   def handle_unauthorized_update
