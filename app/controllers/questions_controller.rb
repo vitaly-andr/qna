@@ -46,7 +46,7 @@ class QuestionsController < ApplicationController
     @answer = @question.answers.find(params[:answer_id])
     @previous_best_answer = @question.best_answer
 
-    if current_user == @question.author
+    if current_user.author_of?(@question)
       if @question.update(best_answer: @answer)
 
         respond_to do |format|
