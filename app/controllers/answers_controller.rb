@@ -1,7 +1,7 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!
   before_action :set_question, only: [:new, :create]
-  before_action :set_answer, only: [:edit, :update, :destroy]
+  before_action :set_answer, only: [:edit, :update, :destroy, :delete_attachment]
 
   def new
     @answer = @question.answers.build
@@ -78,6 +78,32 @@ class AnswersController < ApplicationController
     end
   end
 
+  def delete_attachment
+    file = @answer.files.find(params[:file_id])
+
+    if current_user.author_of?(@answer)
+      file.purge
+      respond_to do |format|
+        format.html { redirect_to question_path(@answer.question), notice: 'File was successfully deleted.' }
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.remove("file_#{file.id}"),  # Удаление HTML-элемента файла
+            turbo_stream.replace("flash", partial: "shared/flash", locals: { notice: 'File was successfully deleted.' })
+          ]
+        end
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to question_path(@answer.question), alert: 'You are not authorized to delete this file.' }
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.replace("flash", partial: "shared/flash", locals: { alert: 'You are not authorized to delete this file.' })
+          ]
+        end
+      end
+    end
+  end
+
   private
 
   def handle_unauthorized_update
@@ -105,6 +131,6 @@ class AnswersController < ApplicationController
   end
 
   def answer_params
-    params.require(:answer).permit(:body, files: [])
+    params.require(:answer).permit(:body, :file_id, files: [])
   end
 end

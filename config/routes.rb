@@ -16,6 +16,8 @@ Rails.application.routes.draw do
     patch :mark_best_answer, on: :member
     patch :unmark_best_answer, on: :member
     delete :delete_attachment, on: :member
-    resources :answers, shallow: true, except: [ :index, :show ]
+    resources :answers, shallow: true, except: [:index, :show] do
+      delete :delete_attachment, on: :member
+    end
   end
 end
