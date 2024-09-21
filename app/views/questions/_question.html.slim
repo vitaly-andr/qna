@@ -2,6 +2,10 @@
   li
     h3 = link_to question.title, question_path(question), data: { turbo: false }
     p = truncate(question.body, length: 100)
+    - if question.files.attached?
+      - question.files.each do |file|
+        p= link_to file.filename.to_s, url_for(file)
+
     p "Asked by: #{question.author.email}"
     - if user_signed_in? && current_user.author_of?(question)
       = link_to 'Edit Question', edit_question_path(question), data: { turbo_frame: dom_id(question) }
