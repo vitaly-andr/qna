@@ -1,7 +1,7 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_question
-  before_action :set_answer, only: [ :edit, :update, :destroy ]
+  before_action :set_question, only: [:new, :create]
+  before_action :set_answer, only: [:edit, :update, :destroy]
 
   def new
     @answer = @question.answers.build
@@ -12,41 +12,89 @@ class AnswersController < ApplicationController
     @answer = @question.answers.build(answer_params)
     @answer.author = current_user
 
-
-    if @answer.save
-      redirect_to @question, notice: "Answer was successfully created."
-    else
-      @answers = @question.answers
-      render "questions/show"
+    respond_to do |format|
+      if @answer.save
+        @new_answer = @question.answers.build
+        format.html { redirect_to @question, notice: "Answer was successfully created." }
+        format.turbo_stream { render 'answers/create' }
+      else
+        format.html do
+          @answers = @question.answers
+          render "questions/show"
+        end
+        format.turbo_stream { render 'answers/create_error' }
+      end
     end
   end
 
   def edit
-    redirect_to @question, alert: "You can edit only your own answers." unless current_user.author_of?(@answer)
+    unless current_user.author_of?(@answer)
+      flash[:alert] = 'You can edit only your own answers.'
+      redirect_to @answer.question
+    end
   end
 
   def update
-    if current_user.author_of?(@answer)
-      if @answer.update(answer_params)
-        redirect_to @question, notice: "Your answer was successfully updated."
-      else
-        render :edit
+    @question = @answer.question
+    unless current_user.author_of?(@answer)
+      return handle_unauthorized_update
+    end
+
+    if @answer.update(answer_params)
+      respond_to do |format|
+        format.html { redirect_to @answer.question, notice: 'Your answer was successfully updated.' }
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.replace(helpers.dom_id(@answer), partial: 'answers/answer', locals: { answer: @answer }),
+            render_flash_notice('Your answer was successfully updated.')
+          ]
+        end
       end
     else
-      redirect_to @question, alert: "You can update only your own answers."
+      handle_failed_update
     end
   end
 
   def destroy
-    if current_user.author_of?(@answer)
-      @answer.destroy
-      redirect_to @question, notice: "Your answer was successfully deleted."
-    else
-      redirect_to @question, alert: "You can delete only your own answers."
+    @question = @answer.question
+    respond_to do |format|
+      if current_user.author_of?(@answer)
+        @answer.destroy
+        format.html { redirect_to @question, notice: "Your answer was successfully deleted." }
+        format.turbo_stream do
+          if turbo_frame_request?
+            render turbo_stream: [
+              turbo_stream.remove(@answer),
+              turbo_stream.replace("flash-messages", partial: "shared/flash", locals: { flash: { notice: "Your answer was successfully deleted." } })
+            ]
+          end
+        end
+      else
+        format.html { redirect_to @question, alert: "You can delete only your own answers." }
+        format.turbo_stream do
+          turbo_stream.replace("flash-messages", partial: "shared/flash", locals: { flash: { alert: "You can delete only your own answers." } })
+        end
+      end
     end
   end
 
   private
+
+  def handle_unauthorized_update
+    respond_to do |format|
+      format.html { redirect_to @question, alert: 'You can update only your own answers.' }
+      format.turbo_stream { render_flash_alert('You can update only your own answers.') }
+    end
+  end
+
+  def handle_failed_update
+    respond_to do |format|
+      format.html { render :edit }
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.replace(dom_id(@answer), partial: 'answers/form', locals: { answer: @answer })
+      end
+    end
+  end
 
   def set_question
     @question = Question.find(params[:question_id])

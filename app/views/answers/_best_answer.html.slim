@@ -1,0 +1,5 @@
+= turbo_frame_tag dom_id(answer) do
+  li id="answer-#{answer.id}" class="best-answer"
+    p = answer.body
+    - if user_signed_in? && current_user.author_of?(answer.question)
+      = button_to 'Unmark Best', unmark_best_answer_question_path(answer.question, answer), method: :patch

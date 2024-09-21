@@ -4,7 +4,7 @@ feature 'Author can delete their answer', %q(
   In order to remove incorrect answer
   As an authenticated user
   I want to be able to delete my answer
-) do
+), js: true do
   given(:user) { create(:user) }
   given(:other_user) { create(:user) }
   given(:question) { create(:question) }
@@ -15,8 +15,10 @@ feature 'Author can delete their answer', %q(
     sign_in(user)
     visit question_path(question)
 
-    expect(page).to have_link 'Delete Answer'
-    click_on 'Delete Answer'
+    within "#answer-#{answer.id}" do
+      expect(page).to have_link 'Delete Answer'
+      click_on 'Delete Answer'
+    end
 
     expect(page).to have_content 'Your answer was successfully deleted.'
     expect(page).to_not have_content answer.body

@@ -1,0 +1,8 @@
+= form_with model: [question, answer], url: question_answers_path(@question), id: 'answer_form', remote: true do |f|
+  = render 'shared/errors', object: @answer
+  div
+    = f.label :body, 'Your Answer'
+    = f.text_area :body, id: 'answer_body', rows: 3, placeholder: "Type your answer here..."
+
+  div
+    = f.submit 'Submit Answer'

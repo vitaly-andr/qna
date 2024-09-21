@@ -4,6 +4,42 @@ RSpec.describe QuestionsController, type: :controller do
   let!(:user) { create(:user) }
   let!(:other_user) { create(:user) }
   let(:question) { create(:question, author: user) }
+  let(:answer) { create(:answer, question: question) }
+
+
+  describe 'PATCH #mark_best_answer' do
+    context 'when user is the author of the question' do
+      before { sign_in user }
+
+      it 'sets the best answer for the question' do
+        puts ""
+        patch :mark_best_answer, params: { id: question.id, answer_id: answer.id }
+        question.reload
+        expect(question.best_answer_id).to eq(answer.id)
+      end
+
+      it 'redirects to the question page with a success message' do
+        patch :mark_best_answer, params: { id: question.id, answer_id: answer.id }
+        expect(response).to redirect_to question_path(question)
+        expect(flash[:notice]).to eq 'Best answer selected.'
+      end
+    end
+
+    context 'when user is not the author of the question' do
+      before { sign_in other_user }
+
+      it 'does not set the best answer' do
+        patch :mark_best_answer, params: { id: question.id, answer_id: answer.id }
+        expect(question.reload.best_answer).to be_nil
+      end
+
+      it 'redirects to the question page with alert' do
+        patch :mark_best_answer, params: { id: question.id, answer_id: answer.id }
+        expect(response).to redirect_to question_path(question)
+        expect(flash[:alert]).to eq 'You are not authorized to select the best answer.'
+      end
+    end
+  end
 
 
   describe 'GET #index' do

@@ -1,25 +1,23 @@
-h1 = @question.title
-p = @question.body
+section data-controller="reload-on-best-answer" data-reload-on-best-answer-target="bestAnswer"
+  = link_to 'Index', questions_path
+  h1 = @question.title
+  p = @question.body
 
-- if user_signed_in? && current_user.author_of?(@question)
-  = link_to 'Delete Question', question_path(@question), method: :delete, data: { confirm: 'Are you sure?' }
+  - if user_signed_in? && current_user.author_of?(@question)
+    = link_to 'Edit Question', edit_question_path(@question)
+    = link_to 'Delete Question', question_path(@question), data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }
 
-h2 Answers
+  h2 Answers
+  ul#answers
+    - if @best_answer
+      = render 'answers/best_answer', answer: @best_answer
+    = render partial: 'answers/answer', collection: @answers, as: :answer
+    li data-reload-on-best-answer-target="reloadArea"
+      div id="reloadTrigger"
+  - if user_signed_in?
+    h3 Write your answer
 
-ul
-  = render @question.answers
-
-- if user_signed_in?
-  h3 Write your answer
-  = form_with(model: [@question, @question.answers.build], local: true) do |f|
-    - if @answer.errors.any?
-      ul
-        - @answer.errors.full_messages.each do |message|
-          li = message
-    div
-      = f.label :body, "Your Answer"
-      = f.text_area :body
-    div
-      = f.submit 'Submit Answer'
-- else
-  p You need to sign in or sign up before creating answers.
+    #answer_form
+      = render 'answers/form', question: @question, answer: @answer || Answer.new
+  - else
+    p You need to sign in or sign up before creating answers.

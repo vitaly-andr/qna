@@ -2,8 +2,6 @@ h1 List of Questions
 
 ul
   - @questions.each do |question|
-    li
-      h3 = link_to question.title, question_path(question)
-      p = truncate(question.body, length: 100)
+    = render partial: 'questions/question', locals: { question: question }
 
 = link_to 'Ask question', new_question_path
