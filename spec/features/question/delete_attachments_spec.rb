@@ -14,41 +14,73 @@ feature 'Author can delete attached files from their question', %q(
     question.files.attach(io: File.open("#{Rails.root}/spec/spec_helper.rb"), filename: 'spec_helper.rb')
   end
 
-  scenario 'Author deletes one of the attached files', js: true do
-    sign_in(user)
-    visit question_path(question)
+  feature 'Author deletes attached files from the question show page', js: true do
+    scenario 'Author deletes one of the attached files' do
+      sign_in(user)
+      visit question_path(question)
 
-    within '.question' do
-      # Проверяем, что файлы прикреплены
       expect(page).to have_link 'rails_helper.rb'
       expect(page).to have_link 'spec_helper.rb'
 
-      # Удаляем один файл
       within "#file_#{question.files.first.id}" do
-        click_on 'Delete File'
+        click_on 'X'
       end
 
       expect(page).to_not have_link 'rails_helper.rb'
       expect(page).to have_link 'spec_helper.rb'
     end
-  end
 
-  scenario 'Non-author cannot see delete links for files', js: true do
-    sign_in(other_user)
-    visit question_path(question)
+    scenario 'Non-author cannot see delete links for files' do
+      sign_in(other_user)
+      visit question_path(question)
 
-    within '.question' do
       expect(page).to have_link 'rails_helper.rb'
-      expect(page).to_not have_link 'Delete File'
+      expect(page).to_not have_link 'X'
+    end
+
+    scenario 'Unauthenticated user cannot see delete links for files' do
+      visit question_path(question)
+
+      expect(page).to have_link 'rails_helper.rb'
+      expect(page).to_not have_link 'X'
     end
   end
 
-  scenario 'Unauthenticated user cannot see delete links for files', js: true do
-    visit question_path(question)
+  feature 'Author deletes attached files from the index page', js: true do
+    scenario 'Author deletes one of the attached files from the index page' do
+      sign_in(user)
+      visit questions_path
 
-    within '.question' do
-      expect(page).to have_link 'rails_helper.rb'
-      expect(page).to_not have_link 'Delete File'
+      within "#question_#{question.id}" do
+        expect(page).to have_link 'rails_helper.rb'
+        expect(page).to have_link 'spec_helper.rb'
+
+        within "#file_#{question.files.first.id}" do
+          click_on 'X'
+        end
+
+        expect(page).to_not have_link 'rails_helper.rb'
+        expect(page).to have_link 'spec_helper.rb'
+      end
+    end
+
+    scenario 'Non-author cannot see delete links for files on the index page' do
+      sign_in(other_user)
+      visit questions_path
+
+      within "#question_#{question.id}" do
+        expect(page).to have_link 'rails_helper.rb'
+        expect(page).to_not have_link 'X'
+      end
+    end
+
+    scenario 'Unauthenticated user cannot see delete links for files on the index page' do
+      visit questions_path
+
+      within "#question_#{question.id}" do
+        expect(page).to have_link 'rails_helper.rb'
+        expect(page).to_not have_link 'X'
+      end
     end
   end
 end

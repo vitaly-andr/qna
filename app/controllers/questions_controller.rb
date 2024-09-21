@@ -1,6 +1,6 @@
 class QuestionsController < ApplicationController
   before_action :authenticate_user!, except: [ :index, :show ]
-  before_action :set_question, only: [ :show, :edit, :update, :destroy, :mark_best_answer, :unmark_best_answer ]
+  before_action :set_question, only: [ :show, :edit, :update, :destroy, :mark_best_answer, :unmark_best_answer, :delete_attachment ]
 
   def index
     @questions = Question.all
@@ -73,6 +73,32 @@ class QuestionsController < ApplicationController
     end
   end
 
+  def delete_attachment
+    file = @question.files.find(params[:file_id])
+
+    if current_user.author_of?(@question)
+      file.purge
+      respond_to do |format|
+        format.html { redirect_to @question, notice: 'File was successfully deleted.' }
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.remove("file_#{file.id}"),  # Удаление HTML-элемента файла
+            turbo_stream.replace("flash", partial: "shared/flash", locals: { notice: 'File was successfully deleted.' })
+          ]
+        end
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to @question, alert: 'You are not authorized to delete this file.' }
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.replace("flash", partial: "shared/flash", locals: { alert: 'You are not authorized to delete this file.' })
+          ]
+        end
+      end
+    end
+  end
+
   private
 
   def set_question
@@ -80,7 +106,7 @@ class QuestionsController < ApplicationController
   end
 
   def question_params
-    params.require(:question).permit(:title, :body, :best_answer_id, files: [])
+    params.require(:question).permit(:title, :body, :best_answer_id, :file_id, files: [])
   end
 
   def handle_unauthorized_update
