@@ -9,7 +9,7 @@ feature 'Author can edit their question', %q(
   given(:other_user) { create(:user) }
   given!(:question) { create(:question, author: user) }
 
-  scenario 'Author edits their question from the index page' do
+  scenario 'Author edits their question from the index page and attaches files' do
     sign_in(user)
     visit questions_path
 
@@ -18,11 +18,17 @@ feature 'Author can edit their question', %q(
 
       fill_in 'Title', with: 'Edited Question Title'
       fill_in 'Body', with: 'Edited Question Body'
+
+      attach_file 'File', ["#{Rails.root}/spec/rails_helper.rb", "#{Rails.root}/spec/spec_helper.rb"]
+
       click_on 'Save'
 
       expect(page).to have_no_selector 'textarea'
       expect(page).to have_content 'Edited Question Title'
       expect(page).to have_content 'Edited Question Body'
+
+      expect(page).to have_link 'rails_helper.rb'
+      expect(page).to have_link 'spec_helper.rb'
     end
   end
 
@@ -35,7 +41,7 @@ feature 'Author can edit their question', %q(
     end
   end
 
-  scenario 'Author edits their question from the question show page' do
+  scenario 'Author edits their question from the question show page and attaches files' do
     sign_in(user)
     visit question_path(question)
 
@@ -43,10 +49,16 @@ feature 'Author can edit their question', %q(
 
     fill_in 'Title', with: 'Edited Question Title on Show'
     fill_in 'Body', with: 'Edited Question Body on Show'
+
+    attach_file 'File', ["#{Rails.root}/spec/rails_helper.rb", "#{Rails.root}/spec/spec_helper.rb"]
+
     click_on 'Save'
 
     expect(page).to_not have_selector 'textarea'
     expect(page).to have_content 'Edited Question Title on Show'
     expect(page).to have_content 'Edited Question Body on Show'
+
+    expect(page).to have_link 'rails_helper.rb'
+    expect(page).to have_link 'spec_helper.rb'
   end
 end
