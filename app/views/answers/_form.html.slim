@@ -3,6 +3,9 @@
   div
     = f.label :body, 'Your Answer'
     = f.text_area :body, id: 'answer_body', rows: 3, placeholder: "Type your answer here..."
+    p
+      = f.label :files
+      = f.file_field :files, multiple: true
 
   div
     = f.submit 'Submit Answer'
