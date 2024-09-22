@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   resources :questions do
     patch :mark_best_answer, on: :member
     patch :unmark_best_answer, on: :member
-    resources :answers, shallow: true, except: [ :index, :show ]
+    resources :answers, shallow: true, except: [:index, :show]
   end
+  resources :attachments, only: [:destroy]
 end

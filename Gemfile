@@ -17,6 +17,9 @@ gem "stimulus-rails"
 
 gem "slim-rails"
 
+gem 'aws-sdk-s3', '~> 1.0'
+
+
 gem "devise"
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]

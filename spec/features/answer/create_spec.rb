@@ -36,6 +36,19 @@ feature 'User can write an answer to a question', %q(
       end
     end
 
+    scenario 'writes an answer with attached files' do
+      fill_in 'Your Answer', with: 'This is my answer with files'
+
+      attach_file 'File', ["#{Rails.root}/spec/rails_helper.rb", "#{Rails.root}/spec/spec_helper.rb"]
+      click_on 'Submit Answer'
+
+      within "#answers" do
+        expect(page).to have_content 'This is my answer with files'
+        expect(page).to have_link 'rails_helper.rb'
+        expect(page).to have_link 'spec_helper.rb'
+      end
+    end
+
     context 'with Turbo Frame' do
       scenario 'writes an answer' do
         within "#answers" do
@@ -49,6 +62,20 @@ feature 'User can write an answer to a question', %q(
           expect(page).to have_content 'This is my new answer'
         end
         # expect(page).to have_selector 'textarea'
+        expect(find_field('Your Answer').value).to be_empty
+      end
+
+      scenario 'writes an answer with attached files' do
+        fill_in 'Your Answer', with: 'This is my answer with files'
+
+        attach_file 'File', ["#{Rails.root}/spec/rails_helper.rb", "#{Rails.root}/spec/spec_helper.rb"]
+        click_on 'Submit Answer'
+
+        within "#answers" do
+          expect(page).to have_content 'This is my answer with files'
+          expect(page).to have_link 'rails_helper.rb'
+          expect(page).to have_link 'spec_helper.rb'
+        end
         expect(find_field('Your Answer').value).to be_empty
       end
 

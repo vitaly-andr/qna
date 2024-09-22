@@ -10,7 +10,7 @@ feature 'Author can edit their answer', %q(
   given(:question) { create(:question) }
   given!(:answer) { create(:answer, question: question, author: user) }
 
-  scenario 'Author edits their answer', js: true do
+  scenario 'Author edits their answer and attaches files', js: true do
     sign_in(user)
     visit question_path(question)
 
@@ -18,12 +18,19 @@ feature 'Author can edit their answer', %q(
       click_on 'Edit'
 
       fill_in 'Your Answer', with: 'Edited answer'
+
+      attach_file 'File', ["#{Rails.root}/spec/rails_helper.rb", "#{Rails.root}/spec/spec_helper.rb"]
+
       click_on 'Update Answer'
 
       expect(page).to_not have_selector 'textarea'
       expect(page).to have_content 'Edited answer'
+
+      expect(page).to have_link 'rails_helper.rb'
+      expect(page).to have_link 'spec_helper.rb'
     end
   end
+
 
   scenario 'Non-author cannot see the Edit link for someone else’s answer' do
     sign_in(other_user)
