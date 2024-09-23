@@ -94,7 +94,11 @@ feature 'User can create question', %q(
       fill_in 'Title', with: 'Test question with invalid link'
       fill_in 'Body', with: 'text text text'
 
-      # Добавляем некорректную ссылку
+      within '.nested-fields' do
+        fill_in 'Link name', with: 'My Gist'
+        fill_in 'Url', with: 'https://gist.github.com/vitaly-andr/83bdcd7a1a1282cb17085714494ded2a'
+      end
+
       click_on 'Add Link'
       within all('.nested-fields').first do
         fill_in 'Link name', with: 'Invalid Link'
