@@ -23,9 +23,23 @@ class QuestionsController < ApplicationController
   def create
     @question = current_user.questions.build(question_params)
     if @question.save
-      redirect_to @question, notice: "Question was successfully created."
+      respond_to do |format|
+        format.html { redirect_to @question, notice: "Question was successfully created." }
+        # format.turbo_stream { render_flash_notice("Question was successfully created.") }
+      end
     else
-      render :new
+      respond_to do |format|
+        format.html do
+          flash[:alert] = @question.errors.full_messages.join(", ")
+          render :new
+        end
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.replace('question_form', partial: 'questions/form', locals: { question: @question }),
+            render_flash_alert(@question.errors.full_messages.join(", "))
+          ]
+        end
+      end
     end
   end
 
@@ -72,7 +86,6 @@ class QuestionsController < ApplicationController
       redirect_to @question, alert: 'You are not authorized to unmark the best answer.'
     end
   end
-
 
   private
 
