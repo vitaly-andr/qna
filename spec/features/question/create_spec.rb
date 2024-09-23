@@ -38,13 +38,12 @@ feature 'User can create question', %q(
       fill_in 'Title', with: 'Test question with multiple links'
       fill_in 'Body', with: 'text text text'
 
-      click_on 'Add link'
-      within all('.nested-fields').first do
+      within '.nested-fields' do
         fill_in 'Link name', with: 'My Gist'
         fill_in 'Url', with: 'https://gist.github.com/vitaly-andr/83bdcd7a1a1282cb17085714494ded2a'
       end
 
-      click_on 'Add link'
+      click_on 'Add Link'
       within all('.nested-fields').last do
         fill_in 'Link name', with: 'GitHub'
         fill_in 'Url', with: 'https://github.com'
@@ -65,13 +64,12 @@ feature 'User can create question', %q(
       fill_in 'Title', with: 'Test question with files and links'
       fill_in 'Body', with: 'text text text'
 
-      click_on 'Add link'
-      within all('.nested-fields').first do
+      within '.nested-fields' do
         fill_in 'Link name', with: 'My Gist'
         fill_in 'Url', with: 'https://gist.github.com/vitaly-andr/83bdcd7a1a1282cb17085714494ded2a'
       end
 
-      click_on 'Add link'
+      click_on 'Add Link'
       within all('.nested-fields').last do
         fill_in 'Link name', with: 'GitHub'
         fill_in 'Url', with: 'https://github.com'
@@ -97,7 +95,7 @@ feature 'User can create question', %q(
       fill_in 'Body', with: 'text text text'
 
       # Добавляем некорректную ссылку
-      click_on 'Add link'
+      click_on 'Add Link'
       within all('.nested-fields').first do
         fill_in 'Link name', with: 'Invalid Link'
         fill_in 'Url', with: 'invalid-url'

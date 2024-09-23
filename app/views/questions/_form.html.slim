@@ -1,4 +1,4 @@
-= form_with model: @question, local: true, data: { turbo_frame: dom_id(@question) }, id: 'question_form' do |f|
+= form_with model: @question, local: true, data: { turbo_frame: dom_id(@question), controller: 'links' }, id: 'question_form' do |f|
   div
     = f.label :title
     = f.text_field :title
@@ -6,10 +6,24 @@
   div
     = f.label :body
     = f.text_area :body
-    p
-      = f.label :files
-      = f.file_field :files, multiple: true
 
+  div
+    = f.label :files
+    = f.file_field :files, multiple: true
+
+  div
+    p Links
+
+    .links data-links-target="links"
+      = f.fields_for :links do |l|
+        = render 'link_fields', f: l
+
+    = link_to 'Add Link', '#', data: { action: 'links#addLink' }
 
   div
     = f.submit 'Save'
+
+  = content_tag :template, '', id: 'link_template', data: { links_target: 'template' } do
+    = f.fields_for :links, Link.new, child_index: 'NEW_RECORD' do |l|
+      .nested-fields
+        = render 'link_fields', f: l

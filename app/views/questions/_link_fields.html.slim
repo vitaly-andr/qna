@@ -1,0 +1,10 @@
+.nested-fields[id="link_#{f.object.id || 'NEW_RECORD'}"]
+  p
+    = f.label :name, 'Link name'
+    = f.text_field :name
+
+  p
+    = f.label :url
+    = f.text_field :url
+
+  = link_to 'Remove', '#', data: { action: 'links#removeLink', link_id: "link_#{f.object.id || 'NEW_RECORD'}" }

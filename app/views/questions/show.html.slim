@@ -2,6 +2,11 @@ section data-controller="reload-on-best-answer" data-reload-on-best-answer-targe
   = link_to 'Index', questions_path
   h1 = @question.title
   p = @question.body
+  .links
+    p Links:
+    ul
+      - @question.links.each do |link|
+        li = link_to link.name, link.url
   - if @question.files.attached?
     ul.attachments
       - @question.files.each do |file|
