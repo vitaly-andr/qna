@@ -2,11 +2,17 @@ section data-controller="reload-on-best-answer" data-reload-on-best-answer-targe
   = link_to 'Index', questions_path
   h1 = @question.title
   p = @question.body
-  .links
+  .section#question-links
     p Links:
     ul
       - @question.links.each do |link|
-        li = link_to link.name, link.url
+        - if link.gist?
+          .gist-preview
+            div data-controller="gist-preview" data-url=link.url
+              div data-gist-preview-target="output"
+                | Loading Gist preview...
+        - else
+          = link_to link.name, link.url
   - if @question.files.attached?
     ul.attachments
       - @question.files.each do |file|

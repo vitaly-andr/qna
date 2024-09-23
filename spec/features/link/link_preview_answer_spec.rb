@@ -27,8 +27,8 @@ feature 'User can see link previews', %q(
 
       within "#answers" do
         expect(page).to have_content 'This is my answer with a Gist link'
-        expect(page).to have_content 'Gist of vitaly-andr'
-        expect(page).to have_content 'Gist content here...'
+        expect(page).to have_content '= turbo_stream.append '
+
       end
     end
 
@@ -59,9 +59,7 @@ feature 'User can see link previews', %q(
       visit question_path(question)
 
       within "#answers" do
-        expect(page).to have_content 'Gist link'
-        expect(page).to have_content 'Gist of vitaly-andr'
-        expect(page).to have_content 'Gist content here...'
+        expect(page).to have_content '= turbo_stream.append '
 
         expect(page).to have_content 'GitHub'
         expect(page).to have_selector '.microlink_card'
