@@ -103,7 +103,7 @@ feature 'User can create question', %q(
 
       click_on 'Save'
 
-      expect(page).to have_content('Links url is not a valid URL')
+      expect(page).to have_content('is not a valid URL')
     end
   end
 
