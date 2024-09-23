@@ -16,7 +16,14 @@
         ul.links
           - answer.links.each do |link|
             li
-              = link_to link.name, link.url, target: '_blank'
+              - if link.gist?
+                .gist-preview data-controller="gist-preview" data-url=link.url
+                  div data-gist-preview-target="output"
+                    | Loading Gist preview...
+              - else
+                .microlink_card data-controller="link-preview" data-url=link.url
+                  div data-link-preview-target="linkPreview"
+                    | Loading link preview...
               - if user_signed_in? && current_user.author_of?(answer)
                 / = link_to 'Delete Link', link_path(link), data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }, style: 'color: red; margin-left: 10px;'
 

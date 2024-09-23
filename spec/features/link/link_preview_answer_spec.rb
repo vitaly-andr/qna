@@ -17,7 +17,6 @@ feature 'User can see link previews', %q(
     scenario 'sees Gist link preview' do
       fill_in 'Your Answer', with: 'This is my answer with a Gist link'
 
-      click_on 'Add Link'
       within all('.nested-fields').first do
         fill_in 'Link name', with: 'Gist link'
         fill_in 'Url', with: 'https://gist.github.com/vitaly-andr/83bdcd7a1a1282cb17085714494ded2a'
@@ -27,42 +26,52 @@ feature 'User can see link previews', %q(
 
       within "#answers" do
         expect(page).to have_content 'This is my answer with a Gist link'
-        expect(page).to have_content '= turbo_stream.append '
 
+        # Проверка наличия контента из Gist в предварительном просмотре
+        expect(page).to have_selector '.gist-preview', text: 'content of the Gist file'
       end
     end
 
     scenario 'sees preview for a non-Gist link using Microlink.js' do
       fill_in 'Your Answer', with: 'This is my answer with a regular link'
 
-      click_on 'Add Link'
       within all('.nested-fields').first do
-        fill_in 'Link name', with: 'GitHub'
-        fill_in 'Url', with: 'https://github.com'
+        fill_in 'Link name', with: 'Google'
+        fill_in 'Url', with: 'https://google.com'
       end
 
       click_on 'Submit Answer'
 
-      within "#answers" do
-        expect(page).to have_content 'This is my answer with a regular link'
-        expect(page).to have_selector '.microlink_card' # Это будет селектор Microlink.js
+      within '#answers' do
+        expect(page).to have_selector '.microlink_card', text: 'Advertising'
+        expect(page).to have_selector '.microlink_card', text: 'Business'
+        expect(page).to have_selector '.microlink_card', text: 'How Search works'
       end
     end
   end
 
   describe 'Unauthenticated user' do
-    scenario 'sees previews for both Gist and regular links in existing answers' do
-      answer = create(:answer, question: question)
-      create(:link, name: 'Gist link', url: 'https://gist.github.com/vitaly-andr/83bdcd7a1a1282cb17085714494ded2a', linkable: answer)
-      create(:link, name: 'GitHub', url: 'https://github.com', linkable: answer)
+    scenario 'sees Gist content in an existing answer' do
+      answer_with_gist = create(:answer, question: question)
+      create(:link, name: 'Gist link', url: 'https://gist.github.com/vitaly-andr/83bdcd7a1a1282cb17085714494ded2a', linkable: answer_with_gist)
 
       visit question_path(question)
 
-      within "#answers" do
-        expect(page).to have_content '= turbo_stream.append '
+      within "#answer-#{answer_with_gist.id} .gist-preview" do
+        expect(page).to have_content 'content of the Gist file'
+      end
+    end
 
-        expect(page).to have_content 'GitHub'
-        expect(page).to have_selector '.microlink_card'
+    scenario 'sees regular link preview in an existing answer' do
+      answer_with_link = create(:answer, question: question)
+      create(:link, name: 'Google', url: 'https://google.com', linkable: answer_with_link)
+
+      visit question_path(question)
+
+      within "#answer-#{answer_with_link.id} .microlink_card[data-url='https://google.com']" do
+        expect(page).to have_content('Advertising')
+        expect(page).to have_content('Business')
+        expect(page).to have_content('How Search works')
       end
     end
   end
