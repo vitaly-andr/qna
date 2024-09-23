@@ -18,3 +18,32 @@
     font-weight: bold;
     color: green;
 }
+
+.microlink_card {
+    max-height: 25vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 50%;
+    box-sizing: border-box;
+}
+
+.microlink_card img {
+    max-width: 50%;
+    height: auto;
+}
+
+.microlink_card h3, .microlink_card p {
+    text-align: left;
+    margin: 10px 0;
+}
+
+.microlink_card a {
+    margin-top: 0px;
+    text-align: left;
+    padding: 10px;
+    color: #007BFF;
+    text-decoration: none;
+    width: 100%;
+}

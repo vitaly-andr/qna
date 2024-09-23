@@ -12,7 +12,9 @@ section data-controller="reload-on-best-answer" data-reload-on-best-answer-targe
               div data-gist-preview-target="output"
                 | Loading Gist preview...
         - else
-          = link_to link.name, link.url
+          li.microlink_card data-controller="link-preview" data-url=link.url
+            div data-link-preview-target="linkPreview"
+              | Loading link preview...
   - if @question.files.attached?
     ul.attachments
       - @question.files.each do |file|

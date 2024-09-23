@@ -36,35 +36,44 @@ feature 'User can see link previews in a question', %q(
       fill_in 'Body', with: 'This is a question with a regular link'
 
       within '.nested-fields' do
-        fill_in 'Link name', with: 'GitHub'
-        fill_in 'Url', with: 'https://github.com'
+        fill_in 'Link name', with: 'Google'
+        fill_in 'Url', with: 'https://google.com'
       end
 
       click_on 'Save'
 
       expect(page).to have_content('Question was successfully created.')
 
-      within '#question-links' do
-        expect(page).to have_link 'GitHub', href: 'https://github.com'
+      within '.microlink_card' do
+        expect(page).to have_content('Advertising')
+        expect(page).to have_content('Business')
+        expect(page).to have_content('How Search works')
       end
     end
   end
 
   describe 'Unauthenticated user' do
-    scenario 'sees Gist content and regular link in an existing question' do
+    scenario 'sees Gist content in an existing question' do
       question_with_links = create(:question, author: user)
       create(:link, name: 'Gist link', url: 'https://gist.github.com/vitaly-andr/83bdcd7a1a1282cb17085714494ded2a', linkable: question_with_links)
-      create(:link, name: 'GitHub', url: 'https://github.com', linkable: question_with_links)
 
       visit question_path(question_with_links)
 
       within '.gist-preview' do
         expect(page).to have_content 'content of the Gist file'
       end
+    end
 
-      # Проверка обычной ссылки
-      within '#question-links' do
-        expect(page).to have_link 'GitHub', href: 'https://github.com'
+    scenario 'sees regular link preview in an existing question' do
+      question_with_links = create(:question, author: user)
+      create(:link, name: 'Google', url: 'https://google.com', linkable: question_with_links)
+
+      visit question_path(question_with_links)
+
+      within '.microlink_card[data-url="https://google.com"]' do
+        expect(page).to have_content('Advertising')
+        expect(page).to have_content('Business')
+        expect(page).to have_content('How Search works')
       end
     end
   end
