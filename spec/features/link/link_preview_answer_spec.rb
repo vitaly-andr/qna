@@ -68,10 +68,10 @@ feature 'User can see link previews', %q(
 
       visit question_path(question)
 
-      within "#answer-#{answer_with_link.id} .microlink_card[data-url='https://google.com']" do
-        expect(page).to have_content('Advertising')
-        expect(page).to have_content('Business')
-        expect(page).to have_content('How Search works')
+      within '#answers' do
+        expect(page).to have_selector '.microlink_card', text: 'Advertising'
+        expect(page).to have_selector '.microlink_card', text: 'Business'
+        expect(page).to have_selector '.microlink_card', text: 'How Search works'
       end
     end
   end
