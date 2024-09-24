@@ -6,18 +6,8 @@
       p Links:
       ul
         - question.links.each do |link|
-          - if link.gist?
-            .gist-preview
-              = link_to link.name.to_s, link.url, target: '_blank'
-              div data-controller="gist-preview" data-url=link.url
-                div data-gist-preview-target="output"
-                  | Loading Gist preview...
-          - else
-            li.microlink_card
-              = link_to link.name.to_s, link.url, target: '_blank'
-              div data-controller="link-preview" data-url=link.url
-                div data-link-preview-target="linkPreview"
-                  | Loading link preview...
+          = render partial: 'shared/link', locals: { link: link }
+
     - if question.files.attached?
         ul.attachments
           - question.files.each do |file|

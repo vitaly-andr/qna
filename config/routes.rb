@@ -18,4 +18,5 @@ Rails.application.routes.draw do
     resources :answers, shallow: true, except: [:index, :show]
   end
   resources :attachments, only: [:destroy]
+  resources :links, only: [:destroy]
 end

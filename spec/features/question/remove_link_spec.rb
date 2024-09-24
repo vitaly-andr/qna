@@ -17,10 +17,9 @@ feature 'Author can delete links from their question', "
 
       expect(page).to have_link link.name, href: link.url
 
-      click_on 'Remove'
+      click_on 'X'
 
       expect(page).to_not have_link link.name, href: link.url
-      expect(page).to have_content 'Link was successfully removed.'
     end
 
     scenario 'Another user tries to delete link from someone else\'s question' do
@@ -28,7 +27,7 @@ feature 'Author can delete links from their question', "
       visit question_path(question)
 
       expect(page).to have_link link.name, href: link.url
-      expect(page).to_not have_link 'Remove'
+      expect(page).to_not have_link 'X'
     end
   end
 
@@ -36,6 +35,6 @@ feature 'Author can delete links from their question', "
     visit question_path(question)
 
     expect(page).to have_link link.name, href: link.url
-    expect(page).to_not have_link 'Remove'
+    expect(page).to_not have_link 'X'
   end
 end

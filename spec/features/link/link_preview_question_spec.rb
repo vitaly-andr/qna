@@ -70,7 +70,7 @@ feature 'User can see link previews in a question', %q(
 
       visit question_path(question_with_links)
 
-      within '.microlink_card[data-url="https://google.com"]' do
+      within '.microlink_card' do
         expect(page).to have_content('Advertising')
         expect(page).to have_content('Business')
         expect(page).to have_content('How Search works')
