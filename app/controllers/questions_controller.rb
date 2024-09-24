@@ -87,7 +87,7 @@ class QuestionsController < ApplicationController
   def unmark_best_answer
     if current_user == @question.author
       @question.update(best_answer: nil)
-      @question.reward.update(user: nil)
+      @question.reward.update(user: nil) if @question.reward
       redirect_to @question, notice: 'Best answer unmarked.'
     else
       redirect_to @question, alert: 'You are not authorized to unmark the best answer.'
