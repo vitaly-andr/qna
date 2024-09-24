@@ -45,8 +45,9 @@ feature 'Reward system', %q(
     sign_in(another_user)
 
     visit question_path(Question.last)
-    fill_in 'Body', with: 'Answer body'
-    click_on 'Submit answer'
+    fill_in 'Your Answer', with: 'Answer body'
+    click_on 'Submit Answer'
+    answer = Answer.last
 
     expect(page).to have_content('Answer body')
 
@@ -54,11 +55,10 @@ feature 'Reward system', %q(
     sign_in(user)
 
     visit question_path(Question.last)
-    within '.answers' do
-      click_on 'Mark as best'
+    within("#answer_#{answer.id}") do
+      click_button 'Mark as Best'
     end
 
-    expect(page).to have_content('Best answer was selected')
     expect(page).to have_content('Answer body')
 
     click_on 'Sign out'

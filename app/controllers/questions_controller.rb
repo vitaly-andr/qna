@@ -18,6 +18,7 @@ class QuestionsController < ApplicationController
   def new
     @question = Question.new
     @question.links.build
+    @question.build_reward
   end
 
   def edit
@@ -66,6 +67,7 @@ class QuestionsController < ApplicationController
 
     if current_user.author_of?(@question)
       if @question.update(best_answer: @answer)
+        @question.reward.update(user: @answer.author) if @question.reward
 
         respond_to do |format|
           format.turbo_stream
@@ -98,7 +100,7 @@ class QuestionsController < ApplicationController
   end
 
   def question_params
-    params.require(:question).permit(:title, :body, :best_answer_id, files: [], links_attributes: [:name, :url])
+    params.require(:question).permit(:title, :body, :best_answer_id, files: [], links_attributes: [:name, :url], reward_attributes: [:title, :image])
   end
 
   def handle_unauthorized_update

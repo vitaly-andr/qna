@@ -2,6 +2,10 @@ section data-controller="reload-on-best-answer" data-reload-on-best-answer-targe
   = link_to 'Index', questions_path
   h1 = @question.title
   p = @question.body
+  - if @question.reward
+    h3 "Best Answer Reward #{@question.reward.title}"
+    = image_tag @question.reward.image.variant(resize_to_limit: [ 150, 150 ])
+
   .section#question-links
     p Links:
     ul

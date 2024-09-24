@@ -2,6 +2,9 @@
   li
     h3 = link_to question.title, question_path(question), data: { turbo: false }
     p = truncate(question.body, length: 100)
+    - if question.reward
+      h3 "Best Answer Reward #{question.reward.title}"
+      = image_tag question.reward.image.variant(resize_to_limit: [ 150, 150 ])
     .section#question-links
       p Links:
       ul

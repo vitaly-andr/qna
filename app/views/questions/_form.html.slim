@@ -8,6 +8,14 @@
     = f.text_area :body
 
   div
+    = f.fields_for :reward do |reward_fields|
+      = reward_fields.label :title, "Название награды"
+      = reward_fields.text_field :title
+
+      = reward_fields.label :image, "Изображение награды"
+      = reward_fields.file_field :image
+
+  div
     = f.label :files
     = f.file_field :files, multiple: true
 
