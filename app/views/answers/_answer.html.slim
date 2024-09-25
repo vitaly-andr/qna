@@ -2,6 +2,12 @@
   = turbo_frame_tag dom_id(answer) do
     li id="answer-#{answer.id}" class=(answer == @question.best_answer ? 'best-answer' : '')
       p = answer.body
+      .vote-area data-controller="vote" data-vote-votable-id="#{answer.id}" data-vote-votable-type="Answer"
+        p Rating:
+        span.vote__rating = answer.rating
+        button.vote__up data-action="click->vote#upvote" Upvote
+        button.vote__down data-action="click->vote#downvote" Downvote
+        button.vote__cancel data-action="click->vote#cancelVote" Cancel vote
       - if answer.files.attached?
         ul.attachments
           - answer.files.each do |file|

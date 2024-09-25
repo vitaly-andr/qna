@@ -5,6 +5,12 @@ section data-controller="reload-on-best-answer" data-reload-on-best-answer-targe
   - if @question.reward
     h3 "Best Answer Reward #{@question.reward.title}"
     = image_tag @question.reward.image.variant(resize_to_limit: [ 150, 150 ])
+  .vote-area data-controller="vote" data-vote-votable-id="#{@question.id}" data-vote-votable-type="Question"
+    p Rating:
+    span.vote__rating = @question.rating
+    button.vote__up data-action="click->vote#upvote" Upvote
+    button.vote__down data-action="click->vote#downvote" Downvote
+    button.vote__cancel data-action="click->vote#cancelVote" Cancel vote
 
   .section#question-links
     p Links:
