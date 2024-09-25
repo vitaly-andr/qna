@@ -49,6 +49,34 @@ feature 'User can write an answer to a question', %q(
       end
     end
 
+    scenario 'writes an answer with multiple links and removes one before submitting' do
+      fill_in 'Your Answer', with: 'This is my answer with links'
+
+      within '.nested-fields' do
+        fill_in 'Link name', with: 'My Gist'
+        fill_in 'Url', with: 'https://gist.github.com/vitaly-andr/83bdcd7a1a1282cb17085714494ded2a'
+      end
+
+      click_on 'Add Link'
+      within all('.nested-fields').last do
+        fill_in 'Link name', with: 'GitHub'
+        fill_in 'Url', with: 'https://github.com'
+      end
+
+      within all('.nested-fields').first do
+        click_on 'Remove'
+      end
+
+      click_on 'Submit Answer'
+
+      within "#answers" do
+        expect(page).to have_content 'This is my answer with links'
+        expect(page).to_not have_link 'My Gist', href: 'https://gist.github.com/vitaly-andr/83bdcd7a1a1282cb17085714494ded2a'
+        expect(page).to have_link 'GitHub', href: 'https://github.com'
+      end
+    end
+
+
     context 'with Turbo Frame' do
       scenario 'writes an answer' do
         within "#answers" do
@@ -80,6 +108,25 @@ feature 'User can write an answer to a question', %q(
       end
 
       scenario 'tries to submit an empty answer' do
+        click_on 'Submit Answer'
+        within '.answer-errors' do
+          expect(page).to have_content "Body can't be blank"
+        end
+      end
+
+      scenario 'tries to submit an answer with invalid link ' do
+
+        within '.nested-fields' do
+          fill_in 'Link name', with: 'My Gist'
+          fill_in 'Url', with: 'https://gist.github.com/vitaly-andr/83bdcd7a1a1282cb17085714494ded2a'
+        end
+
+        click_on 'Add Link'
+        within all('.nested-fields').first do
+          fill_in 'Link name', with: 'Invalid Link'
+          fill_in 'Url', with: 'invalid-url'
+        end
+
         click_on 'Submit Answer'
         within '.answer-errors' do
           expect(page).to have_content "Body can't be blank"

@@ -10,10 +10,15 @@ class QuestionsController < ApplicationController
     @best_answer = @question.best_answer
     @answers = @question.answers.where.not(id: @question.best_answer_id)
     @answer = @question.answers.build
+    @answer.links.new
+    @links = @question.links
+
   end
 
   def new
     @question = Question.new
+    @question.links.build
+    @question.build_reward
   end
 
   def edit
@@ -23,9 +28,22 @@ class QuestionsController < ApplicationController
   def create
     @question = current_user.questions.build(question_params)
     if @question.save
-      redirect_to @question, notice: "Question was successfully created."
+      respond_to do |format|
+        format.html { redirect_to @question, notice: "Question was successfully created." }
+      end
     else
-      render :new
+      respond_to do |format|
+        format.html do
+          flash[:alert] = @question.errors.full_messages.join(", ")
+          render :new
+        end
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.replace('question_form', partial: 'questions/form', locals: { question: @question }),
+            render_flash_alert(@question.errors.full_messages.join(", "))
+          ]
+        end
+      end
     end
   end
 
@@ -48,6 +66,7 @@ class QuestionsController < ApplicationController
 
     if current_user.author_of?(@question)
       if @question.update(best_answer: @answer)
+        @question.reward.update(user: @answer.author) if @question.reward
 
         respond_to do |format|
           format.turbo_stream
@@ -67,12 +86,12 @@ class QuestionsController < ApplicationController
   def unmark_best_answer
     if current_user == @question.author
       @question.update(best_answer: nil)
+      @question.reward.update(user: nil) if @question.reward
       redirect_to @question, notice: 'Best answer unmarked.'
     else
       redirect_to @question, alert: 'You are not authorized to unmark the best answer.'
     end
   end
-
 
   private
 
@@ -81,7 +100,7 @@ class QuestionsController < ApplicationController
   end
 
   def question_params
-    params.require(:question).permit(:title, :body, :best_answer_id, files: [])
+    params.require(:question).permit(:title, :body, :best_answer_id, files: [], links_attributes: [:name, :url], reward_attributes: [:title, :image])
   end
 
   def handle_unauthorized_update

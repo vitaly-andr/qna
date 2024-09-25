@@ -5,6 +5,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
   has_many :questions, foreign_key: 'author_id'
   has_many :answers, foreign_key: 'author_id'
+  has_many :rewards, dependent: :nullify
 
   def author_of?(resource)
     resource.author_id == id
