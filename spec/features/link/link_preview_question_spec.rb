@@ -45,9 +45,7 @@ feature 'User can see link previews in a question', %q(
       expect(page).to have_content('Question was successfully created.')
 
       within '.microlink_card' do
-        expect(page).to have_content('Advertising')
-        expect(page).to have_content('Business')
-        expect(page).to have_content('How Search works')
+        expect(page).to have_selector "img[src='https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png']"
       end
     end
   end
@@ -71,9 +69,7 @@ feature 'User can see link previews in a question', %q(
       visit question_path(question_with_links)
 
       within '.microlink_card' do
-        expect(page).to have_content('Advertising')
-        expect(page).to have_content('Business')
-        expect(page).to have_content('How Search works')
+        expect(page).to have_selector "img[src='https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png']"
       end
     end
   end

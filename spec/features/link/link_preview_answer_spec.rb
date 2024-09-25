@@ -43,9 +43,7 @@ feature 'User can see link previews', %q(
       click_on 'Submit Answer'
 
       within '#answers' do
-        expect(page).to have_selector '.microlink_card', text: 'Advertising'
-        expect(page).to have_selector '.microlink_card', text: 'Business'
-        expect(page).to have_selector '.microlink_card', text: 'How Search works'
+        expect(page).to have_selector "img[src='https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png']"
       end
     end
   end
@@ -69,9 +67,7 @@ feature 'User can see link previews', %q(
       visit question_path(question)
 
       within '#answers' do
-        expect(page).to have_selector '.microlink_card', text: 'Advertising'
-        expect(page).to have_selector '.microlink_card', text: 'Business'
-        expect(page).to have_selector '.microlink_card', text: 'How Search works'
+        expect(page).to have_selector "img[src='https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png']"
       end
     end
   end

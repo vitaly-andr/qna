@@ -30,7 +30,6 @@ class QuestionsController < ApplicationController
     if @question.save
       respond_to do |format|
         format.html { redirect_to @question, notice: "Question was successfully created." }
-        # format.turbo_stream { render_flash_notice("Question was successfully created.") }
       end
     else
       respond_to do |format|

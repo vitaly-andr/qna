@@ -11,7 +11,8 @@ feature 'Author can delete links from their answer', "
   given(:answer) { create(:answer, question: question, author: user) }
   given!(:link) { create(:link, linkable: answer) }
 
-  describe 'Authenticated user', js: true do    scenario 'Author deletes link from their answer' do
+  describe 'Authenticated user', js: true do
+    scenario 'Author deletes link from their answer' do
     sign_in(user)
     visit question_path(question)
 
