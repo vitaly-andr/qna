@@ -18,7 +18,7 @@ feature 'Author can delete links from their answer', "
 
     expect(page).to have_link link.name, href: link.url
 
-    within "#answer_#{answer.id}" do
+    within "turbo-frame##{dom_id(answer)}" do
 
       within "#link_#{link.id}" do
         click_on 'X'
@@ -34,7 +34,7 @@ feature 'Author can delete links from their answer', "
       sign_in(other_user)
       visit question_path(question)
 
-      within "#answer_#{answer.id}" do
+      within "turbo-frame##{dom_id(answer)}" do
         expect(page).to have_link link.name, href: link.url
         expect(page).to_not have_link 'X'
       end
@@ -44,7 +44,7 @@ feature 'Author can delete links from their answer', "
   scenario 'Unauthenticated user cannot delete links from answer' do
     visit question_path(question)
 
-    within "#answer_#{answer.id}" do
+    within "turbo-frame##{dom_id(answer)}" do
       expect(page).to have_link link.name, href: link.url
       expect(page).to_not have_link 'X'
     end

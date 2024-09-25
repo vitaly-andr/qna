@@ -16,7 +16,7 @@ feature 'Author can edit their question', %q(
     sign_in(user)
     visit questions_path
 
-    within "#question_#{question.id}" do
+    within "turbo-frame##{dom_id(question)}" do
       click_on 'Edit Question'
 
       fill_in 'Title', with: 'Edited Question Title'
@@ -55,7 +55,7 @@ feature 'Author can edit their question', %q(
     sign_in(other_user)
     visit questions_path
 
-    within "#question_#{question.id}" do
+    within "turbo-frame##{dom_id(question)}" do
       expect(page).to_not have_link 'Edit Question'
     end
   end

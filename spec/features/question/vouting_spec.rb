@@ -15,23 +15,23 @@ feature 'Voting for a question', %q{
   end
 
   scenario 'Authenticated user votes for a question', js: true do
-    within ".section#question-links" do
+    within "##{dom_id(question)}" do
       click_on 'Upvote'
 
-      expect(page).to have_content 'Rating: 1'
+      expect(find('.vote__rating').text).to eq '1'
     end
   end
 
   scenario 'Authenticated user votes against a question', js: true do
-    within ".section#question-links" do
+    within "##{dom_id(question)}" do
       click_on 'Downvote'
 
-      expect(page).to have_content 'Rating: -1'
+      expect(find('.vote__rating').text).to eq '-1'
     end
   end
 
   scenario 'Authenticated user cannot vote for their own question', js: true do
-    sign_out(user)
+    click_on 'Sign out'
     sign_in(author)
     visit question_path(question)
 
@@ -42,29 +42,31 @@ feature 'Voting for a question', %q{
   end
 
   scenario 'Authenticated user can cancel their vote and vote again', js: true do
-    within ".section#question-links" do
+    within "##{dom_id(question)}" do
       click_on 'Upvote'
-      expect(page).to have_content 'Rating: 1'
+      expect(find('.vote__rating').text).to eq '1'
 
       click_on 'Cancel vote'
-      expect(page).to have_content 'Rating: 0'
+      expect(find('.vote__rating').text).to eq '0'
 
       click_on 'Downvote'
-      expect(page).to have_content 'Rating: -1'
+      expect(find('.vote__rating').text).to eq '-1'
     end
   end
 
   scenario 'Authenticated user can vote only once per question', js: true do
-    within ".section#question-links" do
+    within "##{dom_id(question)}" do
       click_on 'Upvote'
-      expect(page).to have_content 'Rating: 1'
+      expect(find('.vote__rating').text).to eq '1'
 
       click_on 'Upvote'
-      expect(page).to have_content 'You have already voted'
+
+      expect(find('#error-message')).to have_content 'You have already voted'
     end
   end
 end
 
+# Отдельная фича для голосования на странице индекса вопросов
 feature 'Voting for a question on index page', %q{
   In order to vote for a question I like
   As an authenticated user
@@ -80,52 +82,53 @@ feature 'Voting for a question on index page', %q{
   end
 
   scenario 'Authenticated user votes for a question on index', js: true do
-    within turbo_frame_tag(dom_id(question)) do
+    within "turbo-frame##{dom_id(question)}" do
       click_on 'Upvote'
 
-      expect(page).to have_content 'Rating: 1'
+      expect(find('.vote__rating').text).to eq '1'
     end
   end
 
   scenario 'Authenticated user votes against a question on index', js: true do
-    within turbo_frame_tag(dom_id(question)) do
+    within "turbo-frame##{dom_id(question)}" do
       click_on 'Downvote'
 
-      expect(page).to have_content 'Rating: -1'
+      expect(find('.vote__rating').text).to eq '-1'
     end
   end
 
   scenario 'Authenticated user cannot vote for their own question on index', js: true do
-    sign_out(user)
+    click_on 'Sign out'
     sign_in(author)
     visit questions_path
 
-    within turbo_frame_tag(dom_id(question)) do
+    within "turbo-frame##{dom_id(question)}" do
       expect(page).not_to have_link 'Upvote'
       expect(page).not_to have_link 'Downvote'
     end
   end
 
   scenario 'Authenticated user can cancel their vote and vote again on index', js: true do
-    within turbo_frame_tag(dom_id(question)) do
+    within "turbo-frame##{dom_id(question)}" do
       click_on 'Upvote'
-      expect(page).to have_content 'Rating: 1'
+      expect(find('.vote__rating').text).to eq '1'
 
       click_on 'Cancel vote'
-      expect(page).to have_content 'Rating: 0'
+      expect(find('.vote__rating').text).to eq '0'
 
       click_on 'Downvote'
-      expect(page).to have_content 'Rating: -1'
+      expect(find('.vote__rating').text).to eq '-1'
     end
   end
 
   scenario 'Authenticated user can vote only once per question on index', js: true do
-    within turbo_frame_tag(dom_id(question)) do
+    within "turbo-frame##{dom_id(question)}" do
       click_on 'Upvote'
-      expect(page).to have_content 'Rating: 1'
+      expect(find('.vote__rating').text).to eq '1'
 
       click_on 'Upvote'
-      expect(page).to have_content 'You have already voted'
+
+      expect(find('#error-message')).to have_content 'You have already voted'
     end
   end
 end

@@ -51,7 +51,7 @@ feature 'Author can delete attached files from their question', %q(
       sign_in(user)
       visit questions_path
 
-      within "#question_#{question.id}" do
+      within "turbo-frame##{dom_id(question)}" do
         expect(page).to have_link 'rails_helper.rb'
         expect(page).to have_link 'spec_helper.rb'
 
@@ -68,7 +68,7 @@ feature 'Author can delete attached files from their question', %q(
       sign_in(other_user)
       visit questions_path
 
-      within "#question_#{question.id}" do
+      within "turbo-frame##{dom_id(question)}" do
         expect(page).to have_link 'rails_helper.rb'
         expect(page).to_not have_link 'X'
       end
@@ -77,7 +77,7 @@ feature 'Author can delete attached files from their question', %q(
     scenario 'Unauthenticated user cannot see delete links for files on the index page' do
       visit questions_path
 
-      within "#question_#{question.id}" do
+      within "turbo-frame##{dom_id(question)}" do
         expect(page).to have_link 'rails_helper.rb'
         expect(page).to_not have_link 'X'
       end

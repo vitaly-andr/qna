@@ -55,7 +55,7 @@ feature 'Reward system', %q(
     sign_in(user)
 
     visit question_path(Question.last)
-    within("#answer_#{answer.id}") do
+    within "turbo-frame##{dom_id(answer)}" do
       click_button 'Mark as Best'
     end
 
