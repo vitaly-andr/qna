@@ -33,7 +33,7 @@ feature 'Author can delete their question', %q(
     sign_in(user)
     visit questions_path
 
-    within "#question_#{question.id}" do
+    within "turbo-frame##{dom_id(question)}" do
       expect(page).to have_link 'Delete Question'
       accept_confirm do
         click_on 'Delete Question'
@@ -47,7 +47,7 @@ feature 'Author can delete their question', %q(
   scenario 'Non-author tries to delete someone else’s question from the index page' do
     sign_in(other_user)
     visit questions_path
-    within "#question_#{question.id}" do
+    within "turbo-frame##{dom_id(question)}" do
       expect(page).to_not have_link 'Delete Question'
     end
   end

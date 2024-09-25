@@ -14,7 +14,7 @@ feature 'Author can edit their answer', %q(
     sign_in(user)
     visit question_path(question)
 
-    within "#answer_#{answer.id}" do
+    within "turbo-frame##{dom_id(answer)}" do
       click_on 'Edit'
 
       fill_in 'Your Answer', with: 'Edited answer'
@@ -36,7 +36,7 @@ feature 'Author can edit their answer', %q(
     sign_in(other_user)
     visit question_path(question)
 
-    within "#answer_#{answer.id}" do
+    within "turbo-frame##{dom_id(answer)}" do
       expect(page).to_not have_link 'Edit'
     end
   end
@@ -44,7 +44,7 @@ feature 'Author can edit their answer', %q(
   scenario 'Unauthenticated user cannot see the Edit link' do
     visit question_path(question)
 
-    within "#answer_#{answer.id}" do
+    within "turbo-frame##{dom_id(answer)}" do
       expect(page).to_not have_link 'Edit'
     end
   end

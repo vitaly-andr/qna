@@ -2,6 +2,14 @@
   li
     h3 = link_to question.title, question_path(question), data: { turbo: false }
     p = truncate(question.body, length: 100)
+    .vote-area id=dom_id(question) data-controller="vote" data-vote-votable-id="#{question.id}" data-vote-votable-type="Question"
+      p Rating:
+      p.vote__rating data-vote-target="rating"= question.rating
+      button.vote__up data-action="click->vote#upvote" Upvote
+      button.vote__down data-action="click->vote#downvote" Downvote
+      button.vote__cancel data-action="click->vote#cancelVote" Cancel vote
+      #error-message.hidden data-vote-target="errorMessage"
+
     - if question.reward
       h3 "Best Answer Reward #{question.reward.title}"
       = image_tag question.reward.image.variant(resize_to_limit: [ 150, 150 ])

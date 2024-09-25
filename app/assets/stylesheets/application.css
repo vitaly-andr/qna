@@ -47,3 +47,11 @@
     text-decoration: none;
     width: 100%;
 }
+.hidden {
+    display: none;
+}
+
+.visible {
+    display: block;
+    color: red;
+}

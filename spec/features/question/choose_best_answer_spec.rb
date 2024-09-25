@@ -14,7 +14,7 @@ RSpec.feature "Choose Best Answer", type: :feature do
   scenario 'Author can choose the second answer as the best', js: true do
     second_answer = answers.second
 
-    within("#answer_#{second_answer.id}") do
+    within "turbo-frame##{dom_id(second_answer)}" do
       click_button 'Mark as Best'
     end
 

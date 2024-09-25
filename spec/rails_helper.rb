@@ -14,6 +14,8 @@ end
 
 Capybara.javascript_driver = :cuprite
 
+Dir[Rails.root.join('spec/models/concerns/**/*.rb')].each { |f| require f }
+
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
 # run as spec files by default. This means that files in spec/support that end
@@ -41,6 +43,7 @@ RSpec.configure do |config|
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include ControllerHelpers, type: :controller
   config.include FeatureHelpers, type: :feature
+  config.include ActionView::RecordIdentifier, type: :feature
 
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures

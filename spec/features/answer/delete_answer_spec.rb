@@ -15,7 +15,7 @@ feature 'Author can delete their answer', %q(
     sign_in(user)
     visit question_path(question)
 
-    within "#answer-#{answer.id}" do
+    within "turbo-frame##{dom_id(answer)}" do
       expect(page).to have_link 'Delete Answer'
       click_on 'Delete Answer'
     end
@@ -29,7 +29,7 @@ feature 'Author can delete their answer', %q(
     visit question_path(question)
 
 
-    within "#answer-#{answer.id}" do
+    within "turbo-frame##{dom_id(answer)}" do
       expect(page).to_not have_link 'Delete Answer'
     end
   end

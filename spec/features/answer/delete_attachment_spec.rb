@@ -19,7 +19,7 @@ feature 'Author can delete attached files from their answer', %q(
     sign_in(user)
     visit question_path(question)
 
-    within "#answer_#{answer.id}" do
+    within "turbo-frame##{dom_id(answer)}" do
       expect(page).to have_link 'rails_helper.rb'
       expect(page).to have_link 'spec_helper.rb'
 
@@ -37,7 +37,7 @@ feature 'Author can delete attached files from their answer', %q(
     sign_in(other_user)
     visit question_path(question)
 
-    within "#answer_#{answer.id}" do
+    within "turbo-frame##{dom_id(answer)}" do
       expect(page).to have_link 'rails_helper.rb'
       expect(page).to_not have_link 'X'
     end
@@ -46,7 +46,7 @@ feature 'Author can delete attached files from their answer', %q(
   scenario 'Unauthenticated user cannot see delete links for files', js: true do
     visit question_path(question)
 
-    within "#answer_#{answer.id}" do
+    within "turbo-frame##{dom_id(answer)}" do
       expect(page).to have_link 'rails_helper.rb'
       expect(page).to_not have_link 'X'
     end

@@ -20,6 +20,7 @@ gem "slim-rails"
 gem 'aws-sdk-s3', '~> 1.0'
 
 gem 'image_processing'
+gem 'requestjs-rails'
 
 
 
