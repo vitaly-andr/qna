@@ -1,6 +1,6 @@
 - if answer.body.present?
   = turbo_frame_tag dom_id(answer) do
-    li id="answer-#{answer.id}" class=(answer == @question.best_answer ? 'best-answer' : '')
+    li id="answer-#{answer.id}" class=(answer == @question.best_answer ? 'best-answer' : 'answer')
       p = answer.body
       .vote-area id=dom_id(answer) data-controller="vote" data-vote-votable-id="#{answer.id}" data-vote-votable-type="Answer"
         p Rating:

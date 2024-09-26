@@ -1,5 +1,5 @@
 = turbo_frame_tag dom_id(question) do
-  li
+  li.question
     h3 = link_to question.title, question_path(question), data: { turbo: false }
     p = truncate(question.body, length: 100)
     .vote-area id=dom_id(question) data-controller="vote" data-vote-votable-id="#{question.id}" data-vote-votable-type="Question"
