@@ -17,17 +17,38 @@
     <%= javascript_importmap_tags %>
 
   <body>
-  <nav>
-    <ul>
-      <% if user_signed_in? %>
-        <p>Logged in as <%= current_user.email %></p>
-        <li><%= link_to 'Rewards', rewards_path %></li>
-        <li><%= link_to 'Sign out', destroy_user_session_path, data: { turbo_method: :delete } %></li>
-      <% else %>
-        <li><%= link_to 'Sign in', new_user_session_path %></li>
-      <% end %>
-    </ul>
+  <!-- Navbar с использованием классов Bulma -->
+  <nav class="navbar is-light" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="<%= questions_path %>">
+      <span class="-img _glyph">
+  <%= image_tag 'so-logo.png', alt: 'Stack Overflow Logo' %>
+</span>
+      </a>
+
+    </div>
+
+    <div class="navbar-menu">
+      <div class="navbar-start">
+        <% if user_signed_in? %>
+          <div class="navbar-item">
+            Logged in as <%= current_user.email %>
+          </div>
+          <a class="navbar-item" href="<%= rewards_path %>">
+            Rewards
+          </a>
+          <a class="navbar-item" href="<%= destroy_user_session_path %>" data-turbo-method="delete">
+            Sign out
+          </a>
+        <% else %>
+          <a class="navbar-item" href="<%= new_user_session_path %>">
+            Sign in
+          </a>
+        <% end %>
+      </div>
+    </div>
   </nav>
+
   <%= turbo_frame_tag 'flash-messages' do %>
     <%= render 'shared/flash' %>
   <% end %>
