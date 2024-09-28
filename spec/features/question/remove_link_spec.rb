@@ -23,6 +23,7 @@ feature 'Author can delete links from their question', "
         end
         expect { find('div[data-url="https://example.com"]') }.to raise_error(Capybara::ElementNotFound)
       end
+      expect(page).to have_css('#flash-messages', text: 'Link was successfully removed.')
 
     end
 
@@ -38,6 +39,7 @@ feature 'Author can delete links from their question', "
         end
         expect { find('div[data-url="https://example.com"]') }.to raise_error(Capybara::ElementNotFound)
       end
+      expect(page).to have_css('#flash-messages', text: 'Link was successfully removed.')
 
     end
 
