@@ -1,7 +1,7 @@
 class AnswersController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_question, only: [:new, :create]
-  before_action :set_answer, only: [:edit, :update, :destroy]
+  before_action :set_question, only: [ :new, :create ]
+  before_action :set_answer, only: [ :edit, :update, :destroy ]
 
   def new
     @answer = @question.answers.build
@@ -20,9 +20,9 @@ class AnswersController < ApplicationController
       else
         format.html do
           @answers = @question.answers
-          render "questions/show"
+          render "questions/show", status: :unprocessable_entity
         end
-        format.turbo_stream { render 'answers/create_error' }
+        format.turbo_stream { render 'answers/create_error', status: :unprocessable_entity }
       end
     end
   end
@@ -65,35 +65,34 @@ class AnswersController < ApplicationController
           if turbo_frame_request?
             render turbo_stream: [
               turbo_stream.remove(@answer),
-              turbo_stream.replace("flash-messages", partial: "shared/flash", locals: { flash: { notice: "Your answer was successfully deleted." } })
+              render_flash_notice("Your answer was successfully deleted.")
             ]
           end
         end
       else
-        format.html { redirect_to @question, alert: "You can delete only your own answers." }
-        format.turbo_stream do
-          turbo_stream.replace("flash-messages", partial: "shared/flash", locals: { flash: { alert: "You can delete only your own answers." } })
-        end
+        format.html { redirect_to @question, alert: "You can delete only your own answers.", status: :forbidden }
+        format.turbo_stream { render turbo_stream: render_flash_alert("You can delete only your own answers."),
+                                     status: :forbidden }
       end
     end
   end
-
 
   private
 
   def handle_unauthorized_update
     respond_to do |format|
-      format.html { redirect_to @question, alert: 'You can update only your own answers.' }
-      format.turbo_stream { render_flash_alert('You can update only your own answers.') }
+      format.html { redirect_to @question, alert: 'You can update only your own answers.', status: :forbidden }
+      format.turbo_stream { render turbo_stream: render_flash_alert('You can update only your own answers.'), status: :forbidden }
     end
   end
 
   def handle_failed_update
     respond_to do |format|
-      format.html { render :edit }
-      format.turbo_stream do
-        render turbo_stream: turbo_stream.replace(dom_id(@answer), partial: 'answers/form', locals: { answer: @answer })
-      end
+      format.html { render :edit, alert: 'Failed to update the answer. Please fix the errors.', status: :unprocessable_entity }
+      format.turbo_stream { render turbo_stream: [
+        turbo_stream.replace(dom_id(@answer), partial: 'answers/form', locals: { answer: @answer }),
+        render_flash_alert('Failed to update the answer. Please fix the errors.')
+      ], status: :unprocessable_entity }
     end
   end
 
@@ -106,6 +105,6 @@ class AnswersController < ApplicationController
   end
 
   def answer_params
-    params.require(:answer).permit(:body, files: [], links_attributes: [:name, :url])
+    params.require(:answer).permit(:body, files: [], links_attributes: [ :name, :url ])
   end
 end
