@@ -16,7 +16,7 @@ feature 'Author can delete links from their answer', "
     sign_in(user)
     visit question_path(question)
 
-    expect(page).to have_link link.name, href: link.url
+    expect(find('div[data-url="https://example.com"]')['data-url']).to eq 'https://example.com'
 
     within "turbo-frame##{dom_id(answer)}" do
 
@@ -25,8 +25,8 @@ feature 'Author can delete links from their answer', "
       end
 
     end
+    expect { find('div[data-url="https://example.com"]') }.to raise_error(Capybara::ElementNotFound)
 
-    expect(page).to_not have_link link.name, href: link.url
   end
 
 
@@ -35,7 +35,7 @@ feature 'Author can delete links from their answer', "
       visit question_path(question)
 
       within "turbo-frame##{dom_id(answer)}" do
-        expect(page).to have_link link.name, href: link.url
+        expect(find('div[data-url="https://example.com"]')['data-url']).to eq 'https://example.com'
         expect(page).to_not have_link 'X'
       end
     end
@@ -45,7 +45,7 @@ feature 'Author can delete links from their answer', "
     visit question_path(question)
 
     within "turbo-frame##{dom_id(answer)}" do
-      expect(page).to have_link link.name, href: link.url
+      expect(find('div[data-url="https://example.com"]')['data-url']).to eq 'https://example.com'
       expect(page).to_not have_link 'X'
     end
   end

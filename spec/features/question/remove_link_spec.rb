@@ -15,26 +15,35 @@ feature 'Author can delete links from their question', "
       sign_in(user)
       visit question_path(question)
 
-      expect(page).to have_link link.name, href: link.url
+      expect(find('div[data-url="https://example.com"]')['data-url']).to eq 'https://example.com'
 
-      click_on 'X'
+      within "turbo-frame##{dom_id(question)}" do
 
-      expect(page).to_not have_link link.name, href: link.url
+        within "#link_#{link.id}" do
+          click_on 'X'
+        end
+
+      end
+      expect { find('div[data-url="https://example.com"]') }.to raise_error(Capybara::ElementNotFound)
     end
 
     scenario 'Another user tries to delete link from someone else\'s question' do
       sign_in(other_user)
       visit question_path(question)
 
-      expect(page).to have_link link.name, href: link.url
-      expect(page).to_not have_link 'X'
+      within "turbo-frame##{dom_id(question)}" do
+        expect(find('div[data-url="https://example.com"]')['data-url']).to eq 'https://example.com'
+        expect(page).to_not have_link 'X'
+      end
     end
   end
 
   scenario 'Unauthenticated user cannot delete links' do
     visit question_path(question)
 
-    expect(page).to have_link link.name, href: link.url
-    expect(page).to_not have_link 'X'
+    within "turbo-frame##{dom_id(question)}" do
+      expect(find('div[data-url="https://example.com"]')['data-url']).to eq 'https://example.com'
+      expect(page).to_not have_link 'X'
+    end
   end
 end

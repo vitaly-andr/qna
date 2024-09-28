@@ -59,8 +59,8 @@ feature 'User can write an answer to a question', %q(
 
       click_on 'Add Link'
       within all('.nested-fields').last do
-        fill_in 'Link name', with: 'GitHub'
-        fill_in 'Url', with: 'https://github.com'
+        fill_in 'Link name', with: 'Google'
+        fill_in 'Url', with: 'https://google.com'
       end
 
       within all('.nested-fields').first do
@@ -68,11 +68,10 @@ feature 'User can write an answer to a question', %q(
       end
 
       click_on 'Submit Answer'
-
       within "#answers" do
         expect(page).to have_content 'This is my answer with links'
         expect(page).to_not have_link 'My Gist', href: 'https://gist.github.com/vitaly-andr/83bdcd7a1a1282cb17085714494ded2a'
-        expect(page).to have_link 'GitHub', href: 'https://github.com'
+        expect(find('div[data-url="https://google.com"]')['data-url']).to eq 'https://google.com'
       end
     end
 

@@ -15,16 +15,17 @@ feature 'Voting for a question', %q{
   end
 
   scenario 'Authenticated user votes for a question', js: true do
-    within "##{dom_id(question)}" do
-      click_on 'Upvote'
+    within "#question_#{question.id}.vote-area" do
+
+      find('.vote__up').click
 
       expect(find('.vote__rating').text).to eq '1'
     end
   end
 
   scenario 'Authenticated user votes against a question', js: true do
-    within "##{dom_id(question)}" do
-      click_on 'Downvote'
+    within "#question_#{question.id}.vote-area" do
+      find('.vote__down').click
 
       expect(find('.vote__rating').text).to eq '-1'
     end
@@ -35,33 +36,33 @@ feature 'Voting for a question', %q{
     sign_in(author)
     visit question_path(question)
 
-    within ".section#question-links" do
-      expect(page).not_to have_link 'Upvote'
-      expect(page).not_to have_link 'Downvote'
+    within "turbo-frame##{dom_id(question)}" do
+      expect(page).not_to have_css '.vote__up'
+      expect(page).not_to have_css '.vote__down'
     end
   end
 
   scenario 'Authenticated user can cancel their vote and vote again', js: true do
-    within "##{dom_id(question)}" do
-      click_on 'Upvote'
+    within "#question_#{question.id}.vote-area" do
+      find('.vote__up').click
       expect(find('.vote__rating').text).to eq '1'
 
-      click_on 'Cancel vote'
+      find('.vote__cancel').click
       expect(find('.vote__rating').text).to eq '0'
 
-      click_on 'Downvote'
+      find('.vote__down').click
       expect(find('.vote__rating').text).to eq '-1'
     end
   end
 
   scenario 'Authenticated user can vote only once per question', js: true do
-    within "##{dom_id(question)}" do
-      click_on 'Upvote'
+    within "#question_#{question.id}.vote-area" do
+      find('.vote__up').click
       expect(find('.vote__rating').text).to eq '1'
 
-      click_on 'Upvote'
+      find('.vote__up').click
 
-      expect(find('#error-message')).to have_content 'You have already voted'
+      expect(find('#error-message', visible: false)['data-error']).to eq 'true'
     end
   end
 end
@@ -82,16 +83,16 @@ feature 'Voting for a question on index page', %q{
   end
 
   scenario 'Authenticated user votes for a question on index', js: true do
-    within "turbo-frame##{dom_id(question)}" do
-      click_on 'Upvote'
+    within "#question_#{question.id}.vote-area" do
+      find('.vote__up').click
 
       expect(find('.vote__rating').text).to eq '1'
     end
   end
 
   scenario 'Authenticated user votes against a question on index', js: true do
-    within "turbo-frame##{dom_id(question)}" do
-      click_on 'Downvote'
+    within "#question_#{question.id}.vote-area" do
+      find('.vote__down').click
 
       expect(find('.vote__rating').text).to eq '-1'
     end
@@ -103,32 +104,32 @@ feature 'Voting for a question on index page', %q{
     visit questions_path
 
     within "turbo-frame##{dom_id(question)}" do
-      expect(page).not_to have_link 'Upvote'
-      expect(page).not_to have_link 'Downvote'
+      expect(page).not_to have_css '.vote__up'
+      expect(page).not_to have_css '.vote__down'
     end
   end
 
   scenario 'Authenticated user can cancel their vote and vote again on index', js: true do
-    within "turbo-frame##{dom_id(question)}" do
-      click_on 'Upvote'
+    within "#question_#{question.id}.vote-area" do
+      find('.vote__up').click
       expect(find('.vote__rating').text).to eq '1'
 
-      click_on 'Cancel vote'
+      find('.vote__cancel').click
       expect(find('.vote__rating').text).to eq '0'
 
-      click_on 'Downvote'
+      find('.vote__down').click
       expect(find('.vote__rating').text).to eq '-1'
     end
   end
 
   scenario 'Authenticated user can vote only once per question on index', js: true do
-    within "turbo-frame##{dom_id(question)}" do
-      click_on 'Upvote'
+    within "#question_#{question.id}.vote-area" do
+      find('.vote__up').click
       expect(find('.vote__rating').text).to eq '1'
 
-      click_on 'Upvote'
+      find('.vote__up').click
 
-      expect(find('#error-message')).to have_content 'You have already voted'
+      expect(find('#error-message', visible: false)['data-error']).to eq 'true'
     end
   end
 end

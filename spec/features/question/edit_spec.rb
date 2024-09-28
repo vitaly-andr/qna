@@ -33,8 +33,8 @@ feature 'Author can edit their question', %q(
 
       click_on 'Add Link'
       within all('.nested-fields').last do
-        fill_in 'Link name', with: 'GitHub'
-        fill_in 'Url', with: 'https://github.com'
+        fill_in 'Link name', with: 'Google'
+        fill_in 'Url', with: 'https://google.com'
       end
 
       click_on 'Save'
@@ -47,7 +47,7 @@ feature 'Author can edit their question', %q(
       expect(page).to have_link 'spec_helper.rb'
 
       expect(page).to have_link 'Updated Gist Link', href: 'https://gist.github.com/vitaly-andr/83bdcd7a1a1282cb17085714494ded2a'
-      expect(page).to have_link 'GitHub', href: 'https://github.com'
+      expect(find('div[data-url="https://google.com"]')['data-url']).to eq 'https://google.com'
     end
   end
 
@@ -68,34 +68,40 @@ feature 'Author can edit their question', %q(
     visit question_path(question)
 
     click_on 'Edit Question'
+    within "turbo-frame##{dom_id(question)}" do
 
-    fill_in 'Title', with: 'Edited Question Title on Show'
-    fill_in 'Body', with: 'Edited Question Body on Show'
+      fill_in 'Title', with: 'Edited Question Title on Show'
+      fill_in 'Body', with: 'Edited Question Body on Show'
 
-    attach_file 'File', ["#{Rails.root}/spec/rails_helper.rb", "#{Rails.root}/spec/spec_helper.rb"]
+      attach_file 'question_files', [ "#{Rails.root}/spec/rails_helper.rb", "#{Rails.root}/spec/spec_helper.rb" ]
 
-    click_on 'Add Link'
-    within "#link_#{question.links.first.id}" do
-      fill_in 'Link name', with: 'Updated Gist Link'
-      fill_in 'Url', with: 'https://gist.github.com/vitaly-andr/83bdcd7a1a1282cb17085714494ded2a'
+      within '#question_form' do
+        click_on 'Add Link'
+      end
+      within "#link_#{question.links.first.id}" do
+        fill_in 'Link name', with: 'Updated Gist Link'
+        fill_in 'Url', with: 'https://gist.github.com/vitaly-andr/83bdcd7a1a1282cb17085714494ded2a'
+      end
+
+      within '#question_form' do
+        click_on 'Add Link'
+      end
+      within all('.nested-fields').last do
+        fill_in 'Link name', with: 'Google'
+        fill_in 'Url', with: 'https://google.com'
+      end
+
+      click_on 'Save'
+
+      expect(page).to_not have_selector '#question_form'
+      expect(page).to have_content 'Edited Question Title on Show'
+      expect(page).to have_content 'Edited Question Body on Show'
+
+      expect(page).to have_link 'rails_helper.rb'
+      expect(page).to have_link 'spec_helper.rb'
+      save_and_open_page
+      expect(page).to have_link 'Updated Gist Link', href: 'https://gist.github.com/vitaly-andr/83bdcd7a1a1282cb17085714494ded2a'
+      expect(find('div[data-url="https://google.com"]')['data-url']).to eq 'https://google.com'
     end
-
-    click_on 'Add Link'
-    within all('.nested-fields').last do
-      fill_in 'Link name', with: 'GitHub'
-      fill_in 'Url', with: 'https://github.com'
-    end
-
-    click_on 'Save'
-
-    expect(page).to_not have_selector 'textarea'
-    expect(page).to have_content 'Edited Question Title on Show'
-    expect(page).to have_content 'Edited Question Body on Show'
-
-    expect(page).to have_link 'rails_helper.rb'
-    expect(page).to have_link 'spec_helper.rb'
-
-    expect(page).to have_link 'Updated Gist Link', href: 'https://gist.github.com/vitaly-andr/83bdcd7a1a1282cb17085714494ded2a'
-    expect(page).to have_link 'GitHub', href: 'https://github.com'
   end
 end

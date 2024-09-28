@@ -1,4 +1,5 @@
 .nested-fields[id="link_#{f.object.id || 'NEW_RECORD'}"]
+  = f.hidden_field :id
   p
     = f.label :name, 'Link name'
     = f.text_field :name

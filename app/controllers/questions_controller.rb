@@ -22,7 +22,8 @@ class QuestionsController < ApplicationController
   end
 
   def edit
-
+    @question.links.build if @question.links.blank?
+    @question.build_reward if @question.reward.blank?
   end
 
   def create
