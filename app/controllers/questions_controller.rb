@@ -36,13 +36,13 @@ class QuestionsController < ApplicationController
       respond_to do |format|
         format.html do
           flash[:alert] = @question.errors.full_messages.join(", ")
-          render :new
+          render :new, status: :unprocessable_entity
         end
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.replace('question_form', partial: 'questions/form', locals: { question: @question }),
             render_flash_alert(@question.errors.full_messages.join(", "))
-          ]
+          ], status: :unprocessable_entity
         end
       end
     end
@@ -76,21 +76,25 @@ class QuestionsController < ApplicationController
 
       else
         respond_to do |format|
-          format.html { redirect_to @question, alert: 'Failed to select the best answer.' }
+          # format.turbo_stream { render turbo_stream: turbo_stream.replace('best_answer', partial: 'questions/best_answer', locals: { question: @question }), status: :unprocessable_entity } # Just for future
+          format.html { redirect_to @question, alert: 'Failed to select the best answer.', status: :unprocessable_entity }
         end
       end
     else
-      redirect_to @question, alert: 'You are not authorized to select the best answer.'
+      redirect_to @question, alert: 'You are not authorized to select the best answer.', status: :forbidden
     end
   end
 
   def unmark_best_answer
     if current_user == @question.author
-      @question.update(best_answer: nil)
-      @question.reward.update(user: nil) if @question.reward
-      redirect_to @question, notice: 'Best answer unmarked.'
+      if @question.update(best_answer: nil)
+        @question.reward.update(user: nil) if @question.reward
+        redirect_to @question, notice: 'Best answer unmarked.'
+      else
+        redirect_to @question, alert: 'Failed to unmark the best answer.', status: :unprocessable_entity
+      end
     else
-      redirect_to @question, alert: 'You are not authorized to unmark the best answer.'
+      redirect_to @question, alert: 'You are not authorized to unmark the best answer.', status: :forbidden
     end
   end
 
@@ -106,15 +110,15 @@ class QuestionsController < ApplicationController
 
   def handle_unauthorized_update
     respond_to do |format|
-      format.html { redirect_to @question, alert: 'Only the author can edit this question.' }
-      format.turbo_stream { render_flash_alert('Only the author can edit this question.') }
+      format.html { redirect_to @question, alert: 'Only the author can edit this question.', status: :forbidden }
+      format.turbo_stream { render turbo_stream: render_flash_alert('Only the author can edit this question.'), status: :forbidden }
     end
   end
 
   def handle_unauthorized_destroy
     respond_to do |format|
-      format.html { redirect_to questions_path, alert: 'You can delete only your own questions.' }
-      format.turbo_stream { render_flash_alert('You can delete only your own questions.') }
+      format.html { redirect_to questions_path, alert: 'You can delete only your own questions.', status: :forbidden }
+      format.turbo_stream { render turbo_stream: render_flash_alert('You can delete only your own questions.'), status: :forbidden }
     end
   end
 
