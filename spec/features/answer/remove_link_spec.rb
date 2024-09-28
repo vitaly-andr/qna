@@ -12,25 +12,22 @@ feature 'Author can delete links from their answer', "
   given!(:link) { create(:link, linkable: answer) }
 
   describe 'Authenticated user', js: true do
-    scenario 'Author deletes link from their answer' do
-    sign_in(user)
-    visit question_path(question)
+    scenario 'Author deletes link from their answer on Question page' do
+      sign_in(user)
+      visit question_path(question)
 
-    expect(find('div[data-url="https://example.com"]')['data-url']).to eq 'https://example.com'
+      within "turbo-frame##{dom_id(answer)}" do
+        expect(find('div[data-url="https://example.com"]')['data-url']).to eq 'https://example.com'
 
-    within "turbo-frame##{dom_id(answer)}" do
-
-      within "#link_#{link.id}" do
-        click_on 'X'
+        within "#link_#{link.id}" do
+          click_on 'X'
+        end
+        expect { find('div[data-url="https://example.com"]') }.to raise_error(Capybara::ElementNotFound)
       end
-
+      expect(page).to have_css('#flash-messages', text: 'Link was successfully removed.')
     end
-    expect { find('div[data-url="https://example.com"]') }.to raise_error(Capybara::ElementNotFound)
 
-  end
-
-
-  scenario 'Another user tries to delete link from someone else\'s answer' do
+    scenario 'Another user tries to delete link from someone else\'s answer' do
       sign_in(other_user)
       visit question_path(question)
 
