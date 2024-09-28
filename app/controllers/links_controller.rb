@@ -4,21 +4,22 @@ class LinksController < ApplicationController
   def destroy
     link = Link.find(params[:id])
     if current_user.author_of?(link.linkable)
-      link.destroy
-      respond_to do |format|
-        format.turbo_stream {
-          render [ turbo_stream.remove(view_context.dom_id(link)),
-                   render_flash_notice('Link was successfully removed.')
-                 ]
-        }
-        format.html { redirect_back fallback_location: root_path, notice: 'Link was successfully removed.' }
+      begin
+        link.destroy
+        respond_to do |format|
+          format.turbo_stream { render 'links/link_destroy', locals: { link: link } }
+          format.html { redirect_back fallback_location: root_path, notice: 'Link was successfully removed.' }
+        end
+      rescue ActiveRecord::RecordNotDestroyed => e
+        respond_to do |format|
+          format.turbo_stream { render 'shared/flash_alert', locals: { message: 'Failed to delete the link.' }, status: :unprocessable_entity }
+          format.html { redirect_back fallback_location: root_path, alert: 'Failed to delete the link.', status: :unprocessable_entity }
+        end
       end
     else
       respond_to do |format|
         format.html { redirect_back fallback_location: root_path, alert: 'You are not authorized to delete this link.', status: :forbidden }
-        format.turbo_stream {
-          render render_flash_alert('You are not authorized to delete this link.'), status: :forbidden
-        }
+        format.turbo_stream { render 'shared/flash_alert', locals: { message: 'You are not authorized to delete this link.' }, status: :forbidden }
       end
     end
   end
