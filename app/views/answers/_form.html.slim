@@ -7,7 +7,16 @@
   p
     = f.label :files
     = f.file_field :files, multiple: true
-
+    - if answer.files.attached?
+      ul
+        - answer.files.each do |file|
+          li id="file_#{file.id}"
+            = f.hidden_field :files, multiple: true, value: file.signed_id
+            = link_to file.filename.to_s, url_for(file)
+            = link_to 'Remove', attachment_path(file),
+                    data: { turbo_method: :delete, turbo_confirm: 'Are you sure you want to delete this file?' },
+                    class: 'delete-file-link',
+                    style: 'color: red; margin-left: 10px;'
   div
     p Links
     .links data-links-target="links"

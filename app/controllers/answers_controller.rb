@@ -6,6 +6,7 @@ class AnswersController < ApplicationController
   def new
     @answer = @question.answers.build
     @answer.author = current_user
+    @answer.links.build
   end
 
   def create
@@ -15,11 +16,13 @@ class AnswersController < ApplicationController
     respond_to do |format|
       if @answer.save
         @new_answer = @question.answers.build
+        @new_answer.links.build
         format.html { redirect_to @question, notice: "Answer was successfully created." }
-        format.turbo_stream { render 'answers/create' }
+        format.turbo_stream { render 'answers/create', locals: { answer: @new_answer } }
       else
+        @answers = @question.answers
+        @answer.links.build if @answer.links.blank?
         format.html do
-          @answers = @question.answers
           render "questions/show", status: :unprocessable_entity
         end
         format.turbo_stream { render 'answers/create_error', status: :unprocessable_entity }
@@ -105,6 +108,6 @@ class AnswersController < ApplicationController
   end
 
   def answer_params
-    params.require(:answer).permit(:body, files: [], links_attributes: [ :name, :url ])
+    params.require(:answer).permit(:body, files: [], links_attributes: [:id, :name, :url, :_destroy])
   end
 end

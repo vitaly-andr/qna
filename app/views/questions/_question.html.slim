@@ -26,14 +26,16 @@
                 a.level-item
                   span.vote__cancel data-action="click->vote#cancelVote"
                     = image_tag 'trash-can.svg', class: 'icon is-small'
+    - if question.links.any? || question.files.attached?
       .title.has-text-centered Attachments
       .columns
-        .column.is-half
-          .title.has-text-centered Links:
-          .section#question-links
-            ul
-              - question.links.each do |link|
-                li = render partial: 'shared/link', locals: { link: link }
+        - if question.links.any?
+          .column.is-half
+            .title.has-text-centered Links:
+            .section#question-links
+              ul
+                - question.links.each do |link|
+                  li = render partial: 'shared/link', locals: { link: link }
         .column.is-half
           .title.has-text-centered Files:
           - if question.files.attached?

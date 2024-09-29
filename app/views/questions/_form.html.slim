@@ -48,6 +48,7 @@
   div
     = f.submit 'Save'
 
+  // Template for new added links
   = content_tag :template, '', id: 'link_template', data: { links_target: 'template' } do
     = f.fields_for :links, Link.new, child_index: 'NEW_RECORD' do |l|
       .nested-fields
