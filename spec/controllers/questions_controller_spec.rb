@@ -35,7 +35,7 @@ RSpec.describe QuestionsController, type: :controller do
 
       it 'redirects to the question page with alert' do
         patch :mark_best_answer, params: { id: question.id, answer_id: answer.id }
-        expect(response).to redirect_to question_path(question)
+        expect(response).to have_http_status(:forbidden)
         expect(flash[:alert]).to eq 'You are not authorized to select the best answer.'
       end
     end
@@ -179,7 +179,7 @@ RSpec.describe QuestionsController, type: :controller do
 
       it 'redirects to questions index with alert' do
         delete :destroy, params: { id: question }
-        expect(response).to redirect_to questions_path
+        expect(response).to have_http_status(:forbidden)
         expect(flash[:alert]).to eq 'You can delete only your own questions.'
       end
     end

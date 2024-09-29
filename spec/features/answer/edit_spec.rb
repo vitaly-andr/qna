@@ -10,7 +10,11 @@ feature 'Author can edit their answer', %q(
   given(:question) { create(:question) }
   given!(:answer) { create(:answer, question: question, author: user) }
 
-  scenario 'Author edits their answer and attaches files', js: true do
+  scenario 'Author edits their answer, attaches files, and updates links', js: true do
+    create(:link, name: 'Gist link', url: 'https://gist.github.com/vitaly-andr/83bdcd7a1a1282cb17085714494ded2a', linkable: answer)
+    create(:link, name: 'GitHub', url: 'https://github.com', linkable: answer)
+    answer.files.attach(io: File.open("#{Rails.root}/spec/fixtures/files/old_image.webp"), filename: 'old_image.webp', content_type: 'image/webp')
+
     sign_in(user)
     visit question_path(question)
 
@@ -21,13 +25,28 @@ feature 'Author can edit their answer', %q(
 
       attach_file 'File', ["#{Rails.root}/spec/rails_helper.rb", "#{Rails.root}/spec/spec_helper.rb"]
 
+      within "#link_#{answer.links.first.id}" do
+        fill_in 'Link name', with: 'Updated Gist Link'
+        fill_in 'Url', with: 'https://gist.github.com/vitaly-andr/83bdcd7a1a1282cb17085714494ded2a'
+      end
+
+      click_on 'Add Link'
+      within all('.nested-fields').last do
+        fill_in 'Link name', with: 'Google'
+        fill_in 'Url', with: 'https://google.com'
+      end
+
       click_on 'Update Answer'
 
       expect(page).to_not have_selector 'textarea'
       expect(page).to have_content 'Edited answer'
 
+      expect(page).to have_link 'old_image.webp'
       expect(page).to have_link 'rails_helper.rb'
       expect(page).to have_link 'spec_helper.rb'
+
+      expect(page).to have_link 'Updated Gist Link', href: 'https://gist.github.com/vitaly-andr/83bdcd7a1a1282cb17085714494ded2a'
+      expect(find('div[data-url="https://google.com"]')['data-url']).to eq 'https://google.com'
     end
   end
 

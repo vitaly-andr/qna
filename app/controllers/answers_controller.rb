@@ -35,13 +35,12 @@ class AnswersController < ApplicationController
       flash[:alert] = 'You can edit only your own answers.'
       redirect_to @answer.question
     end
+    @answer.links.build if @answer.links.blank?
   end
 
   def update
     @question = @answer.question
-    unless current_user.author_of?(@answer)
-      return handle_unauthorized_update
-    end
+    return handle_unauthorized_update unless current_user.author_of?(@answer)
 
     if @answer.update(answer_params)
       respond_to do |format|
@@ -49,7 +48,7 @@ class AnswersController < ApplicationController
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.replace(helpers.dom_id(@answer), partial: 'answers/answer', locals: { answer: @answer }),
-            render_flash_notice('Your answer was successfully updated.')
+            helpers.render_flash_notice('Your answer was successfully updated.')
           ]
         end
       end
@@ -68,13 +67,13 @@ class AnswersController < ApplicationController
           if turbo_frame_request?
             render turbo_stream: [
               turbo_stream.remove(@answer),
-              render_flash_notice("Your answer was successfully deleted.")
+              helpers.render_flash_notice("Your answer was successfully deleted.")
             ]
           end
         end
       else
         format.html { redirect_to @question, alert: "You can delete only your own answers.", status: :forbidden }
-        format.turbo_stream { render turbo_stream: render_flash_alert("You can delete only your own answers."),
+        format.turbo_stream { render turbo_stream: helpers.render_flash_alert("You can delete only your own answers."),
                                      status: :forbidden }
       end
     end
@@ -85,16 +84,17 @@ class AnswersController < ApplicationController
   def handle_unauthorized_update
     respond_to do |format|
       format.html { redirect_to @question, alert: 'You can update only your own answers.', status: :forbidden }
-      format.turbo_stream { render turbo_stream: render_flash_alert('You can update only your own answers.'), status: :forbidden }
+      format.turbo_stream { render turbo_stream: helpers.render_flash_alert('You can update only your own answers.'), status: :forbidden }
     end
   end
 
   def handle_failed_update
+
     respond_to do |format|
       format.html { render :edit, alert: 'Failed to update the answer. Please fix the errors.', status: :unprocessable_entity }
       format.turbo_stream { render turbo_stream: [
         turbo_stream.replace(dom_id(@answer), partial: 'answers/form', locals: { answer: @answer }),
-        render_flash_alert('Failed to update the answer. Please fix the errors.')
+        helpers.render_flash_alert('Failed to update the answer. Please fix the errors.')
       ], status: :unprocessable_entity }
     end
   end

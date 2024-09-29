@@ -121,7 +121,7 @@ RSpec.describe AnswersController, type: :controller do
 
       it 'redirects to the question show view with alert' do
         patch :update, params: { id: answer.id, question_id: question.id, answer: { body: 'Updated body' } }
-        expect(response).to redirect_to question
+        expect(response).to have_http_status(:forbidden)
         expect(flash[:alert]).to eq 'You can update only your own answers.'
       end
     end
@@ -169,7 +169,7 @@ RSpec.describe AnswersController, type: :controller do
 
       it 'redirects to the question show view with alert' do
         delete :destroy, params: { id: answer.id, question_id: question.id }
-        expect(response).to redirect_to question
+        expect(response).to have_http_status(:forbidden)
         expect(flash[:alert]).to eq 'You can delete only your own answers.'
       end
     end

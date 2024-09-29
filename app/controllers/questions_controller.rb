@@ -115,7 +115,7 @@ class QuestionsController < ApplicationController
   def handle_unauthorized_update
     respond_to do |format|
       format.html { redirect_to @question, alert: 'Only the author can edit this question.', status: :forbidden }
-      format.turbo_stream { render turbo_stream: render_flash_alert('Only the author can edit this question.'), status: :forbidden }
+      format.turbo_stream { render turbo_stream: helpers.render_flash_alert('Only the author can edit this question.'), status: :forbidden }
     end
   end
 
