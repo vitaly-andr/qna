@@ -20,13 +20,16 @@
       = reward_fields.file_field :image
 
   div
+
     = f.label :files
-    = f.file_field :files, multiple: true, include_hidden: false
+    = f.file_field :files, multiple: true
 
   - if @question.files.attached?
     ul
       - @question.files.each do |file|
         li id="file_#{file.id}"
+          = f.hidden_field :files, multiple: true, value: file.signed_id
+
           = link_to file.filename.to_s, url_for(file)
           = link_to 'Remove', attachment_path(file),
                   data: { turbo_method: :delete, turbo_confirm: 'Are you sure you want to delete this file?' },
