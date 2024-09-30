@@ -17,11 +17,11 @@ class Question < ApplicationRecord
   validates :title, :body, presence: true
 
   after_create_commit do
-    broadcast_prepend_to "questions", target: "questions", partial: "live_feed/question", locals: { question: self }
+    broadcast_prepend_later_to "questions", target: "questions", partial: "live_feed/question", locals: { question: self }
   end
 
   after_update_commit do
-    broadcast_replace_to "questions", target: "question_#{id}", partial: "live_feed/question", locals: { question: self }
+    broadcast_replace_later_to "questions", target: "question_#{id}", partial: "live_feed/question", locals: { question: self }
   end
 
   after_destroy_commit do

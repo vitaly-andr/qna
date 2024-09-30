@@ -141,6 +141,7 @@ GEM
       concurrent-ruby (~> 1.1)
       webrick (~> 1.7)
       websocket-driver (~> 0.7)
+    ffaker (2.23.0)
     ffi (1.17.0-aarch64-linux-gnu)
     ffi (1.17.0-arm-linux-gnu)
     ffi (1.17.0-arm64-darwin)
@@ -405,6 +406,7 @@ DEPENDENCIES
   debug
   devise
   factory_bot_rails
+  ffaker
   image_processing
   importmap-rails
   jbuilder

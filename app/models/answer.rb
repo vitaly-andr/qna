@@ -11,11 +11,12 @@ class Answer < ApplicationRecord
   validates :body, presence: true
 
   after_create_commit do
-    broadcast_prepend_to "questions", target: "question_#{question.id}_answers", partial: "live_feed/answer", locals: { answer: self }
+    broadcast_prepend_later_to "questions", target: "question_#{question.id}_answers", partial: "live_feed/answer", locals: { answer: self }
+    broadcast_remove_to "questions", target: "no-answers-#{question.id}"
   end
 
   after_update_commit do
-    broadcast_replace_to "questions", target: "answer_#{id}", partial: "live_feed/answer", locals: { answer: self }
+    broadcast_replace_later_to "questions", target: "answer_#{id}", partial: "live_feed/answer", locals: { answer: self }
   end
 
   after_destroy_commit do
