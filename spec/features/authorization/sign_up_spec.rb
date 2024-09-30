@@ -11,6 +11,7 @@ feature 'User can register', %q(
   end
 
   scenario 'User registers with valid data' do
+    fill_in 'Name', with: 'John Doe'
     fill_in 'Email', with: 'newuser@example.com'
     fill_in 'Password', with: 'password'
     fill_in 'Password confirmation', with: 'password'

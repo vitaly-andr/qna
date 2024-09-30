@@ -7,5 +7,6 @@ FactoryBot.define do
     email
     password { '12345678' }
     password_confirmation { '12345678' }
+    name { FFaker::Name.name }
   end
 end
