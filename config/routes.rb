@@ -28,4 +28,6 @@ Rails.application.routes.draw do
       delete :destroy, to: 'votes#destroy', as: 'delete_vote'
     end
   end
+  resources :live_feed, only: [:index]
+
 end

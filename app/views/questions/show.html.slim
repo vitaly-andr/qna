@@ -1,5 +1,6 @@
 .outer-container
   = link_to 'Index', questions_path
+  = link_to 'Live Feed', live_feed_index_path
   section.show data-controller="reload-on-best-answer" data-reload-on-best-answer-target="bestAnswer"
     = render partial: 'questions/question', locals: { question: @question }
     h2 Answers

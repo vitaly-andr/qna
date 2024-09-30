@@ -1,0 +1,8 @@
+h1.title Live Feed
+
+= turbo_stream_from "questions"
+
+.section
+  .container
+    - @questions.each do |question|
+      = render partial: 'live_feed/question', locals: { question: question }

@@ -1,8 +1,11 @@
 /# locals: (questions:)
 = turbo_frame_tag 'main' do
+  = link_to 'Live Feed', live_feed_index_path
+
 
   .hero.is-info
     .title.has-text-centered List of Questions
+  = link_to 'Ask question', new_question_path
 
   ul
     - questions.each do |question|
