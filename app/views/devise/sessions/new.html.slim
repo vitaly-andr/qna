@@ -5,12 +5,12 @@
     .field
       .control
         = f.label :email, class: 'label'
-        = f.email_field :email, autofocus: true, autocomplete: "email", class: 'input'
+        = f.email_field :email, autofocus: true, autocomplete: "email", class: 'input', id: 'user_email'
 
     .field
       .control
         = f.label :password, class: 'label'
-        = f.password_field :password, autocomplete: "current-password", class: 'input'
+        = f.password_field :password, autocomplete: "current-password", class: 'input', id: 'user_password'
 
     - if devise_mapping.rememberable?
       .field

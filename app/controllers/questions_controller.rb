@@ -10,11 +10,11 @@ class QuestionsController < ApplicationController
 
   def show
     @best_answer = @question.best_answer
-    @answers = @question.answers.where.not(id: @question.best_answer_id)
-    @answer = @question.answers.build
-    @answer.links.new
+    @answers = @question.answers.where.not(id: @question.best_answer_id).order(updated_at: :desc)
     @links = @question.links
 
+    @answer = @question.answers.build
+    @answer.links.build
   end
 
   def new
@@ -67,14 +67,14 @@ class QuestionsController < ApplicationController
 
   def mark_best_answer
     @answer = @question.answers.find(params[:answer_id])
-    @previous_best_answer = @question.best_answer
 
     if current_user.author_of?(@question)
       if @question.update(best_answer: @answer)
         @question.reward.update(user: @answer.author) if @question.reward
-
+        @best_answer = @question.best_answer
+        @answers = @question.answers.where.not(id: @question.best_answer_id).order(updated_at: :desc)
         respond_to do |format|
-          format.turbo_stream
+          format.turbo_stream { render turbo_stream: turbo_stream.update("answers", partial: 'answers/answers_list') }
           format.html { redirect_to @question, notice: 'Best answer selected.' }
         end
 
@@ -93,7 +93,11 @@ class QuestionsController < ApplicationController
     if current_user == @question.author
       if @question.update(best_answer: nil)
         @question.reward.update(user: nil) if @question.reward
-        redirect_to @question, notice: 'Best answer unmarked.'
+        @answers = @question.answers.order(updated_at: :desc)
+        respond_to do |format|
+          format.html { redirect_to @question }
+          format.turbo_stream { render turbo_stream: turbo_stream.update("answers", partial: 'answers/answers_list') }
+        end
       else
         redirect_to @question, alert: 'Failed to unmark the best answer.', status: :unprocessable_entity
       end
@@ -145,9 +149,8 @@ class QuestionsController < ApplicationController
       format.html { render :edit }
       format.turbo_stream do
         render turbo_stream: [
-          turbo_stream.replace('question_form', partial: 'questions/form', locals: { question: @question }),
-          helpers.render_flash_alert(@question.errors.full_messages.join(", ")), status: :unprocessable_entity
-        ]
+          turbo_stream.update('question_form', partial: 'questions/form')
+        ], status: :unprocessable_entity
       end
     end
   end

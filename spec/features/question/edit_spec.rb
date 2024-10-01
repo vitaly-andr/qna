@@ -96,6 +96,27 @@ feature 'Author can edit their question', %q(
     end
   end
 
+  scenario 'Author tries to edit their question with invalid data' do
+    sign_in(user)
+    visit questions_path
+
+    within "turbo-frame##{dom_id(question)}" do
+      click_on 'Edit Question'
+
+      fill_in 'Title', with: ''
+      fill_in 'Body', with: ''
+
+      click_on 'Save'
+
+      expect(page).to have_content "Title can't be blank"
+      expect(page).to have_content "Body can't be blank"
+
+      expect(page).to have_selector 'textarea', text: ''
+      expect(find_field('Title').value).to eq ''
+
+    end
+  end
+
   scenario 'Author edits their question from the question show page, attaches files, and updates links' do
     create(:link, name: 'Gist link', url: 'https://gist.github.com/vitaly-andr/83bdcd7a1a1282cb17085714494ded2a', linkable: question)
     create(:link, name: 'GitHub', url: 'https://github.com', linkable: question)

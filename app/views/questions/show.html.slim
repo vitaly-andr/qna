@@ -5,12 +5,9 @@
     section.show data-controller="reload-on-best-answer" data-reload-on-best-answer-target="bestAnswer"
       = render partial: 'questions/question', locals: { question: @question }
       h2 Answers
-      ul#answers
-        - if @best_answer
-          = render 'answers/best_answer', answer: @best_answer
-        = render partial: 'answers/answer', collection: @answers, as: :answer
-        li data-reload-on-best-answer-target="reloadArea"
-          div id="reloadTrigger"
+      = turbo_frame_tag "answers" do
+        = render 'answers/answers_list'
+
       - if user_signed_in?
         h3 Write your answer
 

@@ -50,6 +50,23 @@ feature 'Author can edit their answer', %q(
     end
   end
 
+  scenario 'Author tries to edit their answer with invalid data' do
+    sign_in(user)
+    visit question_path(question)
+
+    within "turbo-frame##{dom_id(answer)}" do
+      click_on 'Edit'
+
+      fill_in 'Your Answer', with: ''
+
+      click_on 'Update Answer'
+
+      expect(page).to have_content "Body can't be blank"
+
+      expect(find_field('Your Answer').value).to eq ''
+
+    end
+  end
 
   scenario 'Non-author cannot see the Edit link for someone else’s answer' do
     sign_in(other_user)

@@ -3,8 +3,10 @@ class Question < ApplicationRecord
   include FileAttachable
   include Authorable
   include Votable
+
   before_destroy :reset_best_answer
 
+  has_many :comments, as: :commentable, dependent: :destroy
 
   has_many :answers, dependent: :destroy
   has_one :reward, dependent: :destroy

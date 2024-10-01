@@ -1,5 +1,5 @@
-- if answer.body.present?
-  = turbo_frame_tag dom_id(answer) do
+= turbo_frame_tag dom_id(answer) do
+  - if answer.body.present?
     li.answer id="answer-#{answer.id}" class=(answer == @question.best_answer ? 'best-answer' : 'answer')
       header.card-header
         p.subtitle Answered by: #{answer.author.email}
@@ -43,14 +43,15 @@
                                 style: 'color: red; margin-left: 10px;'
           - if user_signed_in? && current_user.author_of?(answer.question) && answer.persisted?
             - if answer == @question.best_answer
-              = button_to 'Unmark Best', unmark_best_answer_question_path(@question, answer), method: :patch
+              = button_to 'Unmark Best', unmark_best_answer_question_path(@question, answer_id: answer.id), data: { turbo_method: :patch }, method: :patch, class: 'button is-dark'
             - else
-              = button_to 'Mark as Best', mark_best_answer_question_path(@question, answer_id: answer.id), method: :patch
+              = button_to 'Mark as Best', mark_best_answer_question_path(@question, answer_id: answer.id), method: :patch, data: { turbo_method: :patch }, class: 'button is-warning'
+        = render partial: 'comments/comments', locals: { commentable: answer }
 
-          - if user_signed_in? && current_user.author_of?(answer) && answer.persisted?
-            .card-footer
-              .card-footer-item
-                = link_to 'Edit', edit_answer_path(answer), data: { turbo_frame: dom_id(answer) }
-              .card-footer-item
-                = link_to 'Delete Answer', answer_path(answer), data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }
+        - if user_signed_in? && current_user.author_of?(answer) && answer.persisted?
+          .card-footer
+            .card-footer-item
+              = link_to 'Edit', edit_answer_path(answer), data: { turbo_frame: dom_id(answer) }
+            .card-footer-item
+              = link_to 'Delete Answer', answer_path(answer), data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' }
 

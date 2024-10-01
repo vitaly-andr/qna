@@ -93,8 +93,7 @@ class AnswersController < ApplicationController
     respond_to do |format|
       format.html { render :edit, alert: 'Failed to update the answer. Please fix the errors.', status: :unprocessable_entity }
       format.turbo_stream { render turbo_stream: [
-        turbo_stream.replace(dom_id(@answer), partial: 'answers/form', locals: { answer: @answer }),
-        helpers.render_flash_alert('Failed to update the answer. Please fix the errors.')
+        turbo_stream.update(dom_id(@answer), partial: 'answers/form', locals: { answer: @answer }),
       ], status: :unprocessable_entity }
     end
   end

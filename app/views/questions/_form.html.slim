@@ -1,8 +1,10 @@
 = form_with model: @question, data: { turbo_frame: dom_id(@question), controller: 'links' }, id: 'question_form' do |f|
   - if @question.errors.any?
-    .error-message
-      = @question.errors.full_messages.to_sentence.capitalize
-
+    .notification.is-danger.error-message
+      p There were errors with your submission:
+      ul
+        - @question.errors.full_messages.each do |message|
+          li= message
   div
     = f.label :title
     = f.text_field :title

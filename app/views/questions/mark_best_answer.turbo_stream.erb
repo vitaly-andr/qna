@@ -9,5 +9,5 @@
 <% end %>
 
 <%= turbo_stream.replace 'reloadTrigger' do %>
-  <div>Updated content</div>
+  <div>Updated content at <%= Time.current.to_i %></div>
 <% end %>
