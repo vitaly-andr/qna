@@ -23,8 +23,9 @@ feature 'User can see link previews', %q(
       end
 
       click_on 'Submit Answer'
+      last_answer = Answer.order(created_at: :desc).first
 
-      within "#answers" do
+      within "turbo-frame##{dom_id(last_answer)}" do
         expect(page).to have_content 'This is my answer with a Gist link'
 
         # Проверка наличия контента из Gist в предварительном просмотре
@@ -41,8 +42,9 @@ feature 'User can see link previews', %q(
       end
 
       click_on 'Submit Answer'
+      last_answer = Answer.order(created_at: :desc).first
 
-      within '#answers' do
+      within "turbo-frame##{dom_id(last_answer)}" do
         expect(page).to have_selector "img[src='https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png']"
       end
     end
@@ -66,7 +68,9 @@ feature 'User can see link previews', %q(
 
       visit question_path(question)
 
-      within '#answers' do
+      last_answer = Answer.order(created_at: :desc).first
+
+      within "turbo-frame##{dom_id(last_answer)}" do
         expect(page).to have_selector "img[src='https://www.google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png']"
       end
     end

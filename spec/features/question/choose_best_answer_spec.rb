@@ -21,9 +21,8 @@ RSpec.feature "Choose Best Answer", type: :feature do
     expect(page).to have_css('.best-answer', text: second_answer.body)
     expect(page).to have_button('Unmark Best')
     expect(page).to_not have_button('Mark as Best', count: 1)
-    save_and_open_page
 
-    within("#answer_#{second_answer.id}") do
+    within "turbo-frame##{dom_id(second_answer)}" do
       click_button 'Unmark Best'
     end
 
