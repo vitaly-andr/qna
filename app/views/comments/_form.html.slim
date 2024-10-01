@@ -1,4 +1,4 @@
-= form_with(model: [commentable, comment]) do |f|
+= form_with(model: comment, url: polymorphic_path([commentable, Comment])) do |f|
   - if comment.errors.any?
     .notification.is-danger
       p There were errors with your submission:

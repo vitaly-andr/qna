@@ -11,7 +11,6 @@
     - else
       p.has-text-grey-light id=dom_id(commentable, :no_comments) No comments yet...
 
-    - if user_signed_in?
       = turbo_frame_tag dom_id(commentable, :new_comment) do
         = turbo_frame_tag dom_id(commentable, :form) do
           = link_to "Comment", new_polymorphic_path([commentable, Comment]), class: "button is-small is-light", remote: true

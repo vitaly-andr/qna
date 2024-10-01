@@ -7,6 +7,7 @@
     .card-content
       .content
         p= question.body
+      = render partial: 'comments/comments', locals: { commentable: question }
 
       - if question.answers.any?
         ul id="#{dom_id(question)}_answers" class="answers mt-3"
