@@ -1,5 +1,6 @@
 class Comment < ApplicationRecord
   include Authorable
+  include ActionView::RecordIdentifier
 
   belongs_to :commentable, polymorphic: true
   validates :body, presence: true
@@ -15,9 +16,5 @@ class Comment < ApplicationRecord
                         partial: 'comments/comment_button',
                         locals: { commentable: commentable }
   end
-  private
 
-  def dom_id(record, prefix = nil)
-    ActionView::RecordIdentifier.dom_id(record, prefix)
-  end
 end
