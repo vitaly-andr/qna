@@ -7,7 +7,14 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 require 'selenium-webdriver'
+require 'capybara/cuprite'
 require 'capybara/rspec'
+
+
+Capybara.register_driver :cuprite do |app|
+  Capybara::Cuprite::Driver.new(app, window_size: [1200, 800], browser_options: { 'no-sandbox' => nil })
+end
+
 
 Capybara.register_driver :selenium_chrome_headless do |app|
   options = Selenium::WebDriver::Chrome::Options.new
@@ -19,7 +26,7 @@ Capybara.register_driver :selenium_chrome_headless do |app|
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end
 
-Capybara.javascript_driver = :selenium_chrome_headless
+Capybara.javascript_driver = :cuprite
 
 Dir[Rails.root.join('spec/models/concerns/**/*.rb')].each { |f| require f }
 
@@ -48,6 +55,13 @@ end
 RSpec.configure do |config|
   config.before(:each) do
     ActiveJob::Base.queue_adapter = :inline
+  end
+  config.before(:each, type: :feature, js: true) do
+    Capybara.javascript_driver = :cuprite
+  end
+
+  config.before(:each, type: :system, js: true) do
+    driven_by :selenium_chrome_headless
   end
   config.include FactoryBot::Syntax::Methods
   config.include Devise::Test::ControllerHelpers, type: :controller
