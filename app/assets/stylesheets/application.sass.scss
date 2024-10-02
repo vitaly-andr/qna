@@ -36,6 +36,21 @@
   max-width: 80%;
 
 }
+.navbar-item img {
+  height: 80px !important; /* Устанавливаем высоту логотипа */
+  width: auto !important;  /* Пропорциональная ширина */
+  max-height: 80px;        /* Максимальная высота, чтобы избежать масштабирования */
+}
+
+.navbar-brand {
+  padding: 0 !important;   /* Убираем все отступы сверху и снизу */
+}
+
+.navbar-brand .navbar-item {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
 .best-answer {
   background-color: #fff9c4; /* Светлый жёлтый оттенок для фона */
   border: 1px solid #ffeb3b; /* Насыщенная золотистая граница */

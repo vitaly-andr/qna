@@ -5,10 +5,6 @@ class CommentsController < ApplicationController
     @commentable = find_commentable
     @comment = @commentable.comments.build
 
-    # respond_to do |format|
-    #   format.turbo_stream { render template: 'comments/new', locals: { commentable: @commentable, comment: @comment } }
-    #   format.html { render template: 'comments/new', locals: { commentable: @commentable, comment: @comment  } }
-    # end
   end
   def create
     @commentable = find_commentable
