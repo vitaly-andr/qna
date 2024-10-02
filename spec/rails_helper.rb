@@ -6,13 +6,20 @@ require_relative '../config/environment'
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
-require 'capybara/cuprite'
+require 'selenium-webdriver'
+require 'capybara/rspec'
 
-Capybara.register_driver :cuprite do |app|
-  Capybara::Cuprite::Driver.new(app, window_size: [1200, 800], browser_options: { 'no-sandbox' => nil })
+Capybara.register_driver :selenium_chrome_headless do |app|
+  options = Selenium::WebDriver::Chrome::Options.new
+  options.add_argument('headless')
+  options.add_argument('disable-gpu')
+  options.add_argument('no-sandbox')
+  options.add_argument('window-size=1200x800')
+
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end
 
-Capybara.javascript_driver = :cuprite
+Capybara.javascript_driver = :selenium_chrome_headless
 
 Dir[Rails.root.join('spec/models/concerns/**/*.rb')].each { |f| require f }
 
@@ -39,11 +46,18 @@ rescue ActiveRecord::PendingMigrationError => e
   abort e.to_s.strip
 end
 RSpec.configure do |config|
+  config.before(:each) do
+    ActiveJob::Base.queue_adapter = :inline
+  end
   config.include FactoryBot::Syntax::Methods
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include ControllerHelpers, type: :controller
   config.include FeatureHelpers, type: :feature
+  config.include FeatureHelpers, type: :system
   config.include ActionView::RecordIdentifier, type: :feature
+  config.include ActionView::RecordIdentifier, type: :system
+  config.include ActionCable::TestHelper, type: :channel
+
 
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
