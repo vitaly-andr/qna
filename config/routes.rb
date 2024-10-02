@@ -33,9 +33,7 @@ Rails.application.routes.draw do
     end
   end
   resources :live_feed, only: [ :index ]
-  devise_for :users, controllers: {
-    registrations: 'users/registrations',
-    sessions: 'users/sessions',
-    passwords: 'users/passwords'
-  }
+
+  devise_for :users
+
 end
