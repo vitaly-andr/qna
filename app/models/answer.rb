@@ -3,6 +3,8 @@ class Answer < ApplicationRecord
   include FileAttachable
   include Authorable
   include Votable
+  include ActionView::RecordIdentifier
+
   has_many :comments, as: :commentable, dependent: :destroy
 
   belongs_to :question
@@ -25,9 +27,5 @@ class Answer < ApplicationRecord
   after_destroy_commit do
     broadcast_remove_to "questions", target: "answer_#{id}"
   end
-  private
 
-  def dom_id(record, prefix = nil)
-    ActionView::RecordIdentifier.dom_id(record, prefix)
-  end
 end
