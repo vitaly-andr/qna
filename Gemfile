@@ -26,6 +26,8 @@ gem 'cssbundling-rails'
 gem 'omniauth'
 gem 'omniauth-github'
 gem 'omniauth-rails_csrf_protection'
+gem 'rest-client'
+
 
 
 gem "devise"

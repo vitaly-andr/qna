@@ -9,13 +9,22 @@ class User < ApplicationRecord
   has_many :rewards, dependent: :nullify
   validates :name, presence: true
 
-  def self.from_omniauth(auth)
-    where(provider: auth.provider, uid: auth.uid).first_or_create do |user |
-      user.provider = auth.provider
-      user.uid = auth.uid
-      user.email = auth.info.email
-      user.password = Devise.friendly_token[0,20]
+  def self.from_omniauth(auth, emails)
+    user = User.find_by(email: emails)
+
+    if user
+      user.update(provider: auth.provider, uid: auth.uid)
+    else
+      user = User.create(
+        provider: auth.provider,
+        uid: auth.uid,
+        email: emails.first,
+        name: auth.info.name || auth.info.nickname,
+        password: Devise.friendly_token[0, 20]
+      )
     end
+
+    user
   end
 
   def author_of?(resource)
