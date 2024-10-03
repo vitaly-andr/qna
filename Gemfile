@@ -23,8 +23,9 @@ gem 'image_processing'
 gem 'requestjs-rails'
 gem 'jsbundling-rails'
 gem 'cssbundling-rails'
-
-
+gem 'omniauth'
+gem 'omniauth-github'
+gem 'omniauth-rails_csrf_protection'
 
 
 gem "devise"
@@ -56,6 +57,8 @@ group :development, :test do
   gem "rspec-rails"
   gem "factory_bot_rails"
   gem 'ffaker'
+
+  gem 'dotenv-rails'
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false
