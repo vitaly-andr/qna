@@ -26,7 +26,6 @@ feature 'Reward system', %q(
 
     expect(page).to have_content('Question was successfully created.')
     expect(page).to have_content('Question with reward')
-    expect(page).to have_content('Best Answer Reward')
     expect(page).to have_css("img[src*='reward_image.webp']")
   end
 

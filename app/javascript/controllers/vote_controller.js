@@ -4,6 +4,10 @@ import { post, destroy } from "@rails/request.js"
 export default class extends Controller {
     static targets = ["rating", "errorMessage"]
 
+    connect() {
+        this.clearErrorMessage()
+    }
+
     upvote() {
         this.vote(1)
     }
@@ -60,14 +64,12 @@ export default class extends Controller {
         }
     }
     handleError(message) {
-        this.errorMessageTarget.textContent = message
-        this.errorMessageTarget.classList.add('visible')
+        this.errorMessageTarget.dataset.error = 'true'
         alert(message)
 
     }
 
     clearErrorMessage() {
-        this.errorMessageTarget.textContent = "" // Очищаем сообщение
-        this.errorMessageTarget.classList.remove('visible') // Убираем класс видимости
+        this.errorMessageTarget.dataset.error = 'false'
     }
 }

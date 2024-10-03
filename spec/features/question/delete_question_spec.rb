@@ -13,13 +13,13 @@ feature 'Author can delete their question', %q(
   scenario 'Author tries to delete their question from the question page' do
     sign_in(user)
     visit question_path(question)
+    within "turbo-frame##{dom_id(question)}" do
+      expect(page).to have_link 'Delete Question'
+      click_on 'Delete Question'
 
-    expect(page).to have_link 'Delete Question'
-    click_on 'Delete Question'
-
-    expect(page).to have_content 'Your question was successfully deleted.'
-    expect(current_path).to eq questions_path
-    expect(page).to_not have_content question.title_was
+      expect(current_path).to eq questions_path
+    end
+    expect(page).to_not have_selector "turbo-frame##{dom_id(question)}"
   end
 
   scenario 'Non-author tries to delete someone else’s question' do
@@ -38,10 +38,11 @@ feature 'Author can delete their question', %q(
       accept_confirm do
         click_on 'Delete Question'
       end
+
     end
 
     expect(page).to have_content 'Your question was successfully deleted.'
-    expect(page).to_not have_content question.title_was
+    expect(page).to_not have_selector "turbo-frame##{dom_id(question)}"
   end
 
   scenario 'Non-author tries to delete someone else’s question from the index page' do

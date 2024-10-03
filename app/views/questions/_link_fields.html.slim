@@ -1,4 +1,5 @@
-.nested-fields[id="link_#{f.object.id || 'NEW_RECORD'}"]
+.nested-fields id="link_#{f.object.id || 'NEW_RECORD'}" data-controller="remove-link"
+  = f.hidden_field :id
   p
     = f.label :name, 'Link name'
     = f.text_field :name
@@ -6,5 +7,6 @@
   p
     = f.label :url
     = f.text_field :url
+    = f.hidden_field :_destroy, value: "false", data: { 'remove-link-target': 'destroyField' }
 
-  = link_to 'Remove', '#', data: { action: 'links#removeLink', link_id: "link_#{f.object.id || 'NEW_RECORD'}" }
+  = link_to 'Remove', '#', data: { action: 'remove-link#remove'}

@@ -1,26 +1,15 @@
 = form_with model: [question, answer], url: question_answers_path(@question), id: 'answer_form', remote: true, data: { controller: 'links' } do |f|
-  = render 'shared/errors', object: @answer
-  div
-    = f.label :body, 'Your Answer'
-    = f.text_area :body, id: 'answer_body', rows: 3, placeholder: "Type your answer here..."
 
-  p
-    = f.label :files
-    = f.file_field :files, multiple: true
-
-  div
-    p Links
-    .links data-links-target="links"
-      = f.fields_for :links do |l|
-        = render 'link_fields', f: l
-
-    = link_to 'Add Link', '#', data: { action: 'links#addLink' }
+  - if answer.errors.any?
+    .notification.is-danger.error-message
+      p There were errors with your submission:
+      ul
+        - answer.errors.full_messages.each do |message|
+          li= message
+  = render 'answers/form_fields', f: f, answer: answer
 
   div
     = f.submit 'Submit Answer'
 
-  // Шаблон для динамически добавляемых ссылок
-  = content_tag :template, '', id: 'link_template', data: { links_target: 'template' } do
-    = f.fields_for :links, Link.new, child_index: 'NEW_RECORD' do |l|
-      .nested-fields
-        = render 'link_fields', f: l
+  // Reuse the link template partial
+  = render 'shared/link_template', f: f

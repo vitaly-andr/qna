@@ -5,6 +5,8 @@ export default class extends Controller {
 
     connect() {
         const observer = new MutationObserver(() => {
+            console.log("Mutation detected in reloadAreaTarget. Triggering page reload.");
+
             this.reloadPage();
         });
 

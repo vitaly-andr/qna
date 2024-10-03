@@ -4,15 +4,17 @@ class QuestionsController < ApplicationController
 
   def index
     @questions = Question.all
+    render template: 'questions/index', locals: { questions: @questions }
+
   end
 
   def show
     @best_answer = @question.best_answer
-    @answers = @question.answers.where.not(id: @question.best_answer_id)
-    @answer = @question.answers.build
-    @answer.links.new
+    @answers = @question.answers.where.not(id: @question.best_answer_id).order(updated_at: :desc)
     @links = @question.links
 
+    @answer = @question.answers.build
+    @answer.links.build
   end
 
   def new
@@ -22,26 +24,29 @@ class QuestionsController < ApplicationController
   end
 
   def edit
-
+    @question.links.build if @question.links.blank?
+    @question.build_reward if @question.reward.blank?
   end
 
   def create
     @question = current_user.questions.build(question_params)
     if @question.save
+      questions = Question.all
+
       respond_to do |format|
         format.html { redirect_to @question, notice: "Question was successfully created." }
+        format.turbo_stream { render 'questions/create', locals: { questions: questions } }
       end
     else
+      @question.links.build if @question.links.blank?
+      @question.build_reward if @question.reward.blank?
       respond_to do |format|
         format.html do
           flash[:alert] = @question.errors.full_messages.join(", ")
-          render :new
+          render :new, status: :unprocessable_entity
         end
         format.turbo_stream do
-          render turbo_stream: [
-            turbo_stream.replace('question_form', partial: 'questions/form', locals: { question: @question }),
-            render_flash_alert(@question.errors.full_messages.join(", "))
-          ]
+          render 'questions/create_error', locals: { question: @question, message: @question.errors.full_messages.join(", ") }, status: :unprocessable_entity
         end
       end
     end
@@ -62,34 +67,42 @@ class QuestionsController < ApplicationController
 
   def mark_best_answer
     @answer = @question.answers.find(params[:answer_id])
-    @previous_best_answer = @question.best_answer
 
     if current_user.author_of?(@question)
       if @question.update(best_answer: @answer)
         @question.reward.update(user: @answer.author) if @question.reward
-
+        @best_answer = @question.best_answer
+        @answers = @question.answers.where.not(id: @question.best_answer_id).order(updated_at: :desc)
         respond_to do |format|
-          format.turbo_stream
+          format.turbo_stream { render turbo_stream: turbo_stream.update("answers", partial: 'answers/answers_list') }
           format.html { redirect_to @question, notice: 'Best answer selected.' }
         end
 
       else
         respond_to do |format|
-          format.html { redirect_to @question, alert: 'Failed to select the best answer.' }
+          # format.turbo_stream { render turbo_stream: turbo_stream.replace('best_answer', partial: 'questions/best_answer', locals: { question: @question }), status: :unprocessable_entity } # Just for future
+          format.html { redirect_to @question, alert: 'Failed to select the best answer.', status: :unprocessable_entity }
         end
       end
     else
-      redirect_to @question, alert: 'You are not authorized to select the best answer.'
+      redirect_to @question, alert: 'You are not authorized to select the best answer.', status: :forbidden
     end
   end
 
   def unmark_best_answer
     if current_user == @question.author
-      @question.update(best_answer: nil)
-      @question.reward.update(user: nil) if @question.reward
-      redirect_to @question, notice: 'Best answer unmarked.'
+      if @question.update(best_answer: nil)
+        @question.reward.update(user: nil) if @question.reward
+        @answers = @question.answers.order(updated_at: :desc)
+        respond_to do |format|
+          format.html { redirect_to @question }
+          format.turbo_stream { render turbo_stream: turbo_stream.update("answers", partial: 'answers/answers_list') }
+        end
+      else
+        redirect_to @question, alert: 'Failed to unmark the best answer.', status: :unprocessable_entity
+      end
     else
-      redirect_to @question, alert: 'You are not authorized to unmark the best answer.'
+      redirect_to @question, alert: 'You are not authorized to unmark the best answer.', status: :forbidden
     end
   end
 
@@ -100,30 +113,31 @@ class QuestionsController < ApplicationController
   end
 
   def question_params
-    params.require(:question).permit(:title, :body, :best_answer_id, files: [], links_attributes: [:name, :url], reward_attributes: [:title, :image])
+    params.require(:question).permit(:title, :body, :best_answer_id, files: [], links_attributes: [:id, :name, :url, :_destroy], reward_attributes: [:title, :image])
   end
 
   def handle_unauthorized_update
     respond_to do |format|
-      format.html { redirect_to @question, alert: 'Only the author can edit this question.' }
-      format.turbo_stream { render_flash_alert('Only the author can edit this question.') }
+      format.html { redirect_to @question, alert: 'Only the author can edit this question.', status: :forbidden }
+      format.turbo_stream { render turbo_stream: helpers.render_flash_alert('Only the author can edit this question.'), status: :forbidden }
     end
   end
 
   def handle_unauthorized_destroy
     respond_to do |format|
-      format.html { redirect_to questions_path, alert: 'You can delete only your own questions.' }
-      format.turbo_stream { render_flash_alert('You can delete only your own questions.') }
+      format.html { redirect_to questions_path, alert: 'You can delete only your own questions.', status: :forbidden }
+      format.turbo_stream { render turbo_stream: helpers.render_flash_alert('You can delete only your own questions.'), status: :forbidden }
     end
   end
 
   def handle_successful_update
+    message = 'Question successfully updated.'
     respond_to do |format|
       format.html { redirect_to @question, notice: 'Question successfully updated.' }
       format.turbo_stream do
         render turbo_stream: [
           turbo_stream.replace(helpers.dom_id(@question), partial: 'questions/question', locals: { question: @question }),
-          render_flash_notice('Question successfully updated.')
+          helpers.render_flash_notice('Question successfully updated.')
         ]
       end
 
@@ -134,7 +148,9 @@ class QuestionsController < ApplicationController
     respond_to do |format|
       format.html { render :edit }
       format.turbo_stream do
-        render turbo_stream: turbo_stream.replace('question_form', partial: 'questions/form', locals: { question: @question })
+        render turbo_stream: [
+          turbo_stream.update('question_form', partial: 'questions/form')
+        ], status: :unprocessable_entity
       end
     end
   end
@@ -145,7 +161,7 @@ class QuestionsController < ApplicationController
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.remove(@question),
-            render_flash_notice('Your question was successfully deleted.')
+            helpers.render_flash_notice('Your question was successfully deleted.')
           ]
         end
       else

@@ -12,7 +12,7 @@ class AttachmentsController < ApplicationController
         format.turbo_stream do
           render turbo_stream: [
             turbo_stream.remove("file_#{@attachment.id}"),
-            render_flash_notice('File was successfully deleted.')
+            helpers.render_flash_notice('File was successfully deleted.')
           ]
         end
       end
@@ -21,7 +21,7 @@ class AttachmentsController < ApplicationController
         format.html { redirect_back fallback_location: root_path, alert: 'You are not authorized to delete this file.' }
         format.turbo_stream do
           render turbo_stream: [
-            render_flash_alert('You are not authorized to delete this file.')
+            helpers.render_flash_alert('You are not authorized to delete this file.')
           ]
         end
       end

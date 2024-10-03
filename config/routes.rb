@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  devise_for :users
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -13,19 +12,28 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "questions#index"
   resources :questions do
+    member do
+      patch :mark_best_answer
+      patch :unmark_best_answer
+    end
 
-    patch :mark_best_answer, on: :member
-    patch :unmark_best_answer, on: :member
+    resources :answers, shallow: true, except: [ :index, :show ] do
+      resources :comments, shallow: true, only: [ :new, :create ]
+    end
 
-    resources :answers, shallow: true, except: [:index, :show]
+    resources :comments, shallow: true, only: [ :new, :create ]
   end
 
-  resources :attachments, only: [:destroy]
-  resources :links, only: [:destroy]
+  resources :attachments, only: [ :destroy ]
+  resources :links, only: [ :destroy ]
   resources :rewards, only: :index
-  resources :votes, only: [:create] do
+  resources :votes, only: [ :create ] do
     collection do
       delete :destroy, to: 'votes#destroy', as: 'delete_vote'
     end
   end
+  resources :live_feed, only: [ :index ]
+
+  devise_for :users
+
 end

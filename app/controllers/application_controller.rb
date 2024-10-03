@@ -1,14 +1,12 @@
 class ApplicationController < ActionController::Base
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
+  before_action :configure_permitted_parameters, if: :devise_controller?
 
-  private
-  # Reusable flash rendering
-  def render_flash_notice(message)
-    turbo_stream.replace('flash-messages', partial: 'shared/flash', locals: { flash: { notice: message } })
-  end
+  protected
 
-  def render_flash_alert(message)
-    turbo_stream.replace('flash-messages', partial: 'shared/flash', locals: { flash: { alert: message } })
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:name])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:name])
   end
 end

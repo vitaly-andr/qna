@@ -1,0 +1,86 @@
+// Entry point for your Sass build
+@import "bulma/bulma";
+
+.outer-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 98vw;
+  margin-right: 10px;
+
+}
+.section.show {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin: 0 auto;
+  height: 100vh;
+  width: 95%;
+}
+.card-custom {
+  max-width: 90%;
+  margin-left: auto;
+  margin-top: 1rem;
+  margin-right: 0;
+  background-color: #f5f5f5;
+}
+.question {
+  @extend .card;
+  @extend .card-custom;
+
+}
+.answer {
+  @extend .card;
+  @extend .card-custom;
+  background-color: #f5f5f5;
+  max-width: 80%;
+
+}
+.best-answer {
+  background-color: #fff9c4; /* Светлый жёлтый оттенок для фона */
+  border: 1px solid #ffeb3b; /* Насыщенная золотистая граница */
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+}
+
+#question-links {
+  max-height: 200px;
+  overflow-y: auto;
+}
+.delete-file-link {
+  @extend .button;
+  @extend .is-danger;
+  @extend .is-small;
+  margin-left: 10px;
+}
+.microlink_card {
+  max-width: 100%;
+  padding: 0.5rem;
+}
+
+.microlink_card p,a {
+  font-size: 1rem;
+}
+
+$collapse-transition-speed: .2s !default;
+$collapse-transition-style: ease !default;
+$message-body-padding: 1.25em 1.5em !default;
+
+.is-collapsible {
+  height: 0;
+  overflow-y: hidden;
+  transition: height $collapse-transition-speed $collapse-transition-style;
+
+  &.is-active {
+    transition: height $collapse-transition-speed $collapse-transition-style;
+  }
+
+  &.message-body {
+    padding: 0 !important;
+
+    .message-body-content {
+      padding: $message-body-padding;
+    }
+  }
+}
