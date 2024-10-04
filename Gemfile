@@ -32,6 +32,7 @@ gem 'omniauth-oauth2', '~> 1.8'
 gem 'rack', '~> 3.1'
 gem 'rack-session', '~> 2.0'
 gem 'rackup', '~> 2.1'
+gem 'omniauth-vkontakte'
 
 
 gem "devise"
