@@ -3,14 +3,14 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
-         :omniauthable, omniauth_providers: %i[github]
+         :omniauthable, omniauth_providers: %i[github google_oauth2]
   has_many :questions, foreign_key: 'author_id'
   has_many :answers, foreign_key: 'author_id'
   has_many :rewards, dependent: :nullify
   validates :name, presence: true
 
   def self.from_omniauth(auth, emails)
-    user = User.find_by(email: emails)
+    user = User.find_by(email: emails) || User.find_by(email: auth.info.email)
 
     if user
       user.update(provider: auth.provider, uid: auth.uid)
@@ -18,7 +18,7 @@ class User < ApplicationRecord
       user = User.create(
         provider: auth.provider,
         uid: auth.uid,
-        email: emails.first,
+        email: auth.info.email || emails.first,
         name: auth.info.name || auth.info.nickname,
         password: Devise.friendly_token[0, 20]
       )

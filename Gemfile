@@ -23,11 +23,15 @@ gem 'image_processing'
 gem 'requestjs-rails'
 gem 'jsbundling-rails'
 gem 'cssbundling-rails'
-gem 'omniauth'
-gem 'omniauth-github'
-gem 'omniauth-rails_csrf_protection'
+gem 'omniauth', '~> 2.1'
+gem 'omniauth-github', '~> 2.0'
+gem 'omniauth-rails_csrf_protection', '~> 1.0'
 gem 'rest-client'
-
+gem 'omniauth-google-oauth2', '~> 1.2'
+gem 'omniauth-oauth2', '~> 1.8'
+gem 'rack', '~> 3.1'
+gem 'rack-session', '~> 2.0'
+gem 'rackup', '~> 2.1'
 
 
 gem "devise"
