@@ -23,7 +23,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
    def vkontakte
       auth = request.env['omniauth.auth']
 
-      email = auth.info.email || generate_temp_email(auth.uid)
+      email = auth.info.email || generate_temp_email(auth.uid, 'vkontakte')
 
       @user = User.from_omniauth(auth, [email])
 
@@ -37,52 +37,33 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
 
    def yandex
-      code = request.params['code']
-      encoded_credentials = Base64.strict_encode64("#{ENV['YANDEX_CLIENT_ID']}:#{ENV['YANDEX_CLIENT_SECRET']}")
-      device_id = SecureRandom.uuid
-      device_name = "MyDevDevice"
+      auth = request.env['omniauth.auth']
+
+      token = auth['credentials']['token']
 
       begin
-         token_response = RestClient.post("https://oauth.yandex.ru/token",
-                                          {
-                                            grant_type: 'authorization_code',
-                                            code: code,
-                                            redirect_uri: 'https://dev.andrianoff.online/users/auth/yandex/callback',
-                                            device_id: device_id,
-                                            device_name: device_name
-                                          }.to_query,
-                                          {
-                                            content_type: 'application/x-www-form-urlencoded',
-                                            Authorization: "Basic #{encoded_credentials}"
-                                          }
-         )
+         user_info_response = RestClient.get('https://login.yandex.ru/info', {
+           Authorization: "Bearer #{token}"
+         })
 
+         user_info = JSON.parse(user_info_response.body)
 
-         access_token = JSON.parse(token_response.body)["access_token"]
+         auth['uid'] = user_info['id']
+         auth['info'] ||= {}
+         auth['info']['name'] = user_info['real_name'] || user_info['display_name'] || "#{user_info['first_name']} #{user_info['last_name']}".strip
+         auth['info']['email'] = user_info['default_email'] || auth.info.email
+         auth['info']['first_name'] = user_info['first_name']
+         auth['info']['last_name'] = user_info['last_name']
 
       rescue RestClient::ExceptionWithResponse => e
-         error_response = e.response
-         Rails.logger.error "Error: #{error_response}"
-         redirect_to root_path, alert: "Authentication failed: #{error_response}"
+         Rails.logger.error "Failed to fetch user info from Yandex: #{e.response}"
+         redirect_to root_path, alert: "Failed to fetch user information from Yandex."
+         return
       end
 
-      user_info = RestClient.get("https://login.yandex.ru/info", {
-        Authorization: "Bearer #{access_token}"
-      })
+      email = auth.info.email || generate_temp_email(auth['uid'], 'yandex')
 
-      user_data = JSON.parse(user_info.body)
-
-      auth = {
-        'provider' => 'yandex',
-        'uid' => user_data['id'],
-        'info' => {
-          'email' => user_data['default_email'],
-          'name' => user_data['real_name'] || user_data['display_name'],
-          'nickname' => user_data['login']
-        }
-      }
-
-      @user = User.from_omniauth(auth, [user_data['default_email']])
+      @user = User.from_omniauth(auth, [email])
 
       if @user.persisted?
          sign_in_and_redirect @user, event: :authentication
@@ -92,10 +73,8 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       end
    end
 
-   private
-
-   def generate_temp_email(uid)
-      "#{uid}@vkontakte.com"
+   def generate_temp_email(uid, provider)
+      "#{uid}@#{provider}.com"
    end
 
 

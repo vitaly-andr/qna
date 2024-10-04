@@ -33,6 +33,7 @@ gem 'rack', '~> 3.1'
 gem 'rack-session', '~> 2.0'
 gem 'rackup', '~> 2.1'
 gem 'omniauth-vkontakte'
+# gem "omniauth-yandex" #only supports the old protocols of the 1st version, leaving this comment intentionally.
 
 
 gem "devise"
