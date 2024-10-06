@@ -23,17 +23,13 @@ gem 'image_processing'
 gem 'requestjs-rails'
 gem 'jsbundling-rails'
 gem 'cssbundling-rails'
-gem 'omniauth', '~> 2.1'
-gem 'omniauth-github', '~> 2.0'
-gem 'omniauth-rails_csrf_protection', '~> 1.0'
+gem 'omniauth'
+gem 'omniauth-github'
+gem 'omniauth-rails_csrf_protection'
 gem 'rest-client'
-gem 'omniauth-google-oauth2', '~> 1.2'
-gem 'omniauth-oauth2', '~> 1.8'
-gem 'rack', '~> 3.1'
-gem 'rack-session', '~> 2.0'
-gem 'rackup', '~> 2.1'
+gem 'omniauth-google-oauth2'
+gem 'omniauth-oauth2'
 gem 'omniauth-vkontakte'
-# gem "omniauth-yandex" #only supports the old protocols of the 1st version, leaving this comment intentionally.
 
 
 gem "devise"

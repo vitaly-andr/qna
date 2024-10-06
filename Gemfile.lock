@@ -479,17 +479,14 @@ DEPENDENCIES
   jbuilder
   jsbundling-rails
   launchy
-  omniauth (~> 2.1)
-  omniauth-github (~> 2.0)
-  omniauth-google-oauth2 (~> 1.2)
-  omniauth-oauth2 (~> 1.8)
-  omniauth-rails_csrf_protection (~> 1.0)
+  omniauth
+  omniauth-github
+  omniauth-google-oauth2
+  omniauth-oauth2
+  omniauth-rails_csrf_protection
   omniauth-vkontakte
   pg (~> 1.1)
   puma (>= 5.0)
-  rack (~> 3.1)
-  rack-session (~> 2.0)
-  rackup (~> 2.1)
   rails (~> 7.2.1)
   rails-controller-testing
   redis (>= 4.0.1)

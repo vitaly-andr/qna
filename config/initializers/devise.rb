@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require_relative '../../lib/omniauth/strategies/yandex'
 
 # Assuming you have not yet modified this file, each configuration option below
 # is set to its default value. Note that some are commented out while others
@@ -274,7 +273,6 @@ Devise.setup do |config|
   # up on your models and hooks.
   config.omniauth :github, ENV['GITHUB_APP_ID'], ENV['GITHUB_APP_SECRET'], scope: 'read:user, user:email'
   config.omniauth :google_oauth2, ENV['GOOGLE_CLIENT_ID'], ENV['GOOGLE_CLIENT_SECRET'], scope: 'userinfo.email, userinfo.profile'
-  # config.omniauth :yandex, ENV['YANDEX_CLIENT_ID'], ENV['YANDEX_CLIENT_SECRET'], scope: 'login:email login:info'
   config.omniauth :vkontakte, ENV['VK_APP_ID'], ENV['VK_APP_SECRET'], scope: 'email', image_size: 'original'
 
 
