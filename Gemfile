@@ -62,6 +62,8 @@ group :development, :test do
   gem "factory_bot_rails"
   gem 'ffaker'
   gem "simplecov", require: false
+  gem 'webmock'
+
 
   gem 'dotenv-rails'
 
