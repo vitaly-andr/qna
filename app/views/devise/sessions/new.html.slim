@@ -23,4 +23,6 @@ div data-turbo="false"
       .control
         = f.submit "Log in", class: 'button is-primary'
 
+  = link_to 'Sign in with Yandex', users_yandex_oauth2_new_path, class: 'btn btn-primary', data: { turbo: false }
+
   = render "devise/shared/links"

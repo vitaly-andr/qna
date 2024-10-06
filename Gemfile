@@ -23,17 +23,17 @@ gem 'image_processing'
 gem 'requestjs-rails'
 gem 'jsbundling-rails'
 gem 'cssbundling-rails'
-gem 'omniauth', '~> 2.1'
-gem 'omniauth-github', '~> 2.0'
-gem 'omniauth-rails_csrf_protection', '~> 1.0'
+# gem 'omniauth', '~> 2.1'
+# gem 'omniauth-github', '~> 2.0'
+# gem 'omniauth-rails_csrf_protection', '~> 1.0'
 gem 'rest-client'
-gem 'omniauth-google-oauth2', '~> 1.2'
-gem 'omniauth-oauth2', '~> 1.8'
+# gem 'omniauth-google-oauth2', '~> 1.2'
+# gem 'omniauth-oauth2', '~> 1.8'
 gem 'rack', '~> 3.1'
-gem 'rack-session', '~> 2.0'
-gem 'rackup', '~> 2.1'
-gem 'omniauth-vkontakte'
-# gem "omniauth-yandex" #only supports the old protocols of the 1st version, leaving this comment intentionally.
+# gem 'rack-session', '~> 2.0'
+# gem 'rackup', '~> 2.1'
+# gem 'omniauth-vkontakte'
+gem 'oauth2'
 
 
 gem "devise"
@@ -41,8 +41,9 @@ gem "devise"
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 gem "jbuilder"
 # Use Redis adapter to run Action Cable in production
-gem "redis", ">= 4.0.1"
-
+gem 'redis-rails'
+gem "redis", "~> 5.0" # Redis client for Ruby
+gem "redis-actionpack", "~> 5.3" # Redis session store for ActionPack
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
 
