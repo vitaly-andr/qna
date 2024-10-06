@@ -4,7 +4,6 @@ RSpec.describe 'GitHub OAuth2', type: :request do
   before do
     OmniAuth.config.test_mode = true
 
-    # Manually create mock authentication data for GitHub OAuth2
     OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new({
                                                                   provider: 'github',
                                                                   uid: '123456',
@@ -19,15 +18,10 @@ RSpec.describe 'GitHub OAuth2', type: :request do
                                                                   }
                                                                 })
 
-    stub_request(:get, 'https://api.github.com/user/emails')
-      .with(headers: { 'Authorization' => 'token mock_token' })
-      .to_return(status: 200, body: [
-        { email: 'primary@example.com', primary: true },
-        { email: 'secondary@example.com', primary: false }
-      ].to_json, headers: { 'Content-Type' => 'application/json' })
+    allow(GithubApiService).to receive(:new).with('mock_token').and_return(double(fetch_user_emails: ['primary@example.com']))
   end
 
-  it 'authenticates the user via GitHub, fetches emails, and redirects' do
+  it 'authenticates the user via GitHub, fetches emails via service, and redirects' do
     get '/users/auth/github/callback'
 
     expect(response).to redirect_to(root_path)
