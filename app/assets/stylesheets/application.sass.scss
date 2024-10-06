@@ -83,4 +83,17 @@ $message-body-padding: 1.25em 1.5em !default;
       padding: $message-body-padding;
     }
   }
+
+  .card-centered {
+    margin-left: auto;
+    margin-right: auto;
+
+    @media (min-width: 768px) {
+      width: 33.33%;
+    }
+
+    @media (max-width: 767px) {
+      width: 95%;
+    }
+  }
 }

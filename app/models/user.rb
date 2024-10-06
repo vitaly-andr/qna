@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-  devise :database_authenticatable, :registerable,
+  #  :lockable, :timeoutable, :trackable and :omniauthable
+  devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :validatable,
          :omniauthable, omniauth_providers: %i[github google_oauth2 vkontakte ]
   has_many :questions, foreign_key: 'author_id'
@@ -9,10 +9,9 @@ class User < ApplicationRecord
   has_many :rewards, dependent: :nullify
   validates :name, presence: true
 
-  def self.from_omniauth(auth, emails)
+  def self.from_omniauth(auth, emails, email_generated = false)
     email = emails.first&.downcase.strip || auth.info.email&.downcase.strip
 
-    Rails.logger.debug "Searching for user with email: #{email}"
     user = User.find_by(email: email)
 
     if user
@@ -20,20 +19,28 @@ class User < ApplicationRecord
         Rails.logger.error "Failed to update user: #{user.errors.full_messages.join(', ')}"
       end
     else
+      temporary_password = Devise.friendly_token[0, 20]
+
       user = User.new(
         provider: auth.provider,
         uid: auth.uid,
         email: auth.info.email || emails.first,
         name: auth.info.name || auth.info.nickname,
-        password: Devise.friendly_token[0, 20]
+        password: temporary_password
       )
+
+      if email_generated
+        user.skip_confirmation_notification!
+      else
+        user.confirmed_at = Time.now
+      end
 
       unless user.save
         Rails.logger.error "Failed to create user: #{user.errors.full_messages.join(', ')}"
       end
     end
 
-    user
+    return user, temporary_password
   end
 
   def author_of?(resource)

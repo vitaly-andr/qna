@@ -63,7 +63,8 @@ group :development, :test do
   gem 'ffaker'
   gem "simplecov", require: false
   gem 'webmock'
-
+  gem 'letter_opener'
+  gem 'capybara-email'
 
   gem 'dotenv-rails'
 
