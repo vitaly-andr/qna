@@ -9,8 +9,12 @@ class User < ApplicationRecord
   has_many :rewards, dependent: :nullify
   validates :name, presence: true
 
-  def self.from_omniauth(auth, emails, email_generated = false)
-    email = emails.first&.downcase.strip || auth.info.email&.downcase.strip
+  def self.from_omniauth(auth, emails = [])
+    email = (emails.first&.downcase&.strip || auth.info.email&.downcase&.strip).to_s
+    if email.blank?
+      email = generate_temp_email(auth.uid, auth.provider)
+      email_generated = true
+    end
 
     user = User.find_by(email: email)
 
@@ -24,7 +28,7 @@ class User < ApplicationRecord
       user = User.new(
         provider: auth.provider,
         uid: auth.uid,
-        email: auth.info.email || emails.first,
+        email: email,
         name: auth.info.name || auth.info.nickname,
         password: temporary_password
       )
@@ -45,5 +49,10 @@ class User < ApplicationRecord
 
   def author_of?(resource)
     resource.author_id == id
+  end
+
+  private
+  def self.generate_temp_email(uid, provider)
+    "#{uid}@#{provider}.com"
   end
 end

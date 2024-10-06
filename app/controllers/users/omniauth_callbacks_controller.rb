@@ -1,6 +1,5 @@
 
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
-   # skip_before_action :verify_authenticity_token, only: :yandex
 
    def github
       auth = request.env['omniauth.auth']
@@ -9,7 +8,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       response = RestClient.get('https://api.github.com/user/emails', { Authorization: "token #{token}" })
       emails = JSON.parse(response.body).map { |email| email['email'] }
 
-      @user = User.from_omniauth(auth, emails)
+      @user, temporary_password = User.from_omniauth(auth, emails)
 
       sign_in_and_redirect @user
    end
@@ -17,22 +16,14 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
    def google_oauth2
       auth = request.env['omniauth.auth']
 
-      @user = User.from_omniauth(auth, [auth.info.email])
+      @user, temporary_password = User.from_omniauth(auth)
       sign_in_and_redirect @user
    end
 
    def vkontakte
       auth = request.env['omniauth.auth']
 
-      if auth.info.email.nil?
-         email = generate_temp_email(auth.uid, 'vkontakte')
-         email_generated = true
-      else
-         email = auth.info.email
-         email_generated = false
-      end
-
-      @user, temporary_password = User.from_omniauth(auth, [email], email_generated)
+      @user, temporary_password = User.from_omniauth(auth)
 
       if @user.persisted?
          session[:temporary_password] = temporary_password
@@ -48,10 +39,6 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       else
          redirect_to new_user_registration_url, alert: "Authentication failed."
       end
-   end
-
-   def generate_temp_email(uid, provider)
-      "#{uid}@#{provider}.com"
    end
 
 end

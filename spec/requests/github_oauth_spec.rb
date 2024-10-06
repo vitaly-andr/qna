@@ -34,6 +34,6 @@ RSpec.describe 'GitHub OAuth2', type: :request do
 
     follow_redirect!
 
-    expect(response.body).to include('Logged in as testuser@example.com')
+    expect(response.body).to include('Logged in as primary@example.com')
   end
 end

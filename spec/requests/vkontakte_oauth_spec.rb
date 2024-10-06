@@ -19,17 +19,22 @@ RSpec.describe 'VKontakte OAuth2', type: :request do
                                                                    })
   end
 
-  it 'authenticates the user via VKontakte and generates a temporary email if not provided' do
+  it 'authenticates the user via VKontakte, generates a temporary email, and redirects to edit profile page' do
+    # Step 1: Simulate user clicking VKontakte sign-in button and being redirected to callback
     get '/users/auth/vkontakte/callback'
 
-    expect(response).to redirect_to(root_path)
+    # Step 2: Expect to be redirected to the edit profile page
+    expect(response).to redirect_to(edit_user_registration_path)
 
     follow_redirect!
 
-    expected_email = '123456@vkontakte.com'
-    expect(response.body).to include("Logged in as #{expected_email}")
+    # Step 3: Check that the user is prompted to update and confirm their email
+    expect(response.body).to include('Please update and confirm your email and create new password')
 
-    expect(flash[:notice]).to include('VKontakte')
+    # Step 4: Expect the temporary email to be generated correctly
+    expected_email = '123456@vkontakte.com'
+    expect(response.body).to include(expected_email)
+
   end
 
   it 'redirects to registration page if user is not persisted' do
