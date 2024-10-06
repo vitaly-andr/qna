@@ -1,0 +1,21 @@
+div data-turbo="false"
+  = turbo_frame_tag 'main' do
+    .card.card-centered
+      .card-content
+        h2.title Resend confirmation instructions
+
+        = form_for(resource, as: resource_name, url: confirmation_path(resource_name)) do |f|
+          .field
+            .control
+              = render "devise/shared/error_messages", resource: resource
+
+          .field
+            .control
+              = f.label :email, class: 'label'
+              = f.email_field :email, autofocus: true, autocomplete: "email", class: 'input', value: (resource.pending_reconfirmation? ? resource.unconfirmed_email : resource.email)
+
+          .field
+            .control
+              = f.submit "Resend confirmation instructions", class: 'button is-primary'
+
+      = render "devise/shared/links"

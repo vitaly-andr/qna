@@ -1,25 +1,28 @@
-= turbo_frame_tag 'main' do
-  h2.title Log in
+div data-turbo="false"
+  = turbo_frame_tag 'main' do
+    .card.card-centered
+      .card-content
+        h2.title Log in
 
-  = form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
-    .field
-      .control
-        = f.label :email, class: 'label'
-        = f.email_field :email, autofocus: true, autocomplete: "email", class: 'input', id: 'user_email'
+        = form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
+          .field
+            .control
+              = f.label :email, class: 'label'
+              = f.email_field :email, autofocus: true, autocomplete: "email", class: 'input', id: 'user_email'
 
-    .field
-      .control
-        = f.label :password, class: 'label'
-        = f.password_field :password, autocomplete: "current-password", class: 'input', id: 'user_password'
+          .field
+            .control
+              = f.label :password, class: 'label'
+              = f.password_field :password, autocomplete: "current-password", class: 'input', id: 'user_password'
 
-    - if devise_mapping.rememberable?
-      .field
-        .control
-          = f.check_box :remember_me
-          = f.label :remember_me, class: 'checkbox'
+          - if devise_mapping.rememberable?
+            .field
+              .control
+                = f.check_box :remember_me
+                = f.label :remember_me, class: 'checkbox'
 
-    .field
-      .control
-        = f.submit "Log in", class: 'button is-primary'
+          .field
+            .control
+              = f.submit "Log in", class: 'button is-primary'
 
-  = render "devise/shared/links"
+        = render "devise/shared/links"

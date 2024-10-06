@@ -23,8 +23,13 @@ gem 'image_processing'
 gem 'requestjs-rails'
 gem 'jsbundling-rails'
 gem 'cssbundling-rails'
-
-
+gem 'omniauth'
+gem 'omniauth-github'
+gem 'omniauth-rails_csrf_protection'
+gem 'rest-client'
+gem 'omniauth-google-oauth2'
+gem 'omniauth-oauth2'
+gem 'omniauth-vkontakte'
 
 
 gem "devise"
@@ -56,6 +61,12 @@ group :development, :test do
   gem "rspec-rails"
   gem "factory_bot_rails"
   gem 'ffaker'
+  gem "simplecov", require: false
+  gem 'webmock'
+  gem 'letter_opener'
+  gem 'capybara-email'
+
+  gem 'dotenv-rails'
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false
@@ -67,6 +78,9 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+  # Generate a diagram of all the models in the app by running:
+  # bundle exec erd
+  gem "rails-erd"
 end
 
 group :test do

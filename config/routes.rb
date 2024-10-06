@@ -34,6 +34,6 @@ Rails.application.routes.draw do
   end
   resources :live_feed, only: [ :index ]
 
-  devise_for :users
+  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }
 
 end

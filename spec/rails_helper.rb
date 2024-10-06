@@ -9,7 +9,10 @@ require 'rspec/rails'
 require 'selenium-webdriver'
 require 'capybara/cuprite'
 require 'capybara/rspec'
+require 'webmock/rspec'
+require 'capybara/email/rspec'
 
+WebMock.disable_net_connect!(allow_localhost: true)
 
 Capybara.register_driver :cuprite do |app|
   Capybara::Cuprite::Driver.new(app, window_size: [1200, 800], browser_options: { 'no-sandbox' => nil })
@@ -59,6 +62,8 @@ RSpec.configure do |config|
   config.before(:each, type: :feature, js: true) do
     Capybara.javascript_driver = :cuprite
   end
+
+  config.include Capybara::Email::DSL
 
   config.before(:each, type: :system, js: true) do
     driven_by :selenium_chrome_headless
