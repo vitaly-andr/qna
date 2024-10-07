@@ -1,10 +1,11 @@
 require 'rails_helper'
 
-RSpec.describe GithubApiService do
+RSpec.describe GithubAdapter::API do
   let(:token) { 'mock_token' }
-  let(:service) { described_class.new(token) }
 
   describe '#fetch_user_emails' do
+    subject(:fetch_user_emails) { described_class.fetch_user_emails(token) }
+
     context 'when the request is successful' do
       before do
         stub_request(:get, 'https://api.github.com/user/emails')
@@ -13,7 +14,7 @@ RSpec.describe GithubApiService do
       end
 
       it 'returns the emails' do
-        expect(service.fetch_user_emails).to eq(['primary@example.com'])
+        expect(fetch_user_emails).to eq(['primary@example.com'])
       end
     end
 
@@ -25,7 +26,7 @@ RSpec.describe GithubApiService do
       end
 
       it 'logs the error and returns an empty array' do
-        expect(service.fetch_user_emails).to eq([])
+        expect(fetch_user_emails).to eq([])
       end
     end
   end
