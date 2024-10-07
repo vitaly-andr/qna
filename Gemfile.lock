@@ -223,6 +223,7 @@ GEM
     msgpack (1.7.2)
     multi_xml (0.7.1)
       bigdecimal (~> 3.1)
+    mysql2 (0.5.6)
     net-http (0.4.1)
       uri
     net-imap (0.4.15)
@@ -280,7 +281,6 @@ GEM
     parser (3.3.4.2)
       ast (~> 2.4.1)
       racc
-    pg (1.5.7)
     psych (5.1.2)
       stringio
     public_suffix (6.0.1)
@@ -509,13 +509,13 @@ DEPENDENCIES
   jsbundling-rails
   launchy
   letter_opener
+  mysql2 (~> 0.5)
   omniauth
   omniauth-github
   omniauth-google-oauth2
   omniauth-oauth2
   omniauth-rails_csrf_protection
   omniauth-vkontakte
-  pg (~> 1.1)
   puma (>= 5.0)
   rails (~> 7.2.1)
   rails-controller-testing

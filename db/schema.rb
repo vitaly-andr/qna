@@ -79,7 +79,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_06_121554) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "author_id", null: false
-    t.integer "best_answer_id"
+    t.bigint "best_answer_id"
     t.index ["author_id"], name: "index_questions_on_author_id"
   end
 
