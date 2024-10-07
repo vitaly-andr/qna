@@ -38,7 +38,6 @@
 /.idea/vcs.xml
 /.idea/modules.xml
 /.idea/misc.xml
-/config/database.yml
 
 /vendor/javascript/.keep
 /.idea/codeStyles/codeStyleConfig.xml
