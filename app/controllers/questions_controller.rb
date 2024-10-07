@@ -3,12 +3,14 @@ class QuestionsController < ApplicationController
   before_action :set_question, only: [ :show, :edit, :update, :destroy, :mark_best_answer, :unmark_best_answer ]
 
   def index
-    @questions = Question.all
+    @questions = policy_scope(Question)
     render template: 'questions/index', locals: { questions: @questions }
 
   end
 
   def show
+    authorize @question
+
     @best_answer = @question.best_answer
     @answers = @question.answers.where.not(id: @question.best_answer_id).order(updated_at: :desc)
     @links = @question.links
@@ -24,12 +26,15 @@ class QuestionsController < ApplicationController
   end
 
   def edit
+    authorize @question
     @question.links.build if @question.links.blank?
     @question.build_reward if @question.reward.blank?
   end
 
   def create
     @question = current_user.questions.build(question_params)
+    authorize @question
+
     if @question.save
       questions = Question.all
 
@@ -53,13 +58,15 @@ class QuestionsController < ApplicationController
   end
 
   def update
-    return handle_unauthorized_update unless current_user.author_of?(@question)
+    # return handle_unauthorized_update unless current_user.author_of?(@question)
+    authorize @question
 
     @question.update(question_params) ? handle_successful_update : handle_failed_update
   end
 
   def destroy
-    return handle_unauthorized_destroy unless current_user.author_of?(@question)
+    # return handle_unauthorized_destroy unless current_user.author_of?(@question)
+    authorize @question
 
     @question.destroy
     handle_successful_destroy
@@ -67,43 +74,43 @@ class QuestionsController < ApplicationController
 
   def mark_best_answer
     @answer = @question.answers.find(params[:answer_id])
+    authorize @question, :mark_best_answer?
 
-    if current_user.author_of?(@question)
-      if @question.update(best_answer: @answer)
-        @question.reward.update(user: @answer.author) if @question.reward
-        @best_answer = @question.best_answer
-        @answers = @question.answers.where.not(id: @question.best_answer_id).order(updated_at: :desc)
-        respond_to do |format|
-          format.turbo_stream { render turbo_stream: turbo_stream.update("answers", partial: 'answers/answers_list') }
-          format.html { redirect_to @question, notice: 'Best answer selected.' }
-        end
-
-      else
-        respond_to do |format|
-          # format.turbo_stream { render turbo_stream: turbo_stream.replace('best_answer', partial: 'questions/best_answer', locals: { question: @question }), status: :unprocessable_entity } # Just for future
-          format.html { redirect_to @question, alert: 'Failed to select the best answer.', status: :unprocessable_entity }
-        end
+    if @question.update(best_answer: @answer)
+      @question.reward.update(user: @answer.author) if @question.reward
+      @best_answer = @question.best_answer
+      @answers = @question.answers.where.not(id: @question.best_answer_id).order(updated_at: :desc)
+      respond_to do |format|
+        format.turbo_stream { render turbo_stream: turbo_stream.update("answers", partial: 'answers/answers_list') }
+        format.html { redirect_to @question, notice: 'Best answer selected.' }
       end
+
     else
-      redirect_to @question, alert: 'You are not authorized to select the best answer.', status: :forbidden
+      respond_to do |format|
+        # format.turbo_stream { render turbo_stream: turbo_stream.replace('best_answer', partial: 'questions/best_answer', locals: { question: @question }), status: :unprocessable_entity } # Just for future
+        format.html { redirect_to @question, alert: 'Failed to select the best answer.', status: :unprocessable_entity }
+      end
     end
+    # else
+    #   redirect_to @question, alert: 'You are not authorized to select the best answer.', status: :forbidden
+    # end
   end
 
   def unmark_best_answer
-    if current_user == @question.author
-      if @question.update(best_answer: nil)
-        @question.reward.update(user: nil) if @question.reward
-        @answers = @question.answers.order(updated_at: :desc)
-        respond_to do |format|
-          format.html { redirect_to @question }
-          format.turbo_stream { render turbo_stream: turbo_stream.update("answers", partial: 'answers/answers_list') }
-        end
-      else
-        redirect_to @question, alert: 'Failed to unmark the best answer.', status: :unprocessable_entity
+    authorize @question, :unmark_best_answer?
+    if @question.update(best_answer: nil)
+      @question.reward.update(user: nil) if @question.reward
+      @answers = @question.answers.order(updated_at: :desc)
+      respond_to do |format|
+        format.html { redirect_to @question }
+        format.turbo_stream { render turbo_stream: turbo_stream.update("answers", partial: 'answers/answers_list') }
       end
     else
-      redirect_to @question, alert: 'You are not authorized to unmark the best answer.', status: :forbidden
+      redirect_to @question, alert: 'Failed to unmark the best answer.', status: :unprocessable_entity
     end
+    # else
+    #   redirect_to @question, alert: 'You are not authorized to unmark the best answer.', status: :forbidden
+    # end
   end
 
   private

@@ -1,9 +1,10 @@
 class VotesController < ApplicationController
   before_action :authenticate_user!
   before_action :find_votable
-  before_action :ensure_not_own_votable, only: [:create]
 
   def create
+    authorize @votable
+
     if @votable.voted_by?(current_user)
       render json: { error: 'You have already voted' }, status: :unprocessable_entity
     else
@@ -13,6 +14,8 @@ class VotesController < ApplicationController
   end
 
   def destroy
+    authorize @votable
+
     if @votable.voted_by?(current_user)
       @votable.cancel_vote_by(current_user)
       render json: { rating: @votable.rating }
@@ -27,9 +30,4 @@ class VotesController < ApplicationController
     @votable = params[:votable_type].classify.constantize.find(params[:votable_id])
   end
 
-  def ensure_not_own_votable
-    if @votable.author == current_user
-      render json: { error: 'You cannot vote for your own content' }, status: :forbidden
-    end
-  end
 end

@@ -30,6 +30,7 @@ gem 'rest-client'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-oauth2'
 gem 'omniauth-vkontakte'
+gem 'pundit'
 
 
 gem "devise"

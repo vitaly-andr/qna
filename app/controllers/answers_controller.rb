@@ -12,6 +12,7 @@ class AnswersController < ApplicationController
   def create
     @answer = @question.answers.build(answer_params)
     @answer.author = current_user
+    authorize @answer
 
     respond_to do |format|
       if @answer.save
@@ -31,16 +32,19 @@ class AnswersController < ApplicationController
   end
 
   def edit
-    unless current_user.author_of?(@answer)
-      flash[:alert] = 'You can edit only your own answers.'
-      redirect_to @answer.question
-    end
+    # unless current_user.author_of?(@answer)
+    #   flash[:alert] = 'You can edit only your own answers.'
+    #   redirect_to @answer.question
+    # end
+    authorize @answer
+
     @answer.links.build if @answer.links.blank?
   end
 
   def update
     @question = @answer.question
-    return handle_unauthorized_update unless current_user.author_of?(@answer)
+    # return handle_unauthorized_update unless current_user.author_of?(@answer)
+    authorize @answer
 
     if @answer.update(answer_params)
       respond_to do |format|
@@ -60,8 +64,10 @@ class AnswersController < ApplicationController
   def destroy
     @question = @answer.question
     respond_to do |format|
-      if current_user.author_of?(@answer)
-        @answer.destroy
+      # if current_user.author_of?(@answer)
+      authorize @answer
+
+      @answer.destroy
         format.html { redirect_to @question, notice: "Your answer was successfully deleted." }
         format.turbo_stream do
           if turbo_frame_request?
@@ -71,11 +77,11 @@ class AnswersController < ApplicationController
             ]
           end
         end
-      else
-        format.html { redirect_to @question, alert: "You can delete only your own answers.", status: :forbidden }
-        format.turbo_stream { render turbo_stream: helpers.render_flash_alert("You can delete only your own answers."),
-                                     status: :forbidden }
-      end
+      # else
+      #   format.html { redirect_to @question, alert: "You can delete only your own answers.", status: :forbidden }
+      #   format.turbo_stream { render turbo_stream: helpers.render_flash_alert("You can delete only your own answers."),
+      #                                status: :forbidden }
+      # end
     end
   end
 
