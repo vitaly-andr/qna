@@ -502,6 +502,7 @@ DEPENDENCIES
   devise
   dotenv-rails
   factory_bot_rails
+  faraday
   ffaker
   image_processing
   importmap-rails

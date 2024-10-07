@@ -10,7 +10,7 @@ RSpec.describe GithubAdapter::API do
       before do
         stub_request(:get, 'https://api.github.com/user/emails')
           .with(headers: { 'Authorization' => "token #{token}" })
-          .to_return(status: 200, body: '[{"email": "primary@example.com"}]', headers: {})
+          .to_return(status: 200, body: '[{"email": "primary@example.com"}]', headers: {'Content-Type': 'application/json'})
       end
 
       it 'returns the emails' do

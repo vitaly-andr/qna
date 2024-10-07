@@ -1,14 +1,17 @@
 module GithubAdapter
   class API
-    GITHUB_API_URL = 'https://api.github.com/user/emails'
+
+    class_attribute :connection
 
     def self.fetch_user_emails(token)
-      headers = { Authorization: "token #{token}" }
-      response = RestClient.get(GITHUB_API_URL, headers)
-      JSON.parse(response.body).map { |email| email['email'] }
-    rescue RestClient::ExceptionWithResponse => e
+      headers = { Authorization: "token #{token}"}
+      response = connection.get("/user/emails", nil, headers)
+      response.body.map { |email| email[:email] }
+    rescue Faraday::Error => e
       Rails.logger.error "GitHub API Error: #{e.message}"
       []
     end
+
+
   end
 end

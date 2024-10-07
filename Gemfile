@@ -94,3 +94,4 @@ group :test do
 end
 
 gem "mysql2", "~> 0.5"
+gem 'faraday'
