@@ -5,7 +5,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       auth = request.env['omniauth.auth']
       token = auth['credentials']['token']
 
-      emails = GithubApiService.new(token).fetch_user_emails
+      emails = GithubAdapter::API.fetch_user_emails(token)
 
       @user, temporary_password = User.from_omniauth(auth, emails)
 

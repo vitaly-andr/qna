@@ -17,7 +17,7 @@ RSpec.feature "GitHubOAuth", type: :feature do
                                                                   }
                                                                 })
 
-    allow(GithubApiService).to receive(:new).with('mock_token').and_return(double(fetch_user_emails: ['githubuser@example.com']))
+    allow(GithubAdapter::API).to receive(:fetch_user_emails).with('mock_token').and_return(['githubuser@example.com'])
   end
 
   scenario 'User signs in via GitHub and is redirected' do

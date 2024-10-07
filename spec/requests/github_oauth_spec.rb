@@ -18,7 +18,7 @@ RSpec.describe 'GitHub OAuth2', type: :request do
                                                                   }
                                                                 })
 
-    allow(GithubApiService).to receive(:new).with('mock_token').and_return(double(fetch_user_emails: ['primary@example.com']))
+    allow(GithubAdapter::API).to receive(:fetch_user_emails).with('mock_token').and_return(['primary@example.com'])
   end
 
   it 'authenticates the user via GitHub, fetches emails via service, and redirects' do
