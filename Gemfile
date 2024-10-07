@@ -92,4 +92,6 @@ group :test do
   gem 'shoulda-matchers', '~> 6.0'
   gem 'rails-controller-testing'
   gem 'launchy'
+  gem 'pundit-matchers'
+
 end
