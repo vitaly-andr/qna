@@ -34,10 +34,6 @@ class AnswersController < ApplicationController
   def edit
     @question = @answer.question
 
-    # unless current_user.author_of?(@answer)
-    #   flash[:alert] = 'You can edit only your own answers.'
-    #   redirect_to @answer.question
-    # end
     authorize @answer
 
     @answer.links.build if @answer.links.blank?
@@ -65,24 +61,18 @@ class AnswersController < ApplicationController
   def destroy
     @question = @answer.question
     respond_to do |format|
-      # if current_user.author_of?(@answer)
       authorize @answer
 
       @answer.destroy
-        format.html { redirect_to @question, notice: "Your answer was successfully deleted." }
-        format.turbo_stream do
-          if turbo_frame_request?
-            render turbo_stream: [
-              turbo_stream.remove(@answer),
-              helpers.render_flash_notice("Your answer was successfully deleted.")
-            ]
-          end
+      format.html { redirect_to @question, notice: "Your answer was successfully deleted." }
+      format.turbo_stream do
+        if turbo_frame_request?
+          render turbo_stream: [
+            turbo_stream.remove(@answer),
+            helpers.render_flash_notice("Your answer was successfully deleted.")
+          ]
         end
-      # else
-      #   format.html { redirect_to @question, alert: "You can delete only your own answers.", status: :forbidden }
-      #   format.turbo_stream { render turbo_stream: helpers.render_flash_alert("You can delete only your own answers."),
-      #                                status: :forbidden }
-      # end
+      end
     end
   end
 
@@ -114,6 +104,6 @@ class AnswersController < ApplicationController
   end
 
   def answer_params
-    params.require(:answer).permit(:body, files: [], links_attributes: [:id, :name, :url, :_destroy])
+    params.require(:answer).permit(:body, files: [], links_attributes: [ :id, :name, :url, :_destroy ])
   end
 end
