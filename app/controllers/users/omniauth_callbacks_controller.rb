@@ -1,5 +1,6 @@
 
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
+   after_action :skip_authorization
 
    def github
       auth = request.env['omniauth.auth']

@@ -3,7 +3,7 @@ class LinksController < ApplicationController
 
   def destroy
     link = Link.find(params[:id])
-    if current_user.author_of?(link.linkable)
+    authorize link
       begin
         link.destroy
         respond_to do |format|
@@ -16,11 +16,11 @@ class LinksController < ApplicationController
           format.html { redirect_back fallback_location: root_path, alert: 'Failed to delete the link.', status: :unprocessable_entity }
         end
       end
-    else
-      respond_to do |format|
-        format.html { redirect_back fallback_location: root_path, alert: 'You are not authorized to delete this link.', status: :forbidden }
-        format.turbo_stream { render 'shared/flash_alert', locals: { message: 'You are not authorized to delete this link.' }, status: :forbidden }
-      end
-    end
+    # else
+    #   respond_to do |format|
+    #     format.html { redirect_back fallback_location: root_path, alert: 'You are not authorized to delete this link.', status: :forbidden }
+    #     format.turbo_stream { render 'shared/flash_alert', locals: { message: 'You are not authorized to delete this link.' }, status: :forbidden }
+    #   end
+    # end
   end
 end

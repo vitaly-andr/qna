@@ -30,6 +30,7 @@ gem 'rest-client'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-oauth2'
 gem 'omniauth-vkontakte'
+gem 'pundit'
 
 
 gem "devise"
@@ -91,4 +92,6 @@ group :test do
   gem 'shoulda-matchers', '~> 6.0'
   gem 'rails-controller-testing'
   gem 'launchy'
+  gem 'pundit-matchers'
+
 end

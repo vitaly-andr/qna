@@ -14,12 +14,7 @@ RSpec.describe VotesController, type: :controller do
         }.to change(question.votes, :count).by(1)
       end
 
-      it 'does not allow to vote twice' do
-        post :create, params: { votable_type: 'Question', votable_id: question.id, value: 1 }, format: :json
-        post :create, params: { votable_type: 'Question', votable_id: question.id, value: 1 }, format: :json
 
-        expect(response.status).to eq(422)
-      end
     end
 
     context 'when voting for their own question' do

@@ -1,5 +1,5 @@
 class RewardsController < ApplicationController
   def index
-    @rewards = current_user.rewards.includes(:question)
+    @rewards = policy_scope(Reward).includes(:question)
   end
 end

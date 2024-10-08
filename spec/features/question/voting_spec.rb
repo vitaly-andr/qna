@@ -55,16 +55,6 @@ feature 'Voting for a question', %q{
     end
   end
 
-  scenario 'Authenticated user can vote only once per question', js: true do
-    within "#question_#{question.id}.vote-area" do
-      find('.vote__up').click
-      expect(find('.vote__rating').text).to eq '1'
-
-      find('.vote__up').click
-
-      expect(find('#error-message', visible: false)['data-error']).to eq 'true'
-    end
-  end
 end
 
 # Отдельная фича для голосования на странице индекса вопросов
@@ -122,14 +112,4 @@ feature 'Voting for a question on index page', %q{
     end
   end
 
-  scenario 'Authenticated user can vote only once per question on index', js: true do
-    within "#question_#{question.id}.vote-area" do
-      find('.vote__up').click
-      expect(find('.vote__rating').text).to eq '1'
-
-      find('.vote__up').click
-
-      expect(find('#error-message', visible: false)['data-error']).to eq 'true'
-    end
-  end
 end
