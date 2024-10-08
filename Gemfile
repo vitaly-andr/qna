@@ -17,7 +17,7 @@ gem "stimulus-rails"
 
 gem "slim-rails"
 
-gem 'aws-sdk-s3', '~> 1.0'
+gem 'aws-sdk-s3', '~> 1.167'
 
 gem 'image_processing'
 gem 'requestjs-rails'
