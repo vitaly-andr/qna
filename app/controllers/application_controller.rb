@@ -34,6 +34,12 @@ class ApplicationController < ActionController::Base
     "votes" => {
       "create" => "You cannot vote for your own content.",
       "destroy" => "You can only remove your own vote."
+    },
+    "attachments" => {
+      "destroy" => "You are not authorized to delete this file."
+    },
+    "comments" => {
+      "create" => "You need to be signed in to add a comment."
     }
   }.freeze
 

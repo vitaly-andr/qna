@@ -4,6 +4,7 @@ class CommentsController < ApplicationController
   def new
     @commentable = find_commentable
     @comment = @commentable.comments.build
+    authorize @comment
 
     # respond_to do |format|
     #   format.turbo_stream { render template: 'comments/new', locals: { commentable: @commentable, comment: @comment } }
@@ -13,6 +14,7 @@ class CommentsController < ApplicationController
   def create
     @commentable = find_commentable
     @comment = @commentable.comments.build(comment_params.merge(author: current_user))
+    authorize @comment
 
     if @comment.save
       respond_to do |format|

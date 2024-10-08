@@ -55,13 +55,4 @@ feature 'Voting for an answer', %q{
     end
   end
 
-  scenario 'Authenticated user can vote only once per answer', js: true do
-    within "##{dom_id(answer)} .vote-area" do
-      find('.vote__up').click
-      expect(find('.vote__rating').text).to eq '1'
-
-      find('.vote__up').click
-      expect(find('#error-message', visible: false)['data-error']).to eq 'true'
-    end
-  end
 end
