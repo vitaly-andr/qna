@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe AttachmentPolicy, type: :policy do
+  include ActiveStorageHelper
+
   let(:user) { create(:user) }
   let(:author) { create(:user) }
   let(:question) { create(:question, author: author) }

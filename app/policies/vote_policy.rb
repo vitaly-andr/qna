@@ -6,11 +6,11 @@ class VotePolicy < ApplicationPolicy
   # https://gist.github.com/Burgestrand/4b4bc22f31c8a95c425fc0e30d7ef1f5
 
   def create?
-    user.present? && user != record.author
+    user.present? && record.votable.author != user
   end
 
   def destroy?
-    user.present? && user != record.author && record.voted_by?(user)
+    user.present? && record.user == user
   end
 
   class Scope < ApplicationPolicy::Scope

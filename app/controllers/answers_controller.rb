@@ -32,6 +32,8 @@ class AnswersController < ApplicationController
   end
 
   def edit
+    @question = @answer.question
+
     # unless current_user.author_of?(@answer)
     #   flash[:alert] = 'You can edit only your own answers.'
     #   redirect_to @answer.question
@@ -43,7 +45,6 @@ class AnswersController < ApplicationController
 
   def update
     @question = @answer.question
-    # return handle_unauthorized_update unless current_user.author_of?(@answer)
     authorize @answer
 
     if @answer.update(answer_params)

@@ -9,8 +9,6 @@ class QuestionsController < ApplicationController
   end
 
   def show
-    authorize @question
-
     @best_answer = @question.best_answer
     @answers = @question.answers.where.not(id: @question.best_answer_id).order(updated_at: :desc)
     @links = @question.links
@@ -23,6 +21,7 @@ class QuestionsController < ApplicationController
     @question = Question.new
     @question.links.build
     @question.build_reward
+    authorize @question
   end
 
   def edit

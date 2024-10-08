@@ -11,6 +11,8 @@ require 'capybara/cuprite'
 require 'capybara/rspec'
 require 'webmock/rspec'
 require 'capybara/email/rspec'
+require 'pundit/rspec'
+
 
 WebMock.disable_net_connect!(allow_localhost: true)
 

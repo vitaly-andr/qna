@@ -1,27 +1,20 @@
 require 'rails_helper'
 
 RSpec.describe LinkPolicy, type: :policy do
-  let(:user) { User.new }
+  let(:user) { create(:user) }
+  let(:author) { create(:user) }
+  let(:question) { create(:question, author: author) }
+  let(:link) { create(:link, linkable: question) }
 
   subject { described_class }
 
-  permissions ".scope" do
-    pending "add some examples to (or delete) #{__FILE__}"
-  end
-
-  permissions :show? do
-    pending "add some examples to (or delete) #{__FILE__}"
-  end
-
-  permissions :create? do
-    pending "add some examples to (or delete) #{__FILE__}"
-  end
-
-  permissions :update? do
-    pending "add some examples to (or delete) #{__FILE__}"
-  end
-
   permissions :destroy? do
-    pending "add some examples to (or delete) #{__FILE__}"
+    it "grants access if the user is the author of the parent record" do
+      expect(subject).to permit(author, link)
+    end
+
+    it "denies access if the user is not the author of the parent record" do
+      expect(subject).not_to permit(user, link)
+    end
   end
 end

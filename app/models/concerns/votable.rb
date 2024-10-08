@@ -10,12 +10,22 @@ module Votable
   end
 
   def vote_by(user, value)
-    vote = votes.find_or_initialize_by(user: user)
-    vote.update(value: value)
+    Vote.transaction do
+      cancel_vote_by(user)
+
+      vote = votes.new(user: user, value: value)
+      Pundit.authorize(user, vote, :create?)
+
+      vote.save!
+    end
   end
 
   def cancel_vote_by(user)
-    votes.find_by(user: user)&.destroy
+    vote = votes.find_by(user: user)
+    if vote
+      Pundit.authorize(user, vote, :destroy?)
+      vote.destroy
+    end
   end
 
   def voted_by?(user)

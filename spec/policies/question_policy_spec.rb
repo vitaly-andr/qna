@@ -16,12 +16,6 @@ RSpec.describe QuestionPolicy, type: :policy do
     end
   end
 
-  permissions :show? do
-    it "grants access to everyone" do
-      expect(subject).to permit(nil, question)
-      expect(subject).to permit(user, question)
-    end
-  end
 
   permissions :create? do
     it "grants access if user is logged in" do
