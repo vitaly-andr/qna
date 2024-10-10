@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  use_doorkeeper
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -11,6 +12,30 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "questions#index"
+  use_doorkeeper do
+    controllers applications: 'oauth/applications'
+  end
+  namespace :api do
+    namespace :v1 do
+      use_doorkeeper
+
+      resource :profiles, only: [] do
+        get 'me', on: :collection
+        get '', on: :collection, to: 'profiles#index'
+      end
+
+      resources :questions, except: [:new, :edit] do
+        resources :answers, only: [:index, :show, :create, :update, :destroy]
+
+        resources :comments, only: [:index], module: :questions
+      end
+
+      resources :answers, only: [] do
+        resources :comments, only: [:index], module: :answers
+      end
+    end
+  end
+
   resources :questions do
     member do
       patch :mark_best_answer

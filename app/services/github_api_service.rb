@@ -9,7 +9,7 @@ class GithubApiService
     response = RestClient.get(GITHUB_API_URL, headers)
     JSON.parse(response.body).map { |email| email['email'] }
   rescue RestClient::ExceptionWithResponse => e
-    Rails.logger.error "GitHub API Error: #{e.message}"
+    Rails.logger.error "GitHub api Error: #{e.message}"
     []
   end
 

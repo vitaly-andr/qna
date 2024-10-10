@@ -71,7 +71,7 @@ class ApplicationController < ActionController::Base
         end
       end
       format.json do
-        # Send a JSON response for API requests
+        # Send a JSON response for api requests
         render json: { error: error_message }, status: :forbidden
       end
     end
