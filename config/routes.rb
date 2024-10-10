@@ -24,14 +24,11 @@ Rails.application.routes.draw do
         get '', on: :collection, to: 'profiles#index'
       end
 
-      resources :questions, except: [:new, :edit] do
-        resources :answers, only: [:index, :show, :create, :update, :destroy]
-
-        resources :comments, only: [:index], module: :questions
-      end
-
-      resources :answers, only: [] do
-        resources :comments, only: [:index], module: :answers
+      resources :questions, shallow: true, except: [:new, :edit] do
+        resources :answers, shallow: true, only: [:index, :create, :update, :destroy] do
+          resources :comments, shallow: true, only: [:index]
+        end
+        resources :comments, shallow: true, only: [:index]
       end
     end
   end
