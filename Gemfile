@@ -31,6 +31,8 @@ gem 'omniauth-google-oauth2'
 gem 'omniauth-oauth2'
 gem 'omniauth-vkontakte'
 gem 'pundit'
+gem 'active_model_serializers', '~> 0.10.0'
+gem 'doorkeeper'
 
 
 gem "devise"
