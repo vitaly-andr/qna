@@ -50,6 +50,7 @@
                             style: 'color: red; margin-left: 10px;'
 
     = render partial: 'comments/comments', locals: { commentable: question }
+    = render partial: 'subscriptions/subscription_button', locals: { subscribable: question }
     - if user_signed_in? && current_user.author_of?(question)
       .card-footer
         .card-footer-item

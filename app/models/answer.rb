@@ -4,6 +4,8 @@ class Answer < ApplicationRecord
   include Authorable
   include Votable
   include ActionView::RecordIdentifier
+  include Subscribable
+
 
   has_many :comments, as: :commentable, dependent: :destroy
 
