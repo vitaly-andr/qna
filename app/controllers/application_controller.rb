@@ -49,10 +49,8 @@ class ApplicationController < ActionController::Base
 
     error_message = AUTHORIZATION_ERROR_MESSAGES.dig(controller_name, action_name) || "You are not authorized to perform this action."
 
-    # Set the flash alert for HTML requests
     flash[:alert] = error_message
 
-    # Handle both HTML and JSON responses
     respond_to do |format|
       format.html do
         case controller_name
@@ -71,7 +69,6 @@ class ApplicationController < ActionController::Base
         end
       end
       format.json do
-        # Send a JSON response for API requests
         render json: { error: error_message }, status: :forbidden
       end
     end
