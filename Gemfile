@@ -33,6 +33,10 @@ gem 'omniauth-vkontakte'
 gem 'pundit'
 gem 'active_model_serializers', '~> 0.10.0'
 gem 'doorkeeper'
+gem 'oj'
+gem 'sidekiq'
+gem 'sinatra', require: false
+gem 'whenever', require: false
 
 
 gem "devise"
