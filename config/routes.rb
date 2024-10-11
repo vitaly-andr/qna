@@ -19,9 +19,8 @@ Rails.application.routes.draw do
     namespace :v1 do
       use_doorkeeper
 
-      resource :profiles, only: [] do
+      resource :profiles, only: [:index] do
         get 'me', on: :collection
-        get '', on: :collection, to: 'profiles#index'
       end
 
       resources :questions, shallow: true, except: [:new, :edit] do
