@@ -8,4 +8,9 @@ module Subscribable
   def subscribed?(user)
     subscriptions.exists?(user: user)
   end
+
+  def subscribers
+    subscriptions.includes(:user).map(&:user).uniq
+  end
+
 end

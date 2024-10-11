@@ -14,6 +14,7 @@ class Answer < ApplicationRecord
   accepts_nested_attributes_for :links, allow_destroy: true, reject_if: :all_blank
 
   validates :body, presence: true
+  after_create_commit :after_create_actions
 
   after_create_commit do
     broadcast_prepend_to "questions", target: "question_#{question.id}_answers", partial: "live_feed/answer", locals: { answer: self }
@@ -28,6 +29,17 @@ class Answer < ApplicationRecord
 
   after_destroy_commit do
     broadcast_remove_to "questions", target: "answer_#{id}"
+  end
+
+  private
+
+  def after_create_actions
+    broadcast_prepend_to "questions", target: "question_#{question.id}_answers", partial: "live_feed/answer", locals: { answer: self }
+    notify_subscribers
+  end
+
+  def notify_subscribers
+    NotificationService.call(self)
   end
 
 end
