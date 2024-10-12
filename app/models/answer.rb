@@ -16,9 +16,6 @@ class Answer < ApplicationRecord
   validates :body, presence: true
   after_create_commit :after_create_actions
 
-  after_create_commit do
-    broadcast_prepend_to "questions", target: "question_#{question.id}_answers", partial: "live_feed/answer", locals: { answer: self }
-  end
 
   after_update_commit do
     broadcast_update_to "questions",

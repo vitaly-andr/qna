@@ -133,6 +133,10 @@ GEM
     cuprite (0.15.1)
       capybara (~> 3.0)
       ferrum (~> 0.15.0)
+    database_cleaner-active_record (2.2.0)
+      activerecord (>= 5.a)
+      database_cleaner-core (~> 2.0.0)
+    database_cleaner-core (2.0.1)
     date (3.3.4)
     debug (1.9.2)
       irb (~> 1.10)
@@ -538,6 +542,7 @@ DEPENDENCIES
   capybara-email
   cssbundling-rails
   cuprite
+  database_cleaner-active_record
   debug
   devise
   doorkeeper

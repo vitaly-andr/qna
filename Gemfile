@@ -99,5 +99,7 @@ group :test do
   gem 'rails-controller-testing'
   gem 'launchy'
   gem 'pundit-matchers'
+  gem 'database_cleaner-active_record'
+
 
 end
