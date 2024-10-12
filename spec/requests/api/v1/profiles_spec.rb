@@ -10,7 +10,8 @@ RSpec.describe 'Profiles API', type: :request do
       get '/api/v1/profiles/me', headers: { 'Authorization' => "Bearer #{token.token}" }
 
       expect(response).to have_http_status(:success)
-      expect(JSON.parse(response.body)['id']).to eq(user.id)
+      parsed_response = JSON.parse(response.body)
+      expect(parsed_response['user']['id']).to eq(user.id)
     end
   end
 
@@ -21,9 +22,9 @@ RSpec.describe 'Profiles API', type: :request do
       get '/api/v1/profiles', headers: { 'Authorization' => "Bearer #{token.token}" }
 
       expect(response).to have_http_status(:success)
-      json = JSON.parse(response.body)
-      expect(json.size).to eq(3)
-      expect(json.map { |u| u['id'] }).to match_array(other_users.map(&:id))
+      parsed_response = JSON.parse(response.body)['users']
+      expect(parsed_response.size).to eq(3)
+      expect(parsed_response.map { |u| u['id'] }).to match_array(other_users.map(&:id))
     end
   end
 end

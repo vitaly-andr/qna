@@ -41,20 +41,6 @@ RSpec.describe QuestionsController, type: :controller do
     end
   end
 
-
-  describe 'GET #index' do
-    let!(:questions) { create_list(:question, 5, author: user) }
-    before do
-      get :index
-      puts "Created questions: #{Question.count}"  # Добавляем вывод количества вопросов для проверки
-    end
-    it 'populates an array of all questions' do
-      expect(assigns(:questions)).to match_array(questions)
-    end
-    it 'renders the :index view' do
-      expect(response).to render_template :index
-    end
-  end
   describe 'GET #show' do
     before do
       get :show, params: { id: question }

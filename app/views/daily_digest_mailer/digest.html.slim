@@ -5,4 +5,4 @@ p Here are the questions posted in the last 24 hours:
 ul
   - @questions.each do |question|
     li
-      = link_to question[:title], question[:url]
+      = link_to question.title, question_url(question)

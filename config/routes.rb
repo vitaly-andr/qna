@@ -19,7 +19,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       use_doorkeeper
 
-      resource :profiles, only: [:index] do
+      resources :profiles, only: [:index] do
         get 'me', on: :collection
       end
 

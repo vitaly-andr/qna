@@ -12,6 +12,8 @@ require 'capybara/rspec'
 require 'webmock/rspec'
 require 'capybara/email/rspec'
 require 'pundit/rspec'
+require 'sidekiq/testing'
+Sidekiq::Testing.inline!
 
 
 WebMock.disable_net_connect!(allow_localhost: true)
@@ -79,21 +81,15 @@ RSpec.configure do |config|
   config.include ActionView::RecordIdentifier, type: :system
   config.include ActionCable::TestHelper, type: :channel
   config.before(:suite) do
+    DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with(:truncation)
   end
 
-  config.before(:each) do
-    DatabaseCleaner.strategy = :transaction
+  config.around(:each) do |example|
+    DatabaseCleaner.cleaning do
+      example.run
+    end
   end
-
-  config.before(:each, js: true) do
-    DatabaseCleaner.strategy = :truncation
-  end
-
-  config.after(:each) do
-    DatabaseCleaner.clean
-  end
-
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_paths = [
