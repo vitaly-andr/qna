@@ -32,16 +32,16 @@ RSpec.describe Answer, type: :model do
     let(:question) { create(:question) }
     let(:answer) { build(:answer, question: question) }
 
-    it 'calls after_create_actions after creating an answer' do
-      expect(answer).to receive(:after_create_actions)
+    it 'calls broadcast_answer after creating an answer' do
+      expect(answer).to receive(:broadcast_answer)
       answer.save!
     end
 
     it 'calls notify_subscribers after creating an answer' do
-      allow(answer).to receive(:after_create_actions).and_call_original
       expect(NotificationService).to receive(:call).with(answer)
       answer.save!
     end
+
 
     it 'broadcasts prepend to questions after create' do
       # I placed at_least_once just temporary because I don't understand why 2 messages sent

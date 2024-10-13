@@ -14,7 +14,8 @@ class Answer < ApplicationRecord
   accepts_nested_attributes_for :links, allow_destroy: true, reject_if: :all_blank
 
   validates :body, presence: true
-  after_create_commit :after_create_actions
+  after_create_commit :broadcast_answer
+  after_create_commit :notify_subscribers
 
 
   after_update_commit do
@@ -30,13 +31,13 @@ class Answer < ApplicationRecord
 
   private
 
-  def after_create_actions
+  def broadcast_answer
     broadcast_prepend_to "questions", target: "question_#{question.id}_answers", partial: "live_feed/answer", locals: { answer: self }
-    notify_subscribers
   end
 
   def notify_subscribers
     NotificationService.call(self)
   end
+
 
 end
