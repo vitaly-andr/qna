@@ -3,6 +3,8 @@ class SubscriptionsController < ApplicationController
   before_action :set_subscribable
   before_action :authorize_subscription, only: [:destroy]
 
+  rescue_from ActiveRecord::RecordNotFound, with: :not_found
+
   def create
     @subscription = @subscribable.subscriptions.new(user: current_user)
     authorize @subscription
@@ -24,15 +26,19 @@ class SubscriptionsController < ApplicationController
 
   private
   def set_subscribable
-    @subscribable = find_subscribable
-  end
-  def find_subscribable
     if params[:question_id]
-      Question.find(params[:question_id])
+      @subscribable = Question.find(params[:question_id])
     elsif params[:answer_id]
-      Answer.find(params[:answer_id])
+      @subscribable = Answer.find(params[:answer_id])
     else
       raise ActiveRecord::RecordNotFound, "Could not find subscribable object"
+    end
+  end
+
+  def not_found
+    respond_to do |format|
+      format.html { render file: "#{Rails.root}/public/404.html", status: :not_found }
+      format.turbo_stream { head :not_found }
     end
   end
 

@@ -36,4 +36,23 @@ RSpec.describe SubscriptionsController, type: :controller do
       expect(response.content_type).to eq 'text/vnd.turbo-stream.html; charset=utf-8'
     end
   end
+
+  describe 'handling invalid subscribable' do
+    it 'returns 404 for invalid question_id in create' do
+      expect {
+        post :create, params: { question_id: 999999 }, format: :turbo_stream
+      }.to_not change(Subscription, :count)
+
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it 'returns 404 for invalid question_id in destroy' do
+      expect {
+        delete :destroy, params: { question_id: 999999 }, format: :turbo_stream
+      }.to_not change(Subscription, :count)
+
+      expect(response).to have_http_status(:not_found)
+    end
+  end
+
 end
