@@ -3,6 +3,7 @@ module Subscribable
 
   included do
     has_many :subscriptions, as: :subscribable, dependent: :destroy
+    has_many :users, through: :subscriptions, source: :user
   end
 
   def subscribed?(user)
@@ -10,7 +11,6 @@ module Subscribable
   end
 
   def subscribers
-    subscriptions.includes(:user).map(&:user).uniq
+    users.distinct
   end
-
 end
