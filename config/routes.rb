@@ -19,7 +19,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       use_doorkeeper
 
-      resource :profiles, only: [:index] do
+      resources :profiles, only: [:index] do
         get 'me', on: :collection
       end
 
@@ -40,11 +40,13 @@ Rails.application.routes.draw do
 
     resources :answers, shallow: true, except: [ :index, :show ] do
       resources :comments, shallow: true, only: [ :new, :create ]
+      resource :subscriptions, only: [:create, :destroy], shallow: true
+
     end
+    resource :subscriptions, only: [:create, :destroy], shallow: true
 
     resources :comments, shallow: true, only: [ :new, :create ]
   end
-
   resources :attachments, only: [ :destroy ]
   resources :links, only: [ :destroy ]
   resources :rewards, only: :index

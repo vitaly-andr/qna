@@ -4,6 +4,8 @@ class Answer < ApplicationRecord
   include Authorable
   include Votable
   include ActionView::RecordIdentifier
+  include Subscribable
+
 
   has_many :comments, as: :commentable, dependent: :destroy
 
@@ -12,10 +14,9 @@ class Answer < ApplicationRecord
   accepts_nested_attributes_for :links, allow_destroy: true, reject_if: :all_blank
 
   validates :body, presence: true
+  after_create_commit :broadcast_answer
+  after_create_commit :notify_subscribers
 
-  after_create_commit do
-    broadcast_prepend_to "questions", target: "question_#{question.id}_answers", partial: "live_feed/answer", locals: { answer: self }
-  end
 
   after_update_commit do
     broadcast_update_to "questions",
@@ -27,5 +28,16 @@ class Answer < ApplicationRecord
   after_destroy_commit do
     broadcast_remove_to "questions", target: "answer_#{id}"
   end
+
+  private
+
+  def broadcast_answer
+    broadcast_prepend_to "questions", target: "question_#{question.id}_answers", partial: "live_feed/answer", locals: { answer: self }
+  end
+
+  def notify_subscribers
+    NotificationService.call(self)
+  end
+
 
 end

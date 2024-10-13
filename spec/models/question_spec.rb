@@ -30,4 +30,31 @@ RSpec.describe Question, type: :model do
       }.to_not change(question.links, :count)
     end
   end
+  describe 'callbacks' do
+    let(:question) { build(:question) }
+
+    it 'broadcasts prepend to questions after create' do
+      expect { question.save! }.to have_broadcasted_to("questions").with do |data|
+        expect(data[:target]).to eq("questions")
+        expect(data[:partial]).to eq("live_feed/question")
+        expect(data[:locals][:question]).to eq(question)
+      end
+    end
+
+    it 'broadcasts replace to questions after update' do
+      question.save!
+      expect { question.update!(title: 'Updated title') }.to have_broadcasted_to("questions").with do |data|
+        expect(data[:target]).to eq("question_#{question.id}")
+        expect(data[:partial]).to eq("live_feed/question")
+        expect(data[:locals][:question]).to eq(question)
+      end
+    end
+
+    it 'broadcasts remove from questions after destroy' do
+      question.save!
+      expect { question.destroy! }.to have_broadcasted_to("questions").with do |data|
+        expect(data[:target]).to eq("question_#{question.id}")
+      end
+    end
+  end
 end

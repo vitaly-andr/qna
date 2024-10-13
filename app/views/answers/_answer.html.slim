@@ -47,6 +47,7 @@
             - else
               = button_to 'Mark as Best', mark_best_answer_question_path(@question, answer_id: answer.id), method: :patch, data: { turbo_method: :patch }, class: 'button is-warning'
         = render partial: 'comments/comments', locals: { commentable: answer }
+        = render partial: 'subscriptions/subscription_button', locals: { subscribable: answer }
 
         - if user_signed_in? && current_user.author_of?(answer) && answer.persisted?
           .card-footer

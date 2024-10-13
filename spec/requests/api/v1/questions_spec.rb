@@ -13,7 +13,7 @@ RSpec.describe 'Questions API', type: :request do
 
       expect(response).to have_http_status(:success)
       json = JSON.parse(response.body)
-      expect(json.size).to eq(3)
+      expect(json['questions'].size).to eq(3)
     end
   end
 
@@ -25,10 +25,11 @@ RSpec.describe 'Questions API', type: :request do
 
       expect(response).to have_http_status(:success)
       json = JSON.parse(response.body)
-      expect(json['id']).to eq(question.id)
-      expect(json).to have_key('comments')
-      expect(json).to have_key('files')
-      expect(json).to have_key('links')
+      question_data = json['question']
+      expect(question_data['id']).to eq(question.id)
+      expect(question_data).to have_key('comments')
+      expect(question_data).to have_key('files')
+      expect(question_data).to have_key('links')
     end
   end
 
@@ -40,7 +41,8 @@ RSpec.describe 'Questions API', type: :request do
 
       expect(response).to have_http_status(:success)
       json = JSON.parse(response.body)
-      expect(json.size).to eq(2)
+      answers_data = json['answers']
+      expect(answers_data.size).to eq(2)
     end
   end
 
@@ -67,7 +69,8 @@ RSpec.describe 'Questions API', type: :request do
 
       expect(response).to have_http_status(:success)
       json = JSON.parse(response.body)
-      expect(json['body']).to eq('Updated Answer')
+      answer_data = json['answer']
+      expect(answer_data['body']).to eq('Updated Answer')
     end
   end
 
@@ -104,7 +107,8 @@ RSpec.describe 'Questions API', type: :request do
 
       expect(response).to have_http_status(:success)
       json = JSON.parse(response.body)
-      expect(json['title']).to eq('Updated Title')
+      question_data = json['question']
+      expect(question_data['title']).to eq('Updated Title')
     end
   end
 

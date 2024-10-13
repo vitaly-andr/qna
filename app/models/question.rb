@@ -3,6 +3,8 @@ class Question < ApplicationRecord
   include FileAttachable
   include Authorable
   include Votable
+  include Subscribable
+
 
   before_destroy :reset_best_answer
 
