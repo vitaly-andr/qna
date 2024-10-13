@@ -166,6 +166,7 @@ GEM
     elasticsearch-api (8.15.0)
       multi_json
     erubi (1.13.0)
+    event_stream_parser (1.0.0)
     factory_bot (6.4.6)
       activesupport (>= 5.0.0)
     factory_bot_rails (6.4.3)
@@ -175,6 +176,8 @@ GEM
       faraday-net_http (>= 2.0, < 3.4)
       json
       logger
+    faraday-multipart (1.0.4)
+      multipart-post (~> 2)
     faraday-net_http (3.3.0)
       net-http
     ferrum (0.15)
@@ -247,6 +250,7 @@ GEM
     multi_json (1.15.0)
     multi_xml (0.7.1)
       bigdecimal (~> 3.1)
+    multipart-post (2.4.1)
     mustermann (3.0.3)
       ruby2_keywords (~> 0.0.1)
     net-http (0.4.1)
@@ -444,6 +448,10 @@ GEM
       rubocop-rails
     ruby-graphviz (1.2.5)
       rexml
+    ruby-openai (7.3.0)
+      event_stream_parser (>= 0.3.0, < 2.0.0)
+      faraday (>= 1)
+      faraday-multipart (>= 1)
     ruby-progressbar (1.13.0)
     ruby-vips (2.2.2)
       ffi (~> 1.12)
@@ -587,6 +595,7 @@ DEPENDENCIES
   rest-client
   rspec-rails
   rubocop-rails-omakase
+  ruby-openai
   searchkick
   selenium-webdriver
   shoulda-matchers (~> 6.0)
