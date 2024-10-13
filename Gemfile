@@ -37,6 +37,9 @@ gem 'oj'
 gem 'sidekiq'
 gem 'sinatra', require: false
 gem 'whenever', require: false
+gem 'elasticsearch', '~> 8.0'
+gem 'searchkick'
+
 
 
 gem "devise"
