@@ -1,45 +1,75 @@
 import { Controller } from "@hotwired/stimulus"
-import { get } from "@rails/request.js"
-import debounce from "lodash.debounce"
+import { post, destroy } from "@rails/request.js"
 
 export default class extends Controller {
-    static targets = ["input", "results"]
+    static targets = ["rating", "errorMessage"]
 
     connect() {
+        this.clearErrorMessage()
     }
 
-    search = debounce(async (event) => {
-        const query = this.inputTarget.value
+    upvote() {
+        this.vote(1)
+    }
 
-        if (query.length > 2) {
-            await this.performSearch(query)
-        } else {
-            this.clearResults()
+    downvote() {
+        this.vote(-1)
+    }
+
+    async vote(value) {
+        const votableId = this.element.dataset.voteVotableId
+        const votableType = this.element.dataset.voteVotableType
+
+        try {
+            const response = await post(`/votes`, {
+                body: JSON.stringify({ value: value, votable_type: votableType, votable_id: votableId }),
+                contentType: "application/json",
+                responseKind: "json"
+            })
+
+            if (response.ok) {
+                const data = await response.json
+                this.ratingTarget.textContent = data.rating
+                this.clearErrorMessage()
+            } else {
+                const data = await response.json
+                this.handleError(data.error)
+            }
+        } catch (error) {
+            console.error("Error while voting:", error)
         }
-    }, 300)
+    }
 
-    async performSearch(query) {
-        const response = await get(`/search.json?query=${query}`)
+    async cancelVote() {
+        const votableId = this.element.dataset.voteVotableId
+        const votableType = this.element.dataset.voteVotableType
 
-        if (response.ok) {
-            const data = await response.json
-            this.updateResults(data)
-        } else {
-            this.clearResults()
+        try {
+            const response = await destroy(`/votes`, {
+                body: JSON.stringify({ votable_type: votableType, votable_id: votableId }),
+                contentType: "application/json",
+                responseKind: "json"
+            })
+
+            if (response.ok) {
+                const data = await response.json
+                this.ratingTarget.textContent = data.rating
+                this.clearErrorMessage()
+            } else {
+                const data = await response.json
+                this.handleError(data.error)
+            }
+        } catch (error) {
+            console.error("Error while cancelling vote:", error)
         }
     }
+    handleError(message) {
+        this.errorMessageTarget.dataset.error = 'true'
+        alert(message)
 
-    updateResults(data) {
-        this.resultsTarget.innerHTML = ""
-
-        data.results.forEach(result => {
-            const div = document.createElement("div")
-            div.innerHTML = `<a href="${result.url}">${result.title}</a>`
-            this.resultsTarget.appendChild(div)
-        })
     }
 
-    clearResults() {
-        this.resultsTarget.innerHTML = ""
+    clearErrorMessage() {
+        this.errorMessageTarget.dataset.error = 'false'
     }
 }
