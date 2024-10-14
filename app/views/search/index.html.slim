@@ -3,5 +3,5 @@
 - if @results
   - @results.each do |result|
     = link_to result.is_a?(User) ? result.name : result.try(:title) || result.try(:body).truncate(100), polymorphic_path(result)
-- else
-  p#no-results  No results found.
+
+p#no-results  No results found.
