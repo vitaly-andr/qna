@@ -9,18 +9,25 @@ client = OpenAI::Client.new(
 )
 
 def generate_question(client, topic)
-  response = client.chat(
-    parameters: {
-      model: "gpt-4o-mini-2024-07-18",
-      messages: [
-        { role: "system", content: "You are a helpful assistant." },
-        { role: "user", content: "Create a question related to #{topic} in a Q&A system." }
-      ],
-      temperature: 0.7,
-      max_tokens: 100
-    }
-  )
-  response.dig("choices", 0, "message", "content").strip
+  begin
+    response = client.chat(
+      parameters: {
+        model: "gpt-4",
+        messages: [
+          { role: "system", content: "You are a helpful assistant." },
+          { role: "user", content: "Create a question related to #{topic} in a Q&A system." }
+        ],
+        temperature: 0.7,
+        max_tokens: 100
+      }
+    )
+    result = response.dig("choices", 0, "message", "content").strip
+    puts "Generated question: #{result}" # Логирование результата
+    result
+  rescue => e
+    puts "Error generating question: #{e.message}"
+    nil
+  end
 end
 
 def generate_answer(client, question_title, length_type)
@@ -33,18 +40,25 @@ def generate_answer(client, question_title, length_type)
                    200
                end
 
-  response = client.chat(
-    parameters: {
-      model: "gpt-4o-mini-2024-07-18",
-      messages: [
-        { role: "system", content: "You are a helpful assistant." },
-        { role: "user", content: "Provide a #{length_type} answer to the question: #{question_title}" }
-      ],
-      temperature: 0.7,
-      max_tokens: max_tokens
-    }
-  )
-  response.dig("choices", 0, "message", "content").strip
+  begin
+    response = client.chat(
+      parameters: {
+        model: "gpt-4",
+        messages: [
+          { role: "system", content: "You are a helpful assistant." },
+          { role: "user", content: "Provide a #{length_type} answer to the question: #{question_title}" }
+        ],
+        temperature: 0.7,
+        max_tokens: max_tokens
+      }
+    )
+    result = response.dig("choices", 0, "message", "content").strip
+    puts "Generated answer (#{length_type}): #{result}" # Логирование результата
+    result
+  rescue => e
+    puts "Error generating answer: #{e.message}"
+    nil
+  end
 end
 
 10.times do |n|
@@ -71,8 +85,10 @@ REAL_URLS = [
 
 3.times do
   question_title = generate_question(client, topics.sample)
+  next unless question_title # Пропускаем, если вопрос не был сгенерирован из-за ошибки
+
   question_body = generate_question(client, "Provide more details about the question: #{question_title}")
-  sleep(4) # Minimum delay found experimentally
+  sleep(2) # Минимальная задержка между запросами
   question = Question.create!(
     title: question_title,
     body: question_body,
@@ -86,6 +102,8 @@ REAL_URLS = [
 
   [:short, :medium, :detailed].each do |length_type|
     answer_body = generate_answer(client, question.title, length_type)
+    next unless answer_body # Пропускаем, если ответ не был сгенерирован
+
     answer = question.answers.create!(
       body: answer_body,
       author: User.all.sample
@@ -96,6 +114,8 @@ REAL_URLS = [
                            { name: FFaker::Lorem.word, url: REAL_URLS.sample }
                          ])
   end
+
+  sleep(2) # Минимальная задержка между запросами для предотвращения ограничения API
 end
 
 puts "Seeding complete!"
