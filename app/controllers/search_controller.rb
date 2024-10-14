@@ -2,6 +2,7 @@ class SearchController < ApplicationController
   def index
     @query = params[:query]
     @model = params[:model]
+    @results = []
 
     if @query.present?
       case @model
@@ -24,8 +25,14 @@ class SearchController < ApplicationController
     end
 
     respond_to do |format|
-      format.html # Для обычных HTML запросов
-      format.json { render json: SearchResultsSerializer.new(@results).as_json }
+      format.html
+      format.json do
+        if @results.empty?
+          render json: { search_results: [] }, status: :ok
+        else
+          render json: SearchResultsSerializer.serialize(@results, 'search_results'), status: :ok
+        end
+      end
     end
   end
 end

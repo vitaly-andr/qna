@@ -16,9 +16,10 @@ export default class extends Controller {
 
   updateResults(data) {
     this.resultsTarget.innerHTML = ""
+    const results = data.search_results
 
-    if (data.length > 0) {
-      data.forEach(result => {
+    if (results.length > 0) {
+      results.forEach(result => {
         if (!result.url) {
           console.error("Missing URL for result:", result)
           return
@@ -60,10 +61,15 @@ export default class extends Controller {
   }
 
   async performSearch(query) {
-    const response = await fetch(`/search.json?query=${query}`)
-    const data = await response.json()
-    this.updateResults(data)
+    try {
+      const response = await fetch(`/search.json?query=${query}`)
+      const data = await response.json()
+      this.updateResults(data)
+    } catch (error) {
+      console.error("Error fetching search results:", error)
+    }
   }
+
 
 
 

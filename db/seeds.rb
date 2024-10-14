@@ -22,7 +22,7 @@ def generate_question(client, topic)
       }
     )
     result = response.dig("choices", 0, "message", "content").strip
-    puts "Generated question: #{result}" # Логирование результата
+    puts "Generated question: #{result}"
     result
   rescue => e
     puts "Error generating question: #{e.message}"
@@ -115,7 +115,7 @@ REAL_URLS = [
                          ])
   end
 
-  sleep(2) # Минимальная задержка между запросами для предотвращения ограничения API
+  sleep(2)
 end
 
 puts "Seeding complete!"

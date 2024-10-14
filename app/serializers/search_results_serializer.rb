@@ -1,10 +1,6 @@
-class SearchResultsSerializer < ActiveModel::Serializer
-  def initialize(results)
-    @results = results
-  end
-
-  def as_json(*)
-    @results.map do |result|
+class SearchResultsSerializer
+  def self.serialize(results, root_key = nil)
+    serialized_results = results.map do |result|
       case result
         when Question
           {
@@ -34,5 +30,7 @@ class SearchResultsSerializer < ActiveModel::Serializer
           {}
       end
     end
+
+    root_key ? { root_key => serialized_results } : serialized_results
   end
 end
