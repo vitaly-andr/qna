@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   allow_browser versions: :modern
   before_action :configure_permitted_parameters, if: :devise_controller?
 
-  after_action :verify_authorized, except: [:index, :show], unless: :devise_controller?
+  after_action :verify_authorized, except: [:index, :show], unless: -> { devise_controller? || is_a?(SearchController) }
   after_action :verify_policy_scoped, only: :index, unless: -> { devise_controller? || is_a?(SearchController) }
 
 
