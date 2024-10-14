@@ -3,7 +3,7 @@ require 'json'
 
 def generate_question(prompt)
   response = Faraday.post('https://api.openai.com/v1/chat/completions') do |req|
-    req.headers['Authorization'] = "Bearer sk-FTRQT2Zx5SuXumzkrNrYTa4vJKSdp66EoiKjpVZ5-oT3BlbkFJxYqxdIoBDohOC6TH0Qpkv1qzqKE-ajZKDf4FNbuRIA"
+    req.headers['Authorization'] = "Bearer #{ENV['OPENAI_API_KEY']}"
     req.headers['Content-Type'] = 'application/json'
     req.body = {
       model: "gpt-4o-mini-2024-07-18",
