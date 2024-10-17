@@ -8,3 +8,4 @@ pin_all_from "app/javascript/controllers", under: "controllers"
 
 
 pin "@creativebulma/bulma-collapsible", to: "@creativebulma--bulma-collapsible.js" # @1.0.4
+pin "lodash.debounce" # @4.0.8

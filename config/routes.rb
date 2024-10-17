@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get "search/index"
   use_doorkeeper
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
@@ -12,6 +13,8 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "questions#index"
+  get 'search', to: 'search#index'
+
   use_doorkeeper do
     controllers applications: 'oauth/applications'
   end
