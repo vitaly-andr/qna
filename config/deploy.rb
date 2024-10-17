@@ -10,6 +10,7 @@ set :branch, 'main'
 
 set :rvm_type, :user
 set :rvm_ruby_version, 'ruby-3.3.4'
+set :assets_roles, []
 
 append :linked_files, 'config/database.yml', 'config/credentials/production.key', '.env' , 'config//credentials/production.yml.enc'
 append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'public/system', 'public/uploads', 'storage'
@@ -25,7 +26,11 @@ set :puma_preload_app, true
 set :puma_worker_timeout, 60
 set :puma_init_active_record, true
 
+set :pty, false
 set :sidekiq_roles, :app
-set :sidekiq_processes, 2
+set :sidekiq_pid, -> { File.join(shared_path, 'tmp', 'pids', 'sidekiq.pid') }
+set :sidekiq_log, -> { File.join(shared_path, 'log', 'sidekiq.log') }
+# set :sidekiq_config, -> { File.join(shared_path, 'config', 'sidekiq.yml') }
+set :sidekiq_service_unit_name, "sidekiq"
+set :sidekiq_processes, 1
 
-# set :format_options, log_file: "#{shared_path}/log/capistrano.log"
