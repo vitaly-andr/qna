@@ -47,3 +47,5 @@
 
 /node_modules
 /coverage
+
+/config/credentials/production.key

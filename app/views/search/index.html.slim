@@ -5,3 +5,4 @@
     = link_to result.is_a?(User) ? result.name : result.try(:title) || result.try(:body).truncate(100), polymorphic_path(result)
 
 p#no-results  No results found.
+

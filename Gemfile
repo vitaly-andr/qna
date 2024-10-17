@@ -40,6 +40,7 @@ gem 'whenever', require: false
 gem 'elasticsearch', '~> 8.0'
 gem 'searchkick'
 gem 'ruby-openai'
+gem 'dotenv-rails'
 
 
 
@@ -77,7 +78,6 @@ group :development, :test do
   gem 'letter_opener'
   gem 'capybara-email'
 
-  gem 'dotenv-rails'
 
   # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
   gem "brakeman", require: false
@@ -92,6 +92,13 @@ group :development do
   # Generate a diagram of all the models in the app by running:
   # bundle exec erd
   gem "rails-erd"
+
+  gem 'capistrano', '~> 3.17', require: false
+  gem 'capistrano-rails', '~> 1.6', require: false
+  gem 'capistrano3-puma', '~> 5.0', require: false
+  gem 'capistrano-rvm', require: false
+  gem 'capistrano-bundler', '~> 1.6', require: false
+  gem 'capistrano-sidekiq', '~> 2.0', require: false
 end
 
 group :test do
