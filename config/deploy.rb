@@ -11,7 +11,7 @@ set :branch, 'main'
 set :rvm_type, :user
 set :rvm_ruby_version, 'ruby-3.3.4'
 
-append :linked_files, 'config/database.yml', 'config/master.key'
+append :linked_files, 'config/database.yml', 'config/master.key', '.env' , 'config/credentials.yml.enc'
 append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'public/system', 'public/uploads', 'storage'
 
 set :puma_threads, [4, 16]

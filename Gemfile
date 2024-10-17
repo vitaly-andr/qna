@@ -40,7 +40,7 @@ gem 'whenever', require: false
 gem 'elasticsearch', '~> 8.0'
 gem 'searchkick'
 gem 'ruby-openai'
-gem 'dotenv-rails'
+gem 'dotenv-rails', groups: [:development, :test, :production]
 gem 'mini_racer'
 
 
