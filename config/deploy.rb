@@ -11,7 +11,7 @@ set :branch, 'main'
 set :rvm_type, :user
 set :rvm_ruby_version, 'ruby-3.3.4'
 
-append :linked_files, 'config/database.yml', 'config/master.key', '.env' , 'config/credentials.yml.enc'
+append :linked_files, 'config/database.yml', 'config/credentials/production.key', '.env' , 'config//credentials/production.yml.enc'
 append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'public/system', 'public/uploads', 'storage'
 
 set :puma_threads, [4, 16]
@@ -28,4 +28,4 @@ set :puma_init_active_record, true
 set :sidekiq_roles, :app
 set :sidekiq_processes, 2
 
-set :format_options, log_file: "#{shared_path}/log/capistrano.log"
+# set :format_options, log_file: "#{shared_path}/log/capistrano.log"

@@ -21,7 +21,6 @@ gem 'aws-sdk-s3', '~> 1.0'
 
 gem 'image_processing'
 gem 'requestjs-rails'
-gem 'jsbundling-rails'
 gem 'cssbundling-rails'
 gem 'omniauth'
 gem 'omniauth-github'
