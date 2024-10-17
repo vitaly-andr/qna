@@ -16,3 +16,10 @@ test:
   <<: *default
   database: qna_test
 
+production:
+  <<: *default
+  database: qna_production
+  username: deployer
+  password: <%= Rails.application.credentials.dig(:DATABASE_PASSWORD) %>
+  host: localhost
+
