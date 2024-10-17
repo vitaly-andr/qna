@@ -7,7 +7,7 @@ gem "sprockets-rails"
 # Use postgresql as the database for Active Record
 gem "pg", "~> 1.1"
 # Use the Puma web server [https://github.com/puma/puma]
-gem "puma", ">= 5.0"
+gem 'puma', '~> 6.0'
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
 gem "importmap-rails"
 # Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
@@ -96,7 +96,7 @@ group :development do
 
   gem 'capistrano', '~> 3.17', require: false
   gem 'capistrano-rails', '~> 1.6', require: false
-  gem 'capistrano3-puma', '~> 5.0', require: false
+  gem 'capistrano3-puma', '>= 6.0.0.beta.1', '< 6.1', require: false
   gem 'capistrano-rvm', require: false
   gem 'capistrano-bundler', '~> 1.6', require: false
   gem 'capistrano-sidekiq', '~> 2.0', require: false
