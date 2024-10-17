@@ -27,3 +27,5 @@ set :puma_init_active_record, true
 
 set :sidekiq_roles, :app
 set :sidekiq_processes, 2
+
+set :format_options, log_file: "#{fetch(:deploy_to)}/shared/log/capistrano.log"
