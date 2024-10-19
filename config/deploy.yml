@@ -68,7 +68,10 @@ accessories:
       clear:
         POSTGRES_USER: postgres
         POSTGRES_DB: qna_production
+      secret:
         POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    files:
+      - config/init.sql:/docker-entrypoint-initdb.d/setup.sql
     directories:
       - data:/var/lib/postgresql/data
 
@@ -86,6 +89,7 @@ accessories:
     env:
       clear:
         discovery.type: single-node
+      secret:
         ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
     directories:
       - esdata:/usr/share/elasticsearch/data
