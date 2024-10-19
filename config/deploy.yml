@@ -52,6 +52,8 @@ aliases:
 
 volumes:
   - "qna_storage:/rails/storage"
+assets:
+  precompile: false
 
 asset_path: /rails/public/assets
 
