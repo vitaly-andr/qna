@@ -2,7 +2,8 @@ require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
-
+  config.action_cable.url = 'wss://qna.andrianoff.online/cable'
+  config.action_cable.allowed_request_origins = ['https://qna.andrianoff.online', 'http://qna.andrianoff.online']
   # Code is not reloaded between requests.
   config.enable_reloading = false
 
@@ -73,6 +74,7 @@ Rails.application.configure do
   # Use a real queuing backend for Active Job (and separate queues per environment).
   # config.active_job.queue_adapter = :resque
   # config.active_job.queue_name_prefix = "qna_production"
+  config.active_job.queue_adapter = :inline
 
   # Disable caching for Action Mailer templates even if Action Controller
   # caching is enabled.

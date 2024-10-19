@@ -35,13 +35,14 @@ gem 'doorkeeper'
 gem 'oj'
 gem 'sidekiq'
 gem 'sinatra', require: false
-@gem = gem 'whenever', require: false
-@gem
+gem 'whenever', require: false
 gem 'elasticsearch', '~> 8.0'
 gem 'searchkick'
 gem 'ruby-openai'
 gem 'dotenv-rails', groups: [:development, :test, :production]
-gem 'mini_racer'
+# gem 'mini_racer'
+# gem 'passenger'
+gem "kamal", "~> 2.2"
 
 
 
@@ -94,12 +95,12 @@ group :development do
   # bundle exec erd
   gem "rails-erd"
 
-  gem 'capistrano', '~> 3.17', require: false
-  gem 'capistrano-rails', '~> 1.6', require: false
-  gem 'capistrano3-puma', '>= 6.0.0.beta.1', '< 6.1', require: false
-  gem 'capistrano-rvm', require: false
-  gem 'capistrano-bundler', '~> 1.6', require: false
-  gem 'capistrano-sidekiq', '~> 2.0', require: false
+  # gem 'capistrano', '~> 3.17', require: false
+  # gem 'capistrano-rails', '~> 1.6', require: false
+  # gem 'capistrano-rvm', require: false
+  # gem 'capistrano-passenger'
+  # gem 'capistrano-bundler', '~> 1.6', require: false
+  # gem 'capistrano-sidekiq', '~> 2.0', require: false
 end
 
 group :test do
@@ -115,3 +116,4 @@ group :test do
 
 
 end
+

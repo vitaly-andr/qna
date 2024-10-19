@@ -1,0 +1,90 @@
+<% require "dotenv"; Dotenv.load(".env", ".env.production") %>
+
+service: qna
+
+image: viandrianoff/qna
+
+servers:
+  web:
+    - 95.217.223.50
+
+ssh:
+  user: deploy
+
+proxy:
+  ssl: true
+  host: qna.andrianoff.online
+
+registry:
+  username: viandrianoff
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+env:
+  secret:
+    - RAILS_MASTER_KEY
+    - KAMAL_REGISTRY_PASSWORD
+    - POSTGRES_PASSWORD
+    - ELASTICSEARCH_PASSWORD
+    - GITHUB_APP_ID
+    - GITHUB_APP_SECRET
+    - GOOGLE_CLIENT_ID
+    - GOOGLE_CLIENT_SECRET
+    - YANDEX_CLIENT_ID
+    - YANDEX_CLIENT_SECRET
+    - VK_APP_ID
+    - VK_APP_SECRET
+    - OPENAI_API_KEY
+  clear:
+    SOLID_QUEUE_IN_PUMA: true
+    RAILS_MAX_THREADS: 5
+    WEB_CONCURRENCY: 2
+    REDIS_CACHE_URL: redis://127.0.0.1:6379
+    DOMAIN_NAME: qna.andrianoff.online
+    RAILS_LOG_LEVEL: debug
+    DB_HOST: qna-db
+
+aliases:
+  console: app exec --interactive --reuse "bin/rails console"
+  shell: app exec --interactive --reuse "bash"
+  logs: app logs -f
+  dbc: app exec --interactive --reuse "bin/rails dbconsole"
+
+volumes:
+  - "qna_storage:/rails/storage"
+
+asset_path: /rails/public/assets
+
+builder:
+  arch: amd64
+
+accessories:
+  db:
+    image: postgres:17
+    roles: ['web']
+    port: "127.0.0.1:5432:5432"
+    env:
+      clear:
+        POSTGRES_USER: postgres
+        POSTGRES_DB: qna_production
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    directories:
+      - data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7.0
+    roles: ['web']
+    port: 6379
+    directories:
+      - data:/data
+
+  elasticsearch:
+    image: elasticsearch:8.5.0
+    roles: ['web']
+    port: 9200:9200
+    env:
+      clear:
+        discovery.type: single-node
+        ELASTICSEARCH_PASSWORD: ${ELASTICSEARCH_PASSWORD}
+    directories:
+      - esdata:/usr/share/elasticsearch/data

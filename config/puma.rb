@@ -31,4 +31,13 @@ plugin :tmp_restart
 
 # Specify the PID file. Defaults to tmp/pids/server.pid in development.
 # In other environments, only set the PID file if requested.
-pidfile ENV["PIDFILE"] if ENV["PIDFILE"]
+# pidfile ENV["PIDFILE"] if ENV["PIDFILE"]
+
+environment ENV.fetch("RAILS_ENV") { "development" }
+bind "tcp://0.0.0.0:#{ENV.fetch('PORT', 3000)}"
+
+if ENV.fetch("RAILS_ENV") == "production"
+  pidfile "/app/tmp/pids/puma.pid"
+  state_path "/app/tmp/pids/puma.state"
+end
+worker_timeout 30 if ENV.fetch("RAILS_ENV", "development") == "production"
