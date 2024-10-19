@@ -57,6 +57,7 @@ asset_path: /rails/public/assets
 
 builder:
   arch: amd64
+#  remote: ssh://deploy@95.217.223.50
 
 accessories:
   db:
