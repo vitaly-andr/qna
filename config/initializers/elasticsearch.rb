@@ -4,9 +4,9 @@ if Rails.env.production?
   elasticsearch_username = ENV['ELASTICSEARCH_USERNAME']
   elasticsearch_password = ENV['ELASTICSEARCH_PASSWORD']
 
-  Rails.logger.debug "Elasticsearch host: #{elasticsearch_host}"
-  Rails.logger.debug "Elasticsearch username: #{elasticsearch_username}"
-  Rails.logger.debug "Elasticsearch password: #{elasticsearch_password}"
+  # Rails.logger.debug "Elasticsearch host: #{elasticsearch_host}"
+  # Rails.logger.debug "Elasticsearch username: #{elasticsearch_username}"
+  # Rails.logger.debug "Elasticsearch password: #{elasticsearch_password}"
 
   # Configure the Elasticsearch client
   Searchkick.client = Elasticsearch::Client.new(
