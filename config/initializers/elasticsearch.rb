@@ -1,14 +1,20 @@
 if Rails.env.production?
-  Rails.logger.debug "Elasticsearch host: #{Rails.application.credentials.dig(:elasticsearch, :host)}"
-  Rails.logger.debug "Elasticsearch username: #{Rails.application.credentials.dig(:elasticsearch, :username)}"
-  Rails.logger.debug "Elasticsearch password: #{Rails.application.credentials.dig(:elasticsearch, :password)}"
+  # Fetch Elasticsearch configuration from environment variables
+  elasticsearch_host = ENV['ELASTICSEARCH_HOST']
+  elasticsearch_username = ENV['ELASTICSEARCH_USERNAME']
+  elasticsearch_password = ENV['ELASTICSEARCH_PASSWORD']
 
+  Rails.logger.debug "Elasticsearch host: #{elasticsearch_host}"
+  Rails.logger.debug "Elasticsearch username: #{elasticsearch_username}"
+  Rails.logger.debug "Elasticsearch password: #{elasticsearch_password}"
+
+  # Configure the Elasticsearch client
   Searchkick.client = Elasticsearch::Client.new(
-    url: Rails.application.credentials.dig(:elasticsearch, :host),
+    url: elasticsearch_host,
     transport_options: {
       ssl: { verify: false }
     },
-    user: Rails.application.credentials.dig(:elasticsearch, :username),
-    password: Rails.application.credentials.dig(:elasticsearch, :password)
+    user: elasticsearch_username,
+    password: elasticsearch_password
   )
 end

@@ -90,7 +90,5 @@ accessories:
       clear:
         discovery.type: single-node
         xpack.security.enabled: "false"
-#      secret:
-#        - ELASTICSEARCH_PASSWORD
     directories:
       - esdata:/usr/share/elasticsearch/data
