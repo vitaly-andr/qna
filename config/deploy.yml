@@ -1,4 +1,4 @@
-<% require "dotenv"; Dotenv.load(".env", ".env.production") %>
+<%# require "dotenv"; Dotenv.load(".env", ".env.production") %>
 
 service: qna
 
@@ -22,7 +22,8 @@ registry:
 
 env:
   secret:
-    - RAILS_MASTER_KEY
+#    - RAILS_MASTER_KEY
+    - SECRET_KEY_BASE
     - KAMAL_REGISTRY_PASSWORD
     - POSTGRES_PASSWORD
     - ELASTICSEARCH_PASSWORD

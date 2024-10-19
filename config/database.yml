@@ -21,4 +21,4 @@ production:
   database: qna_production
 #  username: deploy
   password: <%= ENV["POSTGRES_PASSWORD"] %>
-  host: db_qna
+  host: qna-db
