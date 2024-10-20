@@ -11,10 +11,6 @@ servers:
 ssh:
   user: deploy
 
-proxy:
-  ssl: true
-  host: qna.andrianoff.online
-
 registry:
   username: viandrianoff
   password:
@@ -22,7 +18,6 @@ registry:
 
 env:
   secret:
-#    - RAILS_MASTER_KEY
     - SECRET_KEY_BASE
     - KAMAL_REGISTRY_PASSWORD
     - POSTGRES_PASSWORD
@@ -58,8 +53,13 @@ asset_path: /rails/public/assets
 
 builder:
   arch: amd64
-#  remote: ssh://deploy@95.217.223.50
 
+# Proxy configuration (moved to this section to avoid duplication)
+proxy:
+  ssl: true
+  host: qna.andrianoff.online
+
+# Accessories configurations (unchanged)
 accessories:
   db:
     image: postgres:17
