@@ -53,9 +53,9 @@ builder:
   arch: amd64
 
 # Proxy configuration (moved to this section to avoid duplication)
-proxy: false
-#  ssl: true
-#  host: qna.andrianoff.online
+proxy:
+  ssl: true
+  host: qna.andrianoff.online
 
 # Accessories configurations (unchanged)
 accessories:
