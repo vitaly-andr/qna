@@ -1,4 +1,3 @@
-<%# require "dotenv"; Dotenv.load(".env", ".env.production") %>
 
 service: qna
 
