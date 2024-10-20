@@ -19,6 +19,6 @@ test:
 production:
   <<: *default
   database: qna_production
-  username: rails
+  username: postgres
   password: <%= ENV["POSTGRES_PASSWORD"] %>
   host: qna-db
