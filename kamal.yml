@@ -1,0 +1,22 @@
+app:
+  servers:
+    - 95.217.223.50
+
+proxy:
+  domains:
+    - qna.andrianoff.online
+    - andrianoff.online
+  ssl:
+    enabled: true
+  routes:
+    - service: qna-web
+      domain: qna.andrianoff.online
+      port: 3000
+    - service: portainer
+      domain: andrianoff.online
+      path: /portainer
+      port: 9443
+    - service: webmin
+      domain: andrianoff.online
+      path: /webmin
+      port: 10000
