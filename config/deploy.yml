@@ -37,6 +37,7 @@ env:
     DOMAIN_NAME: qna.andrianoff.online
     RAILS_LOG_LEVEL: debug
     DB_HOST: qna-db
+    PORT: 3000
 
 aliases:
   console: app exec --interactive --reuse "bin/rails console"
