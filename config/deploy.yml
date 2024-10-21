@@ -32,7 +32,7 @@ env:
   clear:
     SOLID_QUEUE_IN_PUMA: true
     RAILS_MAX_THREADS: 5
-    WEB_CONCURRENCY: 2
+    WEB_CONCURRENCY: 1
     REDIS_CACHE_URL: redis://127.0.0.1:6379
     DOMAIN_NAME: qna.andrianoff.online
     RAILS_LOG_LEVEL: debug
